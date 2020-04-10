@@ -1,0 +1,849 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<meguno-link-project version="1.0">
+  <culture>en-NZ</culture>
+  <data>
+    <shared-visualizer-data>
+      <data id="SerialMonitorData" name="" instance-id="91a690ac-bb35-491b-8cb8-1d68a1483738">
+        <send-cr-default>true</send-cr-default>
+        <send-lf-default>true</send-lf-default>
+        <word-wrap-default>true</word-wrap-default>
+        <include-date>false</include-date>
+        <include-time>true</include-time>
+        <include-custom>false</include-custom>
+        <custom-time-stamp />
+        <clear-on-send>false</clear-on-send>
+        <message-history>
+          <item>!ReleaseSw 1 1</item>
+        </message-history>
+      </data>
+    </shared-visualizer-data>
+  </data>
+  <reporting>
+    <generate-scheduled-reports>false</generate-scheduled-reports>
+    <destinations>
+      <report-to-folder>
+        <last-report-number>0</last-report-number>
+        <folder-path>C:\Users\Elliot\Actual Documents</folder-path>
+        <use-sub-folder>true</use-sub-folder>
+        <sub-folder-pattern>Report {Seq}</sub-folder-pattern>
+        <enabled>true</enabled>
+        <period>PT1H</period>
+        <last-sent>0001-01-01T00:00:00</last-sent>
+      </report-to-folder>
+    </destinations>
+  </reporting>
+  <serial-sources>
+    <default>0</default>
+    <sources>
+      <source type="SharedRS232Port">
+        <id>0</id>
+        <display-name>Stepper Driver Controller</display-name>
+        <port-name>
+          <type>Fixed</type>
+          <port>COM5</port>
+        </port-name>
+        <baud-rate>9600</baud-rate>
+        <data-bits>8</data-bits>
+        <handshaking>None</handshaking>
+        <parity>None</parity>
+        <stop-bits>One</stop-bits>
+        <disable-dtr>true</disable-dtr>
+        <disable-rts>false</disable-rts>
+      </source>
+    </sources>
+    <connect-sources />
+  </serial-sources>
+  <windows>
+    <window>
+      <DockPanel FormatVersion="1.0" DockLeftPortion="0.25" DockRightPortion="220" DockTopPortion="0.25" DockBottomPortion="0.25" ActiveDocumentPane="1" ActivePane="1">
+        <Contents Count="3">
+          <Content ID="0" PersistString="InterfacePanel" AutoHidePortion="0.25" IsHidden="False" IsFloat="False">
+            <design type="InterfacePanel">
+              <children child-list="Controls">
+                <component type="System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="gbPowStep">
+                  <children child-list="Controls">
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton27">
+                      <properties>
+                        <property name="OnClickSend">!SetOCThreshold [tbOCThresh.Value]\r\n</property>
+                        <property name="Text">Set Threshold</property>
+                        <property name="Location">295, 192</property>
+                        <property name="Name">IPButton27</property>
+                        <property name="Size">83, 23</property>
+                        <property name="TabIndex">32</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label24">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Automatic Over-Current Shutdown, should prevent damage in case of a short circuit.
+Start low, adjust up until it doesn't trigger under heavy load, then add one to avoid misfires.
+As the driver chip heats up the effective threshold level is lowered
+</property>
+                        <property name="Location">3, 143</property>
+                        <property name="Name">Label24</property>
+                        <property name="Size">431, 39</property>
+                        <property name="TabIndex">31</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.TrackBarWithIndicator, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="tbOCThresh">
+                      <children child-list="Controls" />
+                      <properties>
+                        <property name="ValueChangedCommandName" />
+                        <property name="Maximum">31</property>
+                        <property name="Value">8</property>
+                        <property name="Location">129, 192</property>
+                        <property name="Name">tbOCThresh</property>
+                        <property name="Size">159, 20</property>
+                        <property name="TabIndex">30</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label23">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Over-Current Threshold</property>
+                        <property name="Location">6, 199</property>
+                        <property name="Name">Label23</property>
+                        <property name="Size">117, 13</property>
+                        <property name="TabIndex">29</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label22">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Careful, too high could damage motor and/or driver, monitor temperature</property>
+                        <property name="Font">Microsoft Sans Serif, 8.25pt, style=Bold</property>
+                        <property name="Location">6, 50</property>
+                        <property name="Name">Label22</property>
+                        <property name="Size">417, 13</property>
+                        <property name="TabIndex">27</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label21">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Motor PWM Duty, different to microstepping (total power not number of levels)</property>
+                        <property name="Location">6, 26</property>
+                        <property name="Name">Label21</property>
+                        <property name="Size">372, 13</property>
+                        <property name="TabIndex">19</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label19">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Running Power:</property>
+                        <property name="Location">6, 79</property>
+                        <property name="Name">Label19</property>
+                        <property name="Size">83, 13</property>
+                        <property name="TabIndex">21</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton25">
+                      <properties>
+                        <property name="OnClickSend">!SetHoldKVAL [tbHoldPow.Value]\r\n</property>
+                        <property name="Text">Set Power</property>
+                        <property name="Location">348, 105</property>
+                        <property name="Name">IPButton25</property>
+                        <property name="Size">75, 23</property>
+                        <property name="TabIndex">26</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label20">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Holding Power:</property>
+                        <property name="Location">6, 105</property>
+                        <property name="Name">Label20</property>
+                        <property name="Size">79, 13</property>
+                        <property name="TabIndex">22</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton24">
+                      <properties>
+                        <property name="OnClickSend">!SetRunKVAL [tbRunningPow.Value]\r\n</property>
+                        <property name="Text">Set Power</property>
+                        <property name="Location">348, 79</property>
+                        <property name="Name">IPButton24</property>
+                        <property name="Size">75, 23</property>
+                        <property name="TabIndex">25</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.TrackBarWithIndicator, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="tbRunningPow">
+                      <children child-list="Controls" />
+                      <properties>
+                        <property name="ValueChangedCommandName" />
+                        <property name="Maximum">255</property>
+                        <property name="Value">64</property>
+                        <property name="Location">95, 79</property>
+                        <property name="Name">tbRunningPow</property>
+                        <property name="Size">244, 20</property>
+                        <property name="TabIndex">23</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.TrackBarWithIndicator, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="tbHoldPow">
+                      <children child-list="Controls" />
+                      <properties>
+                        <property name="ValueChangedCommandName" />
+                        <property name="Maximum">255</property>
+                        <property name="Value">32</property>
+                        <property name="Location">95, 105</property>
+                        <property name="Name">tbHoldPow</property>
+                        <property name="Size">244, 20</property>
+                        <property name="TabIndex">24</property>
+                      </properties>
+                    </component>
+                  </children>
+                  <properties>
+                    <property name="TabStop">False</property>
+                    <property name="Text">powerSTEP01 Configuration</property>
+                    <property name="Location">3, 592</property>
+                    <property name="Name">gbPowStep</property>
+                    <property name="Size">437, 228</property>
+                    <property name="TabIndex">21</property>
+                  </properties>
+                </component>
+                <component type="System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="GroupBox3">
+                  <children child-list="Controls">
+                    <component type="System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="GroupBox4">
+                      <children child-list="Controls">
+                        <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label11">
+                          <properties>
+                            <property name="AutoSize">True</property>
+                            <property name="Text">mm/s</property>
+                            <property name="Location">93, 46</property>
+                            <property name="Name">Label11</property>
+                            <property name="Size">33, 13</property>
+                            <property name="TabIndex">9</property>
+                          </properties>
+                        </component>
+                        <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton16">
+                          <properties>
+                            <property name="OnClickSend">!ReleaseSw 0 [rbFwd.Checked ? 0 : 1]\r\n</property>
+                            <property name="Text">Back Off</property>
+                            <property name="Location">87, 75</property>
+                            <property name="Name">IPButton16</property>
+                            <property name="Size">75, 23</property>
+                            <property name="TabIndex">19</property>
+                          </properties>
+                        </component>
+                        <component type="IPControlLibrary.Controls.IPNumericUpDown, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="nudHomeSpeed">
+                          <children child-list="Controls" />
+                          <properties>
+                            <property name="OnValueChangedSend" />
+                            <property name="DecimalPlaces">1</property>
+                            <property name="Maximum">1000000000</property>
+                            <property name="Value">10</property>
+                            <property name="Location">6, 46</property>
+                            <property name="Name">nudHomeSpeed</property>
+                            <property name="Size">81, 20</property>
+                            <property name="TabIndex">8</property>
+                          </properties>
+                        </component>
+                        <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton15">
+                          <properties>
+                            <property name="OnClickSend">!GoUntil 0 [rbFwd.Checked ? 1 : 0] [nudHomeSpeed.Value*nudStepsMM.Value]\r\n</property>
+                            <property name="Text">Home</property>
+                            <property name="Location">6, 75</property>
+                            <property name="Name">IPButton15</property>
+                            <property name="Size">75, 23</property>
+                            <property name="TabIndex">16</property>
+                          </properties>
+                        </component>
+                        <component type="IPControlLibrary.Controls.IPRadioButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="rbRev">
+                          <properties>
+                            <property name="OnCheckChangedSend" />
+                            <property name="Checked">True</property>
+                            <property name="TabStop">True</property>
+                            <property name="AutoSize">True</property>
+                            <property name="Text">Rev</property>
+                            <property name="Location">75, 19</property>
+                            <property name="Name">rbRev</property>
+                            <property name="Size">45, 17</property>
+                            <property name="TabIndex">18</property>
+                          </properties>
+                        </component>
+                        <component type="IPControlLibrary.Controls.IPRadioButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="rbFwd">
+                          <properties>
+                            <property name="OnCheckChangedSend" />
+                            <property name="AutoSize">True</property>
+                            <property name="Text">Fwd</property>
+                            <property name="Location">6, 19</property>
+                            <property name="Name">rbFwd</property>
+                            <property name="Size">45, 17</property>
+                            <property name="TabIndex">17</property>
+                          </properties>
+                        </component>
+                      </children>
+                      <properties>
+                        <property name="TabStop">False</property>
+                        <property name="Text">Homing</property>
+                        <property name="Location">213, 122</property>
+                        <property name="Name">GroupBox4</property>
+                        <property name="Size">172, 104</property>
+                        <property name="TabIndex">18</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label7">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="TextAlign">TopCenter</property>
+                        <property name="Text">"Soft" slows motor first
+"Hard" acts immediately</property>
+                        <property name="Location">30, 200</property>
+                        <property name="Name">Label7</property>
+                        <property name="Size">120, 26</property>
+                        <property name="TabIndex">15</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label6">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Print STATUS register, clears error flags</property>
+                        <property name="Location">213, 56</property>
+                        <property name="Name">Label6</property>
+                        <property name="Size">194, 13</property>
+                        <property name="TabIndex">14</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton13">
+                      <properties>
+                        <property name="OnClickSend">!SoftHiZ\r\n</property>
+                        <property name="Text">Soft Shutdown</property>
+                        <property name="Location">46, 145</property>
+                        <property name="Name">IPButton13</property>
+                        <property name="Size">91, 23</property>
+                        <property name="TabIndex">13</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton12">
+                      <properties>
+                        <property name="OnClickSend">!SoftStop\r\n</property>
+                        <property name="Text">Soft Stop</property>
+                        <property name="Location">13, 174</property>
+                        <property name="Name">IPButton12</property>
+                        <property name="Size">75, 23</property>
+                        <property name="TabIndex">12</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton11">
+                      <properties>
+                        <property name="OnClickSend">!HardStop\r\n</property>
+                        <property name="Text">Hard Stop</property>
+                        <property name="Location">94, 174</property>
+                        <property name="Name">IPButton11</property>
+                        <property name="Size">75, 23</property>
+                        <property name="TabIndex">11</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="btStop">
+                      <properties>
+                        <property name="OnClickSend">!HardHiZ\r\n</property>
+                        <property name="BackColor">Red</property>
+                        <property name="Text">IMMEDIATE MOTOR SHUTDOWN </property>
+                        <property name="UseVisualStyleBackColor">False</property>
+                        <property name="Font">Microsoft Sans Serif, 12pt, style=Bold</property>
+                        <property name="ForeColor">White</property>
+                        <property name="Location">13, 19</property>
+                        <property name="Name">btStop</property>
+                        <property name="Size">156, 120</property>
+                        <property name="TabIndex">3</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="btGetStatus">
+                      <properties>
+                        <property name="OnClickSend">!GetStatus\r\n</property>
+                        <property name="Text">Get Status</property>
+                        <property name="Location">213, 72</property>
+                        <property name="Name">btGetStatus</property>
+                        <property name="Size">75, 23</property>
+                        <property name="TabIndex">4</property>
+                      </properties>
+                    </component>
+                  </children>
+                  <properties>
+                    <property name="TabStop">False</property>
+                    <property name="Text">Operations</property>
+                    <property name="Location">3, 3</property>
+                    <property name="Name">GroupBox3</property>
+                    <property name="Size">437, 238</property>
+                    <property name="TabIndex">10</property>
+                  </properties>
+                </component>
+                <component type="System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="GroupBox2">
+                  <children child-list="Controls">
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label16">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Go to Position:</property>
+                        <property name="Location">6, 26</property>
+                        <property name="Name">Label16</property>
+                        <property name="Size">76, 13</property>
+                        <property name="TabIndex">17</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label15">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Set Current Position as:</property>
+                        <property name="Location">6, 55</property>
+                        <property name="Name">Label15</property>
+                        <property name="Size">117, 13</property>
+                        <property name="TabIndex">10</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label10">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">mm</property>
+                        <property name="Location">216, 26</property>
+                        <property name="Name">Label10</property>
+                        <property name="Size">23, 13</property>
+                        <property name="TabIndex">16</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label9">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">mm</property>
+                        <property name="Location">216, 55</property>
+                        <property name="Name">Label9</property>
+                        <property name="Size">23, 13</property>
+                        <property name="TabIndex">8</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPNumericUpDown, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="nudSetPositionSteps">
+                      <children child-list="Controls" />
+                      <properties>
+                        <property name="OnValueChangedSend" />
+                        <property name="Maximum">1000000000</property>
+                        <property name="Minimum">-1000000000</property>
+                        <property name="Location">129, 55</property>
+                        <property name="Name">nudSetPositionSteps</property>
+                        <property name="Size">81, 20</property>
+                        <property name="TabIndex">15</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton10">
+                      <properties>
+                        <property name="OnClickSend">!SetPos [nudSetPositionSteps.Value*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">Set Position</property>
+                        <property name="Location">245, 52</property>
+                        <property name="Name">IPButton10</property>
+                        <property name="Size">75, 23</property>
+                        <property name="TabIndex">13</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPNumericUpDown, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="nudGoToSteps">
+                      <children child-list="Controls" />
+                      <properties>
+                        <property name="OnValueChangedSend" />
+                        <property name="Maximum">1000000000</property>
+                        <property name="Minimum">-1000000000</property>
+                        <property name="Value">75</property>
+                        <property name="Location">129, 26</property>
+                        <property name="Name">nudGoToSteps</property>
+                        <property name="Size">82, 20</property>
+                        <property name="TabIndex">8</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton5">
+                      <properties>
+                        <property name="OnClickSend">!GoTo [nudGoToSteps.Value*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">&lt;-Go To-&gt;</property>
+                        <property name="Location">245, 23</property>
+                        <property name="Name">IPButton5</property>
+                        <property name="Size">75, 23</property>
+                        <property name="TabIndex">0</property>
+                      </properties>
+                    </component>
+                  </children>
+                  <properties>
+                    <property name="TabStop">False</property>
+                    <property name="Text">Absolute Movement</property>
+                    <property name="Location">3, 404</property>
+                    <property name="Name">GroupBox2</property>
+                    <property name="Size">437, 88</property>
+                    <property name="TabIndex">9</property>
+                  </properties>
+                </component>
+                <component type="System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="gbConfiguration">
+                  <children child-list="Controls">
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton17">
+                      <properties>
+                        <property name="OnClickSend">!SetMaxSpeed [nudMaxSpeed.Value*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">Set Speed</property>
+                        <property name="Location">223, 51</property>
+                        <property name="Name">IPButton17</property>
+                        <property name="Size">75, 23</property>
+                        <property name="TabIndex">20</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label18">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Max Speed:</property>
+                        <property name="Location">6, 51</property>
+                        <property name="Name">Label18</property>
+                        <property name="Size">64, 13</property>
+                        <property name="TabIndex">19</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label17">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Unit Conversion:</property>
+                        <property name="Location">6, 25</property>
+                        <property name="Name">Label17</property>
+                        <property name="Size">85, 13</property>
+                        <property name="TabIndex">18</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label12">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">mm/s</property>
+                        <property name="Location">184, 51</property>
+                        <property name="Name">Label12</property>
+                        <property name="Size">33, 13</property>
+                        <property name="TabIndex">8</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPNumericUpDown, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="nudMaxSpeed">
+                      <children child-list="Controls" />
+                      <properties>
+                        <property name="OnValueChangedSend" />
+                        <property name="DecimalPlaces">1</property>
+                        <property name="Maximum">1000000000</property>
+                        <property name="Value">30</property>
+                        <property name="Location">97, 51</property>
+                        <property name="Name">nudMaxSpeed</property>
+                        <property name="Size">81, 20</property>
+                        <property name="TabIndex">8</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label8">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Steps/mm</property>
+                        <property name="Location">213, 25</property>
+                        <property name="Name">Label8</property>
+                        <property name="Size">55, 13</property>
+                        <property name="TabIndex">8</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPNumericUpDown, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="nudStepsMM">
+                      <children child-list="Controls" />
+                      <properties>
+                        <property name="OnValueChangedSend" />
+                        <property name="DecimalPlaces">4</property>
+                        <property name="Maximum">1000000</property>
+                        <property name="Value">3200</property>
+                        <property name="Location">97, 25</property>
+                        <property name="Name">nudStepsMM</property>
+                        <property name="Size">110, 20</property>
+                        <property name="TabIndex">0</property>
+                      </properties>
+                    </component>
+                  </children>
+                  <properties>
+                    <property name="TabStop">False</property>
+                    <property name="Text">General Configuration</property>
+                    <property name="Location">3, 498</property>
+                    <property name="Name">gbConfiguration</property>
+                    <property name="Size">437, 88</property>
+                    <property name="TabIndex">8</property>
+                  </properties>
+                </component>
+                <component type="System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="GroupBox1">
+                  <children child-list="Controls">
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton23">
+                      <properties>
+                        <property name="OnClickSend">!Move 1 [100*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">100 mm-&gt;</property>
+                        <property name="Location">362, 28</property>
+                        <property name="Name">IPButton23</property>
+                        <property name="Size">61, 23</property>
+                        <property name="TabIndex">17</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton22">
+                      <properties>
+                        <property name="OnClickSend">!Move 1 [10*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">10 mm-&gt;</property>
+                        <property name="Location">295, 28</property>
+                        <property name="Name">IPButton22</property>
+                        <property name="Size">61, 23</property>
+                        <property name="TabIndex">14</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton21">
+                      <properties>
+                        <property name="OnClickSend">!Move 1 [1*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">1 mm-&gt;</property>
+                        <property name="Location">228, 28</property>
+                        <property name="Name">IPButton21</property>
+                        <property name="Size">61, 23</property>
+                        <property name="TabIndex">13</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton20">
+                      <properties>
+                        <property name="OnClickSend">!Move 0 [1*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">&lt;-1 mm</property>
+                        <property name="Location">147, 28</property>
+                        <property name="Name">IPButton20</property>
+                        <property name="Size">61, 23</property>
+                        <property name="TabIndex">12</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton19">
+                      <properties>
+                        <property name="OnClickSend">!Move 0 [10*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">&lt;-10 mm</property>
+                        <property name="Location">80, 28</property>
+                        <property name="Name">IPButton19</property>
+                        <property name="Size">61, 23</property>
+                        <property name="TabIndex">11</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton18">
+                      <properties>
+                        <property name="OnClickSend">!Move 0 [100*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">&lt;-100 mm</property>
+                        <property name="Location">13, 28</property>
+                        <property name="Name">IPButton18</property>
+                        <property name="Size">61, 23</property>
+                        <property name="TabIndex">10</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label14">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Run at Speed:</property>
+                        <property name="Location">6, 110</property>
+                        <property name="Name">Label14</property>
+                        <property name="Size">76, 13</property>
+                        <property name="TabIndex">9</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label13">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">Move a Distance:</property>
+                        <property name="Location">6, 81</property>
+                        <property name="Name">Label13</property>
+                        <property name="Size">91, 13</property>
+                        <property name="TabIndex">8</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label2">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">mm/s</property>
+                        <property name="Location">190, 110</property>
+                        <property name="Name">Label2</property>
+                        <property name="Size">33, 13</property>
+                        <property name="TabIndex">7</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton1">
+                      <properties>
+                        <property name="OnClickSend">!Run 1 [nudRunSteps_s.Value*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">Fwd Run-&gt;</property>
+                        <property name="Location">310, 110</property>
+                        <property name="Name">IPButton1</property>
+                        <property name="Size">75, 23</property>
+                        <property name="TabIndex">6</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPNumericUpDown, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="nudRunSteps_s">
+                      <children child-list="Controls" />
+                      <properties>
+                        <property name="OnValueChangedSend" />
+                        <property name="DecimalPlaces">1</property>
+                        <property name="Maximum">1000000000</property>
+                        <property name="Value">5</property>
+                        <property name="Location">103, 110</property>
+                        <property name="Name">nudRunSteps_s</property>
+                        <property name="Size">81, 20</property>
+                        <property name="TabIndex">4</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="IPButton2">
+                      <properties>
+                        <property name="OnClickSend">!Run 0 [nudRunSteps_s.Value*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">&lt;-Rev Run</property>
+                        <property name="Location">229, 110</property>
+                        <property name="Name">IPButton2</property>
+                        <property name="Size">75, 23</property>
+                        <property name="TabIndex">5</property>
+                      </properties>
+                    </component>
+                    <component type="System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="Label1">
+                      <properties>
+                        <property name="AutoSize">True</property>
+                        <property name="Text">mm</property>
+                        <property name="Location">190, 81</property>
+                        <property name="Name">Label1</property>
+                        <property name="Size">23, 13</property>
+                        <property name="TabIndex">3</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="btFwdMoveSteps">
+                      <properties>
+                        <property name="OnClickSend">!Move 1 [nudMoveSteps.Value*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">Fwd Move-&gt;</property>
+                        <property name="Location">310, 81</property>
+                        <property name="Name">btFwdMoveSteps</property>
+                        <property name="Size">75, 23</property>
+                        <property name="TabIndex">2</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPNumericUpDown, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="nudMoveSteps">
+                      <children child-list="Controls" />
+                      <properties>
+                        <property name="OnValueChangedSend" />
+                        <property name="Maximum">1000000000</property>
+                        <property name="Value">10</property>
+                        <property name="Location">103, 81</property>
+                        <property name="Name">nudMoveSteps</property>
+                        <property name="Size">81, 20</property>
+                        <property name="TabIndex">0</property>
+                      </properties>
+                    </component>
+                    <component type="IPControlLibrary.Controls.IPButton, IPControlLibrary, Version=1.6.16325.1120, Culture=neutral, PublicKeyToken=null" name="btRevMoveSteps">
+                      <properties>
+                        <property name="OnClickSend">!Move 0 [nudMoveSteps.Value*nudStepsMM.Value]\r\n</property>
+                        <property name="Text">&lt;-Rev Move</property>
+                        <property name="Location">229, 81</property>
+                        <property name="Name">btRevMoveSteps</property>
+                        <property name="Size">75, 23</property>
+                        <property name="TabIndex">1</property>
+                      </properties>
+                    </component>
+                  </children>
+                  <properties>
+                    <property name="TabStop">False</property>
+                    <property name="Text">Relative Movement</property>
+                    <property name="Location">3, 247</property>
+                    <property name="Name">GroupBox1</property>
+                    <property name="Size">437, 151</property>
+                    <property name="TabIndex">2</property>
+                  </properties>
+                </component>
+              </children>
+              <properties>
+                <property name="Name">UserControl1</property>
+                <property name="Size">832, 900</property>
+              </properties>
+              <components />
+            </design>
+            <values>
+              <value name="tbOCThresh">
+                <property name="Value"><![CDATA[8]]></property>
+              </value>
+              <value name="tbRunningPow">
+                <property name="Value"><![CDATA[64]]></property>
+              </value>
+              <value name="tbHoldPow">
+                <property name="Value"><![CDATA[32]]></property>
+              </value>
+              <value name="nudHomeSpeed">
+                <property name="Value"><![CDATA[10]]></property>
+              </value>
+              <value name="rbRev">
+                <property name="Checked"><![CDATA[True]]></property>
+              </value>
+              <value name="rbFwd">
+                <property name="Checked"><![CDATA[False]]></property>
+              </value>
+              <value name="nudSetPositionSteps">
+                <property name="Value"><![CDATA[0]]></property>
+              </value>
+              <value name="nudGoToSteps">
+                <property name="Value"><![CDATA[75]]></property>
+              </value>
+              <value name="nudMaxSpeed">
+                <property name="Value"><![CDATA[30]]></property>
+              </value>
+              <value name="nudStepsMM">
+                <property name="Value"><![CDATA[3200]]></property>
+              </value>
+              <value name="nudRunSteps_s">
+                <property name="Value"><![CDATA[5]]></property>
+              </value>
+              <value name="nudMoveSteps">
+                <property name="Value"><![CDATA[10]]></property>
+              </value>
+            </values>
+            <ShowSourceInTitle>false</ShowSourceInTitle>
+            <ShowPortInTitle>false</ShowPortInTitle>
+            <SourceId>0</SourceId>
+            <TabTitle>Interface Panel</TabTitle>
+          </Content>
+          <Content ID="1" PersistString="SourceManager" AutoHidePortion="0.25" IsHidden="False" IsFloat="False">
+            <ShowSourceInTitle>false</ShowSourceInTitle>
+            <ShowPortInTitle>false</ShowPortInTitle>
+            <SourceId>-1</SourceId>
+            <TabTitle>Connection Manager</TabTitle>
+          </Content>
+          <Content ID="2" PersistString="SerialMonitor" AutoHidePortion="0.25" IsHidden="False" IsFloat="False">
+            <InsertTimestamp>false</InsertTimestamp>
+            <WordWrap>true</WordWrap>
+            <IncludeDate>false</IncludeDate>
+            <IncludeTime>true</IncludeTime>
+            <IncludeCustom>false</IncludeCustom>
+            <CustomTimeStamp />
+            <AutoScroll>false</AutoScroll>
+            <ShowEOLMarkers>false</ShowEOLMarkers>
+            <ShowLineTime>false</ShowLineTime>
+            <ShowLineDate>false</ShowLineDate>
+            <ShowSourceInTitle>false</ShowSourceInTitle>
+            <ShowPortInTitle>false</ShowPortInTitle>
+            <SourceId>0</SourceId>
+            <TabTitle>Monitor</TabTitle>
+          </Content>
+        </Contents>
+        <Panes Count="3">
+          <Pane ID="0" DockState="Document" ActiveContent="1">
+            <Contents Count="1">
+              <Content ID="0" RefID="1" />
+            </Contents>
+          </Pane>
+          <Pane ID="1" DockState="Document" ActiveContent="0">
+            <Contents Count="1">
+              <Content ID="0" RefID="0" />
+            </Contents>
+          </Pane>
+          <Pane ID="2" DockState="Document" ActiveContent="2">
+            <Contents Count="1">
+              <Content ID="0" RefID="2" />
+            </Contents>
+          </Pane>
+        </Panes>
+        <DockWindows>
+          <DockWindow ID="0" DockState="Document" ZOrderIndex="0">
+            <NestedPanes Count="3">
+              <Pane ID="0" RefID="0" PrevPane="-1" Alignment="Right" Proportion="0.5" />
+              <Pane ID="1" RefID="1" PrevPane="0" Alignment="Left" Proportion="0.5" />
+              <Pane ID="2" RefID="2" PrevPane="0" Alignment="Bottom" Proportion="0.796816901809755" />
+            </NestedPanes>
+          </DockWindow>
+          <DockWindow ID="1" DockState="DockLeft" ZOrderIndex="1">
+            <NestedPanes Count="0" />
+          </DockWindow>
+          <DockWindow ID="2" DockState="DockRight" ZOrderIndex="2">
+            <NestedPanes Count="0" />
+          </DockWindow>
+          <DockWindow ID="3" DockState="DockTop" ZOrderIndex="3">
+            <NestedPanes Count="0" />
+          </DockWindow>
+          <DockWindow ID="4" DockState="DockBottom" ZOrderIndex="4">
+            <NestedPanes Count="0" />
+          </DockWindow>
+        </DockWindows>
+        <FloatWindows Count="0" />
+      </DockPanel>
+    </window>
+  </windows>
+</meguno-link-project>
