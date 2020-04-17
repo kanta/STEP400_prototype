@@ -19,7 +19,7 @@
 
 #define ledPin	13u
 const uint8_t dipSwPin[8] = { A5,SCL,7u,SDA,2u,9u,3u,0u };
-const uint8_t limitSwPin[4] = { 1u, 5u, 8u, A1 };
+const uint8_t limitSwPin[4] = { 1u,5u,8u,A1 };
 #define SD_CS_PIN	4u
 #define SD_DETECT_PIN   A4
 #define SETUP_SW_PIN    31u
@@ -101,18 +101,18 @@ void setup() {
         powerSteps[i].setFullSpeed(2000);
         powerSteps[i].setAcc(2000);
         powerSteps[i].setDec(2000);
-        powerSteps[i].setSlewRate(SR_520V_us);
-        powerSteps[i].setOCThreshold(8);
-        powerSteps[i].setOCShutdown(OC_SD_DISABLE);
+        powerSteps[i].setSlewRate(SR_980V_us);
+        powerSteps[i].setOCThreshold(15); // 5A for 0.1ohm shunt resistor
+        powerSteps[i].setOCShutdown(OC_SD_ENABLE);
         powerSteps[i].setPWMFreq(PWM_DIV_1, PWM_MUL_0_75);
         powerSteps[i].setVoltageComp(VS_COMP_DISABLE);
         powerSteps[i].setSwitchMode(SW_USER);
         powerSteps[i].setOscMode(EXT_24MHZ_OSCOUT_INVERT);
         //powerSteps[i].setOscMode(INT_16MHZ);
-        powerSteps[i].setRunKVAL(64);
-        powerSteps[i].setAccKVAL(64);
-        powerSteps[i].setDecKVAL(64);
-        powerSteps[i].setHoldKVAL(32);
+        powerSteps[i].setRunKVAL(16);
+        powerSteps[i].setAccKVAL(16);
+        powerSteps[i].setDecKVAL(16);
+        powerSteps[i].setHoldKVAL(4);
         powerSteps[i].setParam(ALARM_EN, 0x8F); // disable ADC UVLO (divider not populated),
         // disable stall detection (not configured),
         // disable switch (not using as hard stop)
@@ -398,7 +398,7 @@ void setMinSpeed(OSCMessage& msg, int addrOffset) {
         }
     }
 }
-void setFullSpeed(OSCMessage& msg, int addrOffset) {
+void setFullstepSpeed(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
     float stepsPerSecond = msg.getFloat(1);
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
@@ -482,7 +482,7 @@ void setMinSpeedRaw(OSCMessage& msg, int addrOffset) {
         }
     }
 }
-void setFullSpeedRaw(OSCMessage& msg, int addrOffset) {
+void setFullstepSpeedRaw(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
     int t = msg.getInt(1);
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
@@ -910,26 +910,26 @@ void setSwMode(OSCMessage& msg, int addrOffset) {
     }
 }
 
-void voltageMode(OSCMessage& msg, int addrOffset) {
+void setVoltageMode(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
     uint8_t stepMode = constrain(msg.getInt(1), STEP_FS, STEP_FS_128);
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
-        powerSteps[target - TARGET_MOTOR_FIRST].voltageMode(stepMode);
+        powerSteps[target - TARGET_MOTOR_FIRST].setVoltageMode(stepMode);
     }
     else if (target == TARGET_MOTOR_ALL) {
         for (uint8_t i = 0; i < NUM_POWERSTEP; i++) {
-            powerSteps[i].voltageMode(stepMode);
+            powerSteps[i].setVoltageMode(stepMode);
         }
     }
 }
 
-void currentMode(OSCMessage& msg, int addrOffset) {
+void setCurrentMode(OSCMessage& msg, int addrOffset) {
     int t = 0;
     uint8_t target = msg.getInt(0);
     uint8_t stepMode = constrain(msg.getInt(1), STEP_FS, STEP_FS_16);
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
         target -= 1;
-        powerSteps[target].currentMode(stepMode);
+        powerSteps[target].setCurrentMode(stepMode);
         powerSteps[target].setHoldTVAL(t);
         powerSteps[target].setRunTVAL(t);
         powerSteps[target].setAccTVAL(t);
@@ -937,7 +937,7 @@ void currentMode(OSCMessage& msg, int addrOffset) {
     }
     else if (target == TARGET_MOTOR_ALL) {
         for (uint8_t i = 0; i < NUM_POWERSTEP; i++) {
-            powerSteps[i].currentMode(stepMode);
+            powerSteps[i].setCurrentMode(stepMode);
             powerSteps[i].setHoldTVAL(t);
             powerSteps[i].setRunTVAL(t);
             powerSteps[i].setAccTVAL(t);
@@ -969,13 +969,13 @@ void OSCMsgReceive() {
             msgIN.route("/configStepMode", configStepMode);
             msgIN.route("/getStepMode", getStepMode);
 
-            msgIN.route("/voltageMode", voltageMode);
-            msgIN.route("/currentMode", currentMode);
+            msgIN.route("/setVoltageMode", setVoltageMode);
+            msgIN.route("/setCurrentMode", setCurrentMode);
 
             msgIN.route("/setSpdProfile", setSpdProfile);
             msgIN.route("/setMaxSpeed", setMaxSpeed);
             msgIN.route("/setMinSpeed", setMinSpeed);
-            msgIN.route("/setFullSpeed", setFullSpeed);
+            msgIN.route("/setFullstepSpeed", setFullstepSpeed);
             msgIN.route("/setAcc", setAcc);
             msgIN.route("/setDec", setDec);
             msgIN.route("/getSpdProfile", getSpdProfile);
@@ -983,7 +983,7 @@ void OSCMsgReceive() {
             msgIN.route("/setSpdProfileRaw", setSpdProfileRaw);
             msgIN.route("/setMaxSpeedRaw", setMaxSpeedRaw);
             msgIN.route("/setMinSpeedRaw", setMinSpeedRaw);
-            msgIN.route("/setFullSpeedRaw", setFullSpeedRaw);
+            msgIN.route("/setFullstepSpeedRaw", setFullstepSpeedRaw);
             msgIN.route("/setAccRaw", setAccRaw);
             msgIN.route("/setDecRaw", setDecRaw);
             msgIN.route("/getSpdProfileRaw", getSpdProfileRaw);

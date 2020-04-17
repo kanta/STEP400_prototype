@@ -40,7 +40,7 @@ void powerSTEP::configStepMode(byte stepMode)
 byte powerSTEP::getStepMode() {
   return (byte)(getParam(STEP_MODE) & 0x07);
 }
-void powerSTEP::voltageMode(byte stepMode) {
+void powerSTEP::setVoltageMode(byte stepMode) {
 	  // Only some of these bits are useful (the lower three). We'll extract the
 	  //  current contents, clear those three bits, then set them accordingly.
 	  byte stepModeConfig = (byte)getParam(STEP_MODE);
@@ -53,7 +53,7 @@ void powerSTEP::voltageMode(byte stepMode) {
 	  // Now push the change to the chip.
 	  setParam(STEP_MODE, (unsigned long)stepModeConfig);
 }
-void powerSTEP::currentMode(byte stepMode) {
+void powerSTEP::setCurrentMode(byte stepMode) {
 	  // Only some of these bits are useful (the lower three). We'll extract the
 	  //  current contents, clear those three bits, then set them accordingly.
 	  byte stepModeConfig = (byte)getParam(STEP_MODE);

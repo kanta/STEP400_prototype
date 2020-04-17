@@ -40,13 +40,13 @@
 //  the FLAG pin will go low. The register must be queried to determine which event
 //  caused the alarm.
 #define ALARM_EN_OVERCURRENT       0x01
-#define ALARM_EN_THERMAL_SHUTDOWN	 0x02
+#define ALARM_EN_THERMAL_SHUTDOWN  0x02
 #define ALARM_EN_THERMAL_WARNING   0x04
 #define ALARM_EN_UNDER_VOLTAGE     0x08
-#define ALARM_EN_STALL_DET_A       0x10
-#define ALARM_EN_STALL_DET_B       0x20
+#define ALARM_EN_ADC_UVLO          0x10
+#define ALARM_EN_STALL_DETECT      0x20
 #define ALARM_EN_SW_TURN_ON        0x40
-#define ALARM_EN_WRONG_NPERF_CMD   0x80
+#define ALARM_EN_CMD_ERROR         0x80
 
 // CONFIG register renames.
 
@@ -126,22 +126,28 @@
                                                     //  cleared by reading STATUS
 #define STATUS_DIR                     0x0010 // Indicates current motor direction.
                                                     //  High is FWD, Low is REV.
-#define STATUS_NOTPERF_CMD             0x0080 // Last command not performed.
-#define STATUS_WRONG_CMD               0x0100 // Last command not valid.
+#define STATUS_CMD_ERROR               0x0080 // Last command not performed.
+#define STATUS_STCK_MOD                0x0100 // Last command not valid.
 #define STATUS_UVLO                    0x0200 // Undervoltage lockout is active
-#define STATUS_TH_WRN                  0x0400 // Thermal warning
-#define STATUS_TH_SD                   0x0800 // Thermal shutdown
-#define STATUS_OCD                     0x1000 // Overcurrent detected
-#define STATUS_STEP_LOSS_A             0x2000 // Stall detected on A bridge
+#define STATUS_UVLO_ADC                0x0400 // ADC Undervoltage lockout is active
+
+#define STATUS_OCD                     0x2000 // Overcurrent detected
 #define STATUS_STEP_LOSS_B             0x4000 // Stall detected on B bridge
-#define STATUS_SCK_MOD                 0x8000 // Step clock mode is active
+#define STATUS_STEP_LOSS_A             0x8000 // Stall detected on A bridge
+
+// Status register thermal status field
+#define STATUS_TH_STATUS               0x1800 // field mask
+#define STATUS_TH_NORMAL              (0x0000)<<11  // Thermal normal
+#define STATUS_TH_WARNING             (0x0001)<<11  // Thermal warning
+#define STATUS_TH_BRIDGE_SHUTDOWN     (0x0002)<<11  // Thermal bridges shutdown
+#define STATUS_TH_DEVICE_SHUTDOWN     (0x0003)<<11  // Thermal device shutdown
 
 // Status register motor status field
 #define STATUS_MOT_STATUS                0x0060      // field mask
-#define STATUS_MOT_STATUS_STOPPED       (0x0000)<<13 // Motor stopped
-#define STATUS_MOT_STATUS_ACCELERATION  (0x0001)<<13 // Motor accelerating
-#define STATUS_MOT_STATUS_DECELERATION  (0x0002)<<13 // Motor decelerating
-#define STATUS_MOT_STATUS_CONST_SPD     (0x0003)<<13 // Motor at constant speed
+#define STATUS_MOT_STATUS_STOPPED       (0x0000)<<5  // Motor stopped
+#define STATUS_MOT_STATUS_ACCELERATION  (0x0001)<<5  // Motor accelerating
+#define STATUS_MOT_STATUS_DECELERATION  (0x0002)<<5  // Motor decelerating
+#define STATUS_MOT_STATUS_CONST_SPD     (0x0003)<<5  // Motor at constant speed
 
 // Register address redefines.
 //  See the Param_Handler() function for more info about these.
@@ -158,10 +164,6 @@
 #define KVAL_RUN             0x0A
 #define KVAL_ACC             0x0B
 #define KVAL_DEC             0x0C
-#define TVAL_HOLD            0x09
-#define TVAL_RUN             0x0A
-#define TVAL_ACC             0x0B
-#define TVAL_DEC             0x0C
 #define INT_SPD              0x0D
 #define ST_SLP               0x0E
 #define FN_SLP_ACC           0x0F
@@ -176,6 +178,14 @@
 #define GATECFG2             0x19
 #define CONFIG               0x1A
 #define STATUS               0x1B
+// Current mode configuration
+#define TVAL_HOLD            0x09
+#define TVAL_RUN             0x0A
+#define TVAL_ACC             0x0B
+#define TVAL_DEC             0x0C
+#define T_DAST               0x0E
+#define TON_MIN              0x0F
+#define TOFF_MIN             0x10
 
 //dSPIN commands
 #define NOP                  0x00

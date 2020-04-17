@@ -38,8 +38,8 @@ class powerSTEP
 	void configSyncPin(byte pinFunc, byte syncSteps);
 	void configStepMode(byte stepMode);
 
-	void voltageMode(byte stepMode);
-	void currentMode(byte stepMode);
+	void setVoltageMode(byte stepMode);
+	void setCurrentMode(byte stepMode);
 
 	void setMaxSpeed(float stepsPerSecond);
 	void setMinSpeed(float stepsPerSecond);
