@@ -61,8 +61,18 @@ boolean
 swState[NUM_POWERSTEP] = { 0,0,0,0 },
 busy[NUM_POWERSTEP] = { 0,0,0,0 },
 dir[NUM_POWERSTEP] = { 0,0,0,0 };
+uint8_t motorStatus[NUM_POWERSTEP] = { 0,0,0,0 };
+
+void setUSBPriority()
+{
+    const auto irqn = USB_IRQn;
+    NVIC_DisableIRQ(irqn);
+    NVIC_SetPriority(irqn, 2);
+    NVIC_EnableIRQ(irqn);
+}
 
 void setup() {
+    //setUSBPriority();
     pinMode(ledPin, OUTPUT);
     pinMode(SD_CS_PIN, OUTPUT);
     pinMode(W5500_RESET_PIN, OUTPUT);
@@ -96,6 +106,7 @@ void setup() {
     pinPeripheral(POWERSTEP_MOSI, PIO_SERCOM_ALT);
     pinPeripheral(POWERSTEP_SCK, PIO_SERCOM_ALT);
     pinPeripheral(POWERSTEP_MISO, PIO_SERCOM_ALT);
+    //powerStepSPI.setClockDivider(SPI_CLOCK_DIV128); // default DIV4
     powerStepSPI.setDataMode(SPI_MODE3);
 
     for (uint8_t i = 0; i < NUM_POWERSTEP; i++)
@@ -118,6 +129,7 @@ void setup() {
         powerSteps[i].setAccKVAL(16);
         powerSteps[i].setDecKVAL(16);
         powerSteps[i].setHoldKVAL(4);
+        powerSteps[i].setParam(STALL_TH, 0x1F);
         powerSteps[i].setParam(ALARM_EN, 0x8F); // disable ADC UVLO (divider not populated),
         // disable stall detection (not configured),
         // disable switch (not using as hard stop)
@@ -157,8 +169,8 @@ void sendTwoData(char* address, int32_t data1, int32_t data2) {
 void setDestIp(OSCMessage& msg, int addrOffset) {
     bool bIpUpdated = (destIp[3] != Udp.remoteIP()[3]);
     destIp = Udp.remoteIP();
-    sendTwoData("/newDestIp", destIp[3], bIpUpdated);
     isDestIpSet = true;
+    sendTwoData("/newDestIp", destIp[3], bIpUpdated);
 }
 
 #pragma region kval_commands_osc_listener
@@ -361,23 +373,21 @@ void getTVAL(uint8_t target) {
 
 void setSpeedProfile(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
-    float max = msg.getFloat(1);
-    float min = msg.getFloat(2);
-    float acc = msg.getFloat(3);
-    float dec = msg.getFloat(4);
+    float acc = msg.getFloat(1);
+    float dec = msg.getFloat(2);
+    float maxSpeed = msg.getFloat(3);
 
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
-        powerSteps[target - TARGET_MOTOR_FIRST].setMaxSpeed(max);
-        powerSteps[target - TARGET_MOTOR_FIRST].setMinSpeed(min);
         powerSteps[target - TARGET_MOTOR_FIRST].setAcc(acc);
         powerSteps[target - TARGET_MOTOR_FIRST].setDec(dec);
+        powerSteps[target - TARGET_MOTOR_FIRST].setMaxSpeed(maxSpeed);
+
     }
     else if (target == TARGET_MOTOR_ALL) {
         for (uint8_t i = 0; i < NUM_POWERSTEP; i++) {
-            powerSteps[i].setMaxSpeed(max);
-            powerSteps[i].setMinSpeed(min);
             powerSteps[i].setAcc(acc);
             powerSteps[i].setDec(dec);
+            powerSteps[i].setMaxSpeed(maxSpeed);
         }
     }
 }
@@ -445,30 +455,27 @@ void setDec(OSCMessage& msg, int addrOffset) {
 
 void setSpeedProfileRaw(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
-    int max = msg.getInt(1);
-    int min = msg.getInt(2);
-    int acc = msg.getInt(3);
-    int dec = msg.getInt(4);
+    uint16_t acc = msg.getInt(1);
+    uint16_t dec = msg.getInt(2);
+    uint16_t maxSpeed = msg.getInt(3);
 
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
-        powerSteps[target - TARGET_MOTOR_FIRST].setMaxSpeedRaw(max);
-        powerSteps[target - TARGET_MOTOR_FIRST].setMinSpeedRaw(min);
         powerSteps[target - TARGET_MOTOR_FIRST].setAccRaw(acc);
         powerSteps[target - TARGET_MOTOR_FIRST].setDecRaw(dec);
+        powerSteps[target - TARGET_MOTOR_FIRST].setMaxSpeedRaw(maxSpeed);
     }
     else if (target == TARGET_MOTOR_ALL) {
         for (uint8_t i = 0; i < NUM_POWERSTEP; i++) {
-            powerSteps[i].setMaxSpeedRaw(max);
-            powerSteps[i].setMinSpeedRaw(min);
             powerSteps[i].setAccRaw(acc);
             powerSteps[i].setDecRaw(dec);
+            powerSteps[i].setMaxSpeedRaw(maxSpeed);
         }
     }
 }
 
 void setMaxSpeedRaw(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
-    int t = msg.getInt(1);
+    uint16_t t = msg.getInt(1);
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
         powerSteps[target - TARGET_MOTOR_FIRST].setMaxSpeedRaw(t);
     }
@@ -480,7 +487,7 @@ void setMaxSpeedRaw(OSCMessage& msg, int addrOffset) {
 }
 void setMinSpeedRaw(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
-    int t = msg.getInt(1);
+    uint16_t t = msg.getInt(1);
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
         powerSteps[target - TARGET_MOTOR_FIRST].setMinSpeedRaw(t);
     }
@@ -492,7 +499,7 @@ void setMinSpeedRaw(OSCMessage& msg, int addrOffset) {
 }
 void setFullstepSpeedRaw(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
-    int t = msg.getInt(1);
+    uint16_t t = msg.getInt(1);
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
         powerSteps[target - TARGET_MOTOR_FIRST].setFullSpeedRaw(t);
     }
@@ -504,7 +511,7 @@ void setFullstepSpeedRaw(OSCMessage& msg, int addrOffset) {
 }
 void setAccRaw(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
-    int t = msg.getInt(1);
+    uint16_t t = msg.getInt(1);
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
         powerSteps[target - TARGET_MOTOR_FIRST].setAccRaw(t);
     }
@@ -516,7 +523,7 @@ void setAccRaw(OSCMessage& msg, int addrOffset) {
 }
 void setDecRaw(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
-    int t = msg.getInt(1);
+    uint16_t t = msg.getInt(1);
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
         powerSteps[target - TARGET_MOTOR_FIRST].setDecRaw(t);
     }
@@ -541,10 +548,9 @@ void getSpeedProfile(OSCMessage& msg, int addrOffset) {
 void getSpeedProfile(uint8_t target) {
     OSCMessage newMes("/speedProfile");
     newMes.add((int32_t)target);
-    newMes.add((float)powerSteps[target - TARGET_MOTOR_FIRST].getMaxSpeed());
-    newMes.add((float)powerSteps[target - TARGET_MOTOR_FIRST].getMinSpeed());
     newMes.add((float)powerSteps[target - TARGET_MOTOR_FIRST].getAcc());
     newMes.add((float)powerSteps[target - TARGET_MOTOR_FIRST].getDec());
+    newMes.add((float)powerSteps[target - TARGET_MOTOR_FIRST].getMaxSpeed());
     Udp.beginPacket(destIp, outPort);
     newMes.send(Udp);
     Udp.endPacket();
@@ -565,10 +571,9 @@ void getSpeedProfileRaw(OSCMessage& msg, int addrOffset) {
 void getSpeedProfileRaw(uint8_t target) {
     OSCMessage newMes("/speedProfileRaw");
     newMes.add((int32_t)target);
-    newMes.add((int32_t)powerSteps[target - TARGET_MOTOR_FIRST].getMaxSpeedRaw());
-    newMes.add((int32_t)powerSteps[target - TARGET_MOTOR_FIRST].getMinSpeedRaw());
     newMes.add((int32_t)powerSteps[target - TARGET_MOTOR_FIRST].getAccRaw());
     newMes.add((int32_t)powerSteps[target - TARGET_MOTOR_FIRST].getDecRaw());
+    newMes.add((int32_t)powerSteps[target - TARGET_MOTOR_FIRST].getMaxSpeedRaw());
     Udp.beginPacket(destIp, outPort);
     newMes.send(Udp);
     Udp.endPacket();
@@ -1038,31 +1043,56 @@ void OSCMsgReceive() {
         }
     }
 }
+void sendStatusDebug(char* address, int32_t data1, int32_t data2, int32_t data3){
+    if (!isDestIpSet) { return; }
+    OSCMessage newMes(address);
+    newMes.add(data1).add(data2).add(data3);
+    Udp.beginPacket(destIp, outPort);
+    newMes.send(Udp);
+    Udp.endPacket();
+    newMes.empty();
+}
 
 void checkStatus() {
     for (uint8_t i = 0; i < NUM_POWERSTEP; i++)
     {
         const auto status = powerSteps[i].getStatus();
-        boolean t = (status & STATUS_SW_F) > 0;
+        uint32_t t = (status & STATUS_SW_F) > 0;
         if ( swState[i] != t )
         {
             swState[i] = t;
-            sendTwoData("/sw", i + 1, t);
+            //sendTwoData("/sw", i + 1, t);
+            sendStatusDebug("/sw", i + 1, t, status);
         }
 
         t = (status & STATUS_BUSY) > 0;
         if (busy[i] != t )
         {
             busy[i] = t;
-            sendTwoData("/busy", i + 1, t);
+            //sendTwoData("/busy", i + 1, t);
+            sendStatusDebug("/busy", i + 1, t, status);
         }
 
         t = (status & STATUS_DIR) > 0;
         if ( dir[i] != t )
         {
             dir[i] = t;
-            sendTwoData("/dir", i + 1, t);
+            //sendTwoData("/dir", i + 1, t);
+            sendStatusDebug("/dir", i + 1, t, status);
         }
+
+        t = (status & STATUS_MOT_STATUS) >> 5;
+        if (motorStatus[i] != t) {
+            motorStatus[i] = t;
+            sendStatusDebug("/motorStatus", i + 1, t, status);
+        }
+
+        t = (status & (STATUS_STEP_LOSS_A | STATUS_STEP_LOSS_B)) >> 14;
+        if (t != 3)
+        {
+            sendStatusDebug("/stall", i + 1, t, status);
+        }
+
     }
 }
 
