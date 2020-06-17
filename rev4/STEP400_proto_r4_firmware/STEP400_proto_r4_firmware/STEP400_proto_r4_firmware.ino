@@ -51,10 +51,16 @@ IPAddress destIp(10, 0, 0, 10);
 unsigned int outPort = 50100;
 unsigned int inPort = 50000;
 EthernetUDP Udp;
+boolean isDestIpSet = false;
 
 #define W5500_RESET_PIN A3
 
 #define POLL_DURATION   10
+
+boolean 
+swState[NUM_POWERSTEP] = { 0,0,0,0 },
+busy[NUM_POWERSTEP] = { 0,0,0,0 },
+dir[NUM_POWERSTEP] = { 0,0,0,0 };
 
 void setup() {
     pinMode(ledPin, OUTPUT);
@@ -107,8 +113,7 @@ void setup() {
         powerSteps[i].setPWMFreq(PWM_DIV_1, PWM_MUL_0_75);
         powerSteps[i].setVoltageComp(VS_COMP_DISABLE);
         powerSteps[i].setSwitchMode(SW_USER);
-        powerSteps[i].setOscMode(EXT_24MHZ_OSCOUT_INVERT);
-        //powerSteps[i].setOscMode(INT_16MHZ);
+        powerSteps[i].setOscMode(EXT_16MHZ_OSCOUT_INVERT);
         powerSteps[i].setRunKVAL(16);
         powerSteps[i].setAccKVAL(16);
         powerSteps[i].setDecKVAL(16);
@@ -130,6 +135,7 @@ void setup() {
 }
 
 void sendOneDatum(char* address, int32_t data) {
+    if (!isDestIpSet) { return; }
     OSCMessage newMes(address);
     newMes.add((int32_t)data);
     Udp.beginPacket(destIp, outPort);
@@ -139,6 +145,7 @@ void sendOneDatum(char* address, int32_t data) {
 }
 
 void sendTwoData(char* address, int32_t data1, int32_t data2) {
+    if (!isDestIpSet) { return; }
     OSCMessage newMes(address);
     newMes.add(data1).add(data2);
     Udp.beginPacket(destIp, outPort);
@@ -151,6 +158,7 @@ void setDestIp(OSCMessage& msg, int addrOffset) {
     bool bIpUpdated = (destIp[3] != Udp.remoteIP()[3]);
     destIp = Udp.remoteIP();
     sendTwoData("/newDestIp", destIp[3], bIpUpdated);
+    isDestIpSet = true;
 }
 
 #pragma region kval_commands_osc_listener
@@ -351,7 +359,7 @@ void getTVAL(uint8_t target) {
 
 #pragma region speed_commands_osc_listener
 
-void setSpdProfile(OSCMessage& msg, int addrOffset) {
+void setSpeedProfile(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
     float max = msg.getFloat(1);
     float min = msg.getFloat(2);
@@ -435,7 +443,7 @@ void setDec(OSCMessage& msg, int addrOffset) {
     }
 }
 
-void setSpdProfileRaw(OSCMessage& msg, int addrOffset) {
+void setSpeedProfileRaw(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
     int max = msg.getInt(1);
     int min = msg.getInt(2);
@@ -519,19 +527,19 @@ void setDecRaw(OSCMessage& msg, int addrOffset) {
     }
 }
 
-void getSpdProfile(OSCMessage& msg, int addrOffset) {
+void getSpeedProfile(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
-        getSpdProfile(target);
+        getSpeedProfile(target);
     }
     else if (target == TARGET_MOTOR_ALL) {
         for (uint8_t i = 0; i < NUM_POWERSTEP; i++) {
-            getSpdProfile(i);
+            getSpeedProfile(i);
         }
     }
 }
-void getSpdProfile(uint8_t target) {
-    OSCMessage newMes("/spd");
+void getSpeedProfile(uint8_t target) {
+    OSCMessage newMes("/speedProfile");
     newMes.add((int32_t)target);
     newMes.add((float)powerSteps[target - TARGET_MOTOR_FIRST].getMaxSpeed());
     newMes.add((float)powerSteps[target - TARGET_MOTOR_FIRST].getMinSpeed());
@@ -543,19 +551,19 @@ void getSpdProfile(uint8_t target) {
     newMes.empty();
 }
 
-void getSpdProfileRaw(OSCMessage& msg, int addrOffset) {
+void getSpeedProfileRaw(OSCMessage& msg, int addrOffset) {
     uint8_t target = msg.getInt(0);
     if (TARGET_MOTOR_FIRST <= target && target <= TARGET_MOTOR_LAST) {
-        getSpdProfileRaw(target);
+        getSpeedProfileRaw(target);
     }
     else if (target == TARGET_MOTOR_ALL) {
         for (uint8_t i = 0; i < NUM_POWERSTEP; i++) {
-            getSpdProfileRaw(i);
+            getSpeedProfileRaw(i);
         }
     }
 }
-void getSpdProfileRaw(uint8_t target) {
-    OSCMessage newMes("/spdRaw");
+void getSpeedProfileRaw(uint8_t target) {
+    OSCMessage newMes("/speedProfileRaw");
     newMes.add((int32_t)target);
     newMes.add((int32_t)powerSteps[target - TARGET_MOTOR_FIRST].getMaxSpeedRaw());
     newMes.add((int32_t)powerSteps[target - TARGET_MOTOR_FIRST].getMinSpeedRaw());
@@ -961,7 +969,7 @@ void OSCMsgReceive() {
             //msgIN.route("/setSwFlag", setSwFlag);
             //msgIN.route("/setBusyFlag", setBusyFlag);
 
-            //msgIN.route("/getStatus", getStatus);
+            msgIN.route("/getStatus", getStatus);
            // msgIN.route("/getSw", getSw);
             //msgIN.route("/getBusy", getBusy);
             //msgIN.route("/getDir", getDir);
@@ -972,21 +980,21 @@ void OSCMsgReceive() {
             msgIN.route("/setVoltageMode", setVoltageMode);
             msgIN.route("/setCurrentMode", setCurrentMode);
 
-            msgIN.route("/setSpdProfile", setSpdProfile);
+            msgIN.route("/setSpeedProfile", setSpeedProfile);
             msgIN.route("/setMaxSpeed", setMaxSpeed);
             msgIN.route("/setMinSpeed", setMinSpeed);
             msgIN.route("/setFullstepSpeed", setFullstepSpeed);
             msgIN.route("/setAcc", setAcc);
             msgIN.route("/setDec", setDec);
-            msgIN.route("/getSpdProfile", getSpdProfile);
+            msgIN.route("/getSpeedProfile", getSpeedProfile);
 
-            msgIN.route("/setSpdProfileRaw", setSpdProfileRaw);
+            msgIN.route("/setSpeedProfileRaw", setSpeedProfileRaw);
             msgIN.route("/setMaxSpeedRaw", setMaxSpeedRaw);
             msgIN.route("/setMinSpeedRaw", setMinSpeedRaw);
             msgIN.route("/setFullstepSpeedRaw", setFullstepSpeedRaw);
             msgIN.route("/setAccRaw", setAccRaw);
             msgIN.route("/setDecRaw", setDecRaw);
-            msgIN.route("/getSpdProfileRaw", getSpdProfileRaw);
+            msgIN.route("/getSpeedProfileRaw", getSpeedProfileRaw);
 
             msgIN.route("/setKVAL", setKVAL);
             msgIN.route("/setAccKVAL", setAccKVAL);
@@ -1030,6 +1038,34 @@ void OSCMsgReceive() {
         }
     }
 }
+
+void checkStatus() {
+    for (uint8_t i = 0; i < NUM_POWERSTEP; i++)
+    {
+        const auto status = powerSteps[i].getStatus();
+        boolean t = (status & STATUS_SW_F) > 0;
+        if ( swState[i] != t )
+        {
+            swState[i] = t;
+            sendTwoData("/sw", i + 1, t);
+        }
+
+        t = (status & STATUS_BUSY) > 0;
+        if (busy[i] != t )
+        {
+            busy[i] = t;
+            sendTwoData("/busy", i + 1, t);
+        }
+
+        t = (status & STATUS_DIR) > 0;
+        if ( dir[i] != t )
+        {
+            dir[i] = t;
+            sendTwoData("/dir", i + 1, t);
+        }
+    }
+}
+
 void loop() {
     uint32_t currentTimeMillis = millis(),
                currentTimeMicros = micros();
@@ -1037,7 +1073,7 @@ void loop() {
 
     if ( (uint32_t)(currentTimeMillis - lastPollTime) >= POLL_DURATION )
     {
-        //
+        checkStatus();
         lastPollTime = currentTimeMillis;
     }
     OSCMsgReceive();
