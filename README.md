@@ -1,4 +1,6 @@
 # STEP400_prototype
+![STEP400_proto_r4](http://ponoor.com/data/img/STEP400/STEP400_proto_r4.JPG)
+
 4 axis stepper motor driver board which can control over Ethernet. The current firmware is based on [Open Sound Control](http://opensoundcontrol.org/) protocol.
 [Arduino Zero](https://www.arduino.cc/en/Guide/ArduinoZero) and official [Ethernet library](https://www.arduino.cc/en/reference/ethernet) compatible.
 
