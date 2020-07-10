@@ -24,7 +24,7 @@ const uint8_t limitSwPin[4] = { 1u,5u,8u,A1 };
 #define SD_DETECT_PIN   A4
 #define SETUP_SW_PIN    31u
 
-#define NUM_POWERSTEP   4
+#define NUM_POWERSTEP   (4)
 #define POWERSTEP_MISO	6u	// D6 /SERCOM3/PAD[2] miso
 #define POWERSTEP_MOSI	11u	// D11/SERCOM3/PAD[0] mosi
 #define POWERSTEP_SCK	12u	// D12/SERCOM3/PAD[3] sck
@@ -81,7 +81,7 @@ void setup() {
 
     for (auto i=0; i < NUM_POWERSTEP; i++)
     {
-        //pinMode(limitSwPin[i], INPUT_PULLUP);
+        pinMode(limitSwPin[i], INPUT_PULLUP);
     }
     for (auto i=0; i<8; ++i)
     {
@@ -130,9 +130,7 @@ void setup() {
         powerSteps[i].setDecKVAL(16);
         powerSteps[i].setHoldKVAL(4);
         powerSteps[i].setParam(STALL_TH, 0x1F);
-        powerSteps[i].setParam(ALARM_EN, 0x8F); // disable ADC UVLO (divider not populated),
-        // disable stall detection (not configured),
-        // disable switch (not using as hard stop)
+        powerSteps[i].setParam(ALARM_EN, 0xFF);
         delay(1);
         powerSteps[i].getStatus(); // clears error flags
     }
@@ -170,7 +168,7 @@ void setDestIp(OSCMessage& msg, int addrOffset) {
     bool bIpUpdated = (destIp[3] != Udp.remoteIP()[3]);
     destIp = Udp.remoteIP();
     isDestIpSet = true;
-    sendTwoData("/newDestIp", destIp[3], bIpUpdated);
+    sendTwoData("/destIp", destIp[3], bIpUpdated);
 }
 
 #pragma region kval_commands_osc_listener
