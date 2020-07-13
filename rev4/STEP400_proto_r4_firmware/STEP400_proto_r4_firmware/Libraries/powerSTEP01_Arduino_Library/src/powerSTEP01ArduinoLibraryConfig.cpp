@@ -40,6 +40,11 @@ void powerSTEP::configStepMode(byte stepMode)
 byte powerSTEP::getStepMode() {
   return (byte)(getParam(STEP_MODE) & 0x07);
 }
+// Get current speed
+float powerSTEP::getSpeed()
+{
+	return spdParse(getParam(SPEED));
+}
 void powerSTEP::setVoltageMode(byte stepMode) {
 	  // Only some of these bits are useful (the lower three). We'll extract the
 	  //  current contents, clear those three bits, then set them accordingly.

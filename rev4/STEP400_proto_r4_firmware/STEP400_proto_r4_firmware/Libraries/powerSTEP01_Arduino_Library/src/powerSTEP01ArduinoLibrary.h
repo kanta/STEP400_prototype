@@ -71,6 +71,7 @@ class powerSTEP
 	boolean getLoSpdOpt();
 	// getSyncPin
 	byte getStepMode();
+	float getSpeed();
 	float getMaxSpeed();
 	float getMinSpeed();
 	float getFullSpeed();

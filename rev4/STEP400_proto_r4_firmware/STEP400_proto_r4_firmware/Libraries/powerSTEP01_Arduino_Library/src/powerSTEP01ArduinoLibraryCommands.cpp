@@ -146,6 +146,7 @@ void powerSTEP::goUntil(byte action, byte dir, float stepsPerSec)
 
 void powerSTEP::goUntilRaw(byte action, byte dir, unsigned long integerSpeed)
 {
+	action = (action > 0) << 3;
 	SPIXfer(GO_UNTIL | action | dir);
 
 	if (integerSpeed > 0x3FFFFF) integerSpeed = 0x3FFFFF;
@@ -166,6 +167,7 @@ void powerSTEP::goUntilRaw(byte action, byte dir, unsigned long integerSpeed)
 //  for act.
 void powerSTEP::releaseSw(byte action, byte dir)
 {
+  action = (action > 0) << 3;
   SPIXfer(RELEASE_SW | action | dir);
 }
 
