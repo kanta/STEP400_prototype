@@ -527,7 +527,6 @@ void getHomeSw(uint8_t motorID) {
     turnOnTXL();
 }
 void getLimitSw(OSCMessage& msg, int addrOffset) {
-    if (!isDestIpSet) { return; }
     uint8_t motorID = msg.getInt(0);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
         getLimitSw(motorID);
@@ -695,7 +694,7 @@ void setLimitSwMode(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     uint16_t switchMode = (msg.getInt(1) > 0) ? SW_USER : SW_HARD_STOP;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        limitSwMode[motorID + MOTOR_ID_FIRST] = switchMode > 0;
+        limitSwMode[motorID - MOTOR_ID_FIRST] = switchMode > 0;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -1845,6 +1844,10 @@ void OSCMsgReceive() {
             msgIN.route("/enableOverCurrentReport", enableOverCurrentReport);
             msgIN.route("/enableStallReport", enableStallReport);
             //msgIN.route("/getDir", getDir);
+            msgIN.route("/getLimitSw",getLimitSw);
+            msgIN.route("/getLimitSwMode", getLimitSwMode);
+            msgIN.route("/setLimitSwMode", setLimitSwMode);
+            msgIN.route("/enableLimitSwReport", enableLimitSwReport);
 
             msgIN.route("/setMicrostepMode", setMicrostepMode);
             msgIN.route("/getMicrostepMode", getMicrostepMode);
@@ -1892,21 +1895,21 @@ void checkStatus() {
         if (HiZ[i] != t)
         {
             HiZ[i] = t;
-            if (reportHiZ[i]) sendTwoInt("/HiZ", i + 1, t);
+            if (reportHiZ[i]) sendTwoInt("/HiZ", i + MOTOR_ID_FIRST, t);
         }
         // BUSY, low for busy
         t = (status & STATUS_BUSY) == 0;
         if (busy[i] != t)
         {
         	busy[i] = t;
-        	if ( reportBUSY[i] ) sendTwoInt("/busy", i + 1, t);
+        	if ( reportBUSY[i] ) sendTwoInt("/busy", i + MOTOR_ID_FIRST, t);
         }
         // DIR
         t = (status & STATUS_DIR) > 0;
         if (dir[i] != t)
         {
             dir[i] = t;
-            if (reportDir[i]) sendTwoInt("/dir", i + 1, t);
+            if (reportDir[i]) sendTwoInt("/dir", i + MOTOR_ID_FIRST, t);
         }
         // SW_F, low for open, high for close
         t = (status & STATUS_SW_F) > 0;
@@ -1917,35 +1920,53 @@ void checkStatus() {
         }
         // SW_EVN, active high, latched
         t = (status & STATUS_SW_EVN) > 0;
-        if (t && reportSwEvn[i]) sendOneInt("/swEvent", i + 1);
+        if (t && reportSwEvn[i]) sendOneInt("/swEvent", i + MOTOR_ID_FIRST);
         // MOT_STATUS
         t = (status & STATUS_MOT_STATUS) >> 5;
         if (motorStatus[i] != t) {
             motorStatus[i] = t;
-            if (reportMotorStatus[i]) sendTwoInt("/motorStatus", i + 1, motorStatus[i]);
+            if (reportMotorStatus[i]) sendTwoInt("/motorStatus", i + MOTOR_ID_FIRST, motorStatus[i]);
         }
         // CMD_ERROR, active high, latched
         t = (status & STATUS_CMD_ERROR) > 0;
-        if (t && reportCommandError[i]) sendOneInt("commandError", i + 1);
+        if (t && reportCommandError[i]) sendOneInt("commandError", i + MOTOR_ID_FIRST);
         // UVLO, active low
         t = (status & STATUS_UVLO) == 0;
         if (t != uvloStatus[i])
         {
             uvloStatus[i] = !uvloStatus[i];
-            if (reportUVLO[i]) sendTwoInt("/uvlo", i + 1, uvloStatus[i]);
+            if (reportUVLO[i]) sendTwoInt("/uvlo", i + MOTOR_ID_FIRST, uvloStatus[i]);
         }
         // TH_STATUS
         t = (status & STATUS_TH_STATUS) >> 11;
         if (thermalStatus[i] != t) {
             thermalStatus[i] = t;
-            if (reportThermalStatus[i]) sendTwoInt("/thermalStatus", i + 1, thermalStatus[i]);
+            if (reportThermalStatus[i]) sendTwoInt("/thermalStatus", i + MOTOR_ID_FIRST, thermalStatus[i]);
         }
         // OCD, active low, latched
         t = (status & STATUS_OCD) == 0;
         if (t && reportOCD[i]) sendOneInt("/overCurrent", i + 1);
         // STALL A&B, active low, latched
         t = (status & (STATUS_STALL_A | STATUS_STALL_B)) >> 14;
-        if ((t != 3) && reportStall[i]) sendOneInt("/stall", i + 1);
+        if ((t != 3) && reportStall[i]) sendOneInt("/stall", i + MOTOR_ID_FIRST);
+    }
+}
+
+void checkLimitSw() {
+    for (uint8_t i = 0; i < NUM_OF_MOTOR; i++)
+    {
+        if (limitSwState[i] == digitalRead(limitSwPin[i]))
+        {
+            limitSwState[i] = !limitSwState[i];
+            if ( limitSwState[i] && (limitSwMode[i] == SW_HARD_STOP) )
+            {
+                stepper[i].hardStop();
+            }
+            if (reportLimitSwStatus[i])
+            {
+                sendTwoInt("/limitSw", i + MOTOR_ID_FIRST, limitSwState[i]);
+            }
+        }
     }
 }
 
@@ -2006,6 +2027,7 @@ void loop() {
     if ((uint32_t)(currentTimeMillis - lastPollTime) >= STATUS_POLL_PERIOD)
     {
         checkStatus();
+        checkLimitSw();
         checkLED(currentTimeMillis);
         uint8_t t = getMyId();
         if (myId != t) {
