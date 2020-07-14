@@ -46,6 +46,10 @@ powerSTEP stepper[] = {
 #define MOTOR_ID_LAST   4
 
 #define TVAL_LIMIT_VAL  128 // approx. 5A
+// KVAL and TVAL storage.
+uint8_t kvalHold[NUM_OF_MOTOR], kvalRun[NUM_OF_MOTOR], kvalAcc[NUM_OF_MOTOR], kvalDec[NUM_OF_MOTOR];
+uint8_t tvalHold[NUM_OF_MOTOR], tvalRun[NUM_OF_MOTOR], tvalAcc[NUM_OF_MOTOR], tvalDec[NUM_OF_MOTOR];
+bool isCurrentMode[NUM_OF_MOTOR];;
 
 byte mac[] = { 0x60, 0x95, 0xCE, 0x10, 0x02, 0x00 },
     myId = 0;
@@ -171,6 +175,8 @@ void setup() {
         kD[i] = 0.0f;
         isServoMode[i] = false;
 
+        isCurrentMode[i] = false;
+
         stepper[i].SPIPortConnect(&powerStepSPI);
         resetMotorDriver(i + MOTOR_ID_FIRST);
         digitalWrite(ledPin, HIGH);
@@ -213,9 +219,8 @@ void resetEthernet() {
 void resetMotorDriver(uint8_t deviceID) {
     if (MOTOR_ID_FIRST <= deviceID && deviceID <= MOTOR_ID_LAST) {
         deviceID -= MOTOR_ID_FIRST;
-        
+        stepper[deviceID].hardHiZ();
         stepper[deviceID].configStepMode(STEP_FS_128);
-
         stepper[deviceID].setMaxSpeed(650.);
         stepper[deviceID].setLoSpdOpt(true);
         stepper[deviceID].setMinSpeed(20.);
@@ -232,9 +237,14 @@ void resetMotorDriver(uint8_t deviceID) {
         stepper[deviceID].setRunKVAL(16);
         stepper[deviceID].setAccKVAL(16);
         stepper[deviceID].setDecKVAL(16);
-        stepper[deviceID].setHoldKVAL(4);
+        stepper[deviceID].setHoldKVAL(0);
         stepper[deviceID].setParam(STALL_TH, 0x1F);
         stepper[deviceID].setParam(ALARM_EN, 0xEF); // Enable alarms except ADC UVLO
+        kvalHold[deviceID] = tvalHold[deviceID] = stepper[deviceID].getHoldKVAL();
+        kvalRun[deviceID] = tvalRun[deviceID] = stepper[deviceID].getRunKVAL();
+        kvalAcc[deviceID] = tvalAcc[deviceID] = stepper[deviceID].getAccKVAL();
+        kvalDec[deviceID] = tvalDec[deviceID] = stepper[deviceID].getDecKVAL();
+
         delay(1);
         stepper[deviceID].getStatus(); // clears error flags
     }
@@ -496,7 +506,6 @@ void enableStallReport(OSCMessage& msg, int addrOffset) {
 }
 
 void getHomeSw(OSCMessage& msg, int addrOffset) {
-    if (!isDestIpSet) { return; }
     uint8_t motorID = msg.getInt(0);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
         getHomeSw(motorID);
@@ -799,97 +808,136 @@ void getLowSpeedOptimizeThreshold(uint8_t motorID) {
 #pragma endregion config_commands_osc_listener
 
 #pragma region kval_commands_osc_listener
-void setKVAL(OSCMessage& msg, int addrOffset) {
+void setKval(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     int hold = constrain(msg.getInt(1), 0, 255);
     int run = constrain(msg.getInt(2), 0, 255);
     int acc = constrain(msg.getInt(3), 0, 255);
     int dec = constrain(msg.getInt(4), 0, 255);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setHoldKVAL(hold);
-        stepper[motorID - MOTOR_ID_FIRST].setRunKVAL(run);
-        stepper[motorID - MOTOR_ID_FIRST].setAccKVAL(acc);
-        stepper[motorID - MOTOR_ID_FIRST].setDecKVAL(dec);
+        motorID -= MOTOR_ID_FIRST;
+        if (!isCurrentMode[motorID]) {
+            stepper[motorID].setHoldKVAL(hold);
+            stepper[motorID].setRunKVAL(run);
+            stepper[motorID].setAccKVAL(acc);
+            stepper[motorID].setDecKVAL(dec);
+        }
+        kvalHold[motorID] = hold;
+        kvalRun[motorID] = run;
+        kvalAcc[motorID] = acc;
+        kvalDec[motorID] = dec;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setHoldKVAL(hold);
-            stepper[i].setRunKVAL(run);
-            stepper[i].setAccKVAL(acc);
-            stepper[i].setDecKVAL(dec);
+            if (!isCurrentMode[i]) {
+                stepper[i].setHoldKVAL(hold);
+                stepper[i].setRunKVAL(run);
+                stepper[i].setAccKVAL(acc);
+                stepper[i].setDecKVAL(dec);
+            }
+            kvalHold[i] = hold;
+            kvalRun[i] = run;
+            kvalAcc[i] = acc;
+            kvalDec[i] = dec;
         }
     }
 }
 
-void setHoldKVAL(OSCMessage& msg, int addrOffset) {
+void setHoldKval(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     uint8_t kvalInput = constrain(msg.getInt(1), 0, 255);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setHoldKVAL(kvalInput);
+        if (!isCurrentMode[motorID]) {
+            stepper[motorID - MOTOR_ID_FIRST].setHoldKVAL(kvalInput);
+        }
+        kvalHold[motorID - MOTOR_ID_FIRST] = kvalInput;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setHoldKVAL(kvalInput);
+            if (!isCurrentMode[i]) {
+                stepper[i].setHoldKVAL(kvalInput);
+            }
+            kvalHold[i] = kvalInput;
         }
     }
 }
-void setRunKVAL(OSCMessage& msg, int addrOffset) {
+void setRunKval(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     uint8_t kvalInput = constrain(msg.getInt(1), 0, 255);
 
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setRunKVAL(kvalInput);
+        if (!isCurrentMode[motorID]) {
+            stepper[motorID - MOTOR_ID_FIRST].setRunKVAL(kvalInput);
+        }
+        kvalRun[motorID - MOTOR_ID_FIRST] = kvalInput;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setRunKVAL(kvalInput);
+            if (!isCurrentMode[i]) {
+                stepper[i].setRunKVAL(kvalInput);
+            }
+            kvalRun[i] = kvalInput;
         }
     }
 }
-void setAccKVAL(OSCMessage& msg, int addrOffset) {
+void setAccKval(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     uint8_t kvalInput = constrain(msg.getInt(1), 0, 255);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setAccKVAL(kvalInput);
+        if (!isCurrentMode[motorID]) {
+            stepper[motorID - MOTOR_ID_FIRST].setAccKVAL(kvalInput);
+        }
+        kvalAcc[motorID - MOTOR_ID_FIRST] = kvalInput;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setAccKVAL(kvalInput);
+            if (!isCurrentMode[i]) {
+                stepper[i].setAccKVAL(kvalInput);
+            }
+            kvalAcc[i] = kvalInput;
         }
     }
 }
-void setDecKVAL(OSCMessage& msg, int addrOffset) {
+void setDecKval(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     uint8_t kvalInput = constrain(msg.getInt(1), 0, 255);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setDecKVAL(kvalInput);
+        if (!isCurrentMode[motorID]) {
+            stepper[motorID - MOTOR_ID_FIRST].setDecKVAL(kvalInput);
+        }
+        kvalDec[motorID - MOTOR_ID_FIRST] = kvalInput;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setDecKVAL(kvalInput);
+            if (!isCurrentMode[i]) {
+                stepper[i].setDecKVAL(kvalInput);
+            }
+            kvalDec[i] = kvalInput;
         }
     }
 }
 
-void getKVAL(OSCMessage& msg, int addrOffset) {
+void getKval(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        getKVAL(motorID);
+        getKval(motorID);
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            getKVAL(i + 1);
+            getKval(i + MOTOR_ID_FIRST);
         }
     }
 }
-void getKVAL(uint8_t motorID) {
+void getKval(uint8_t motorID) {
     if (!isDestIpSet) { return; }
     OSCMessage newMes("/kval");
     newMes.add((int32_t)motorID);
-    newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getHoldKVAL());
-    newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getRunKVAL());
-    newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getAccKVAL());
-    newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getDecKVAL());
+    motorID -= MOTOR_ID_FIRST;
+    //newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getHoldKval());
+    //newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getRunKval());
+    //newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getAccKval());
+    //newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getDecKval());
+    newMes.add(kvalHold[motorID]).add(kvalRun[motorID]).add(kvalAcc[motorID]).add(kvalDec[motorID]);
     Udp.beginPacket(destIp, outPort);
     newMes.send(Udp);
     Udp.endPacket();
@@ -899,97 +947,141 @@ void getKVAL(uint8_t motorID) {
 #pragma endregion kval_commands_osc_listener
 
 #pragma region tval_commands_osc_listener
-void setTVAL(OSCMessage& msg, int addrOffset) {
+void setTval(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     int hold = constrain(msg.getInt(1), 0, TVAL_LIMIT_VAL);
     int run = constrain(msg.getInt(2), 0, TVAL_LIMIT_VAL);
     int acc = constrain(msg.getInt(3), 0, TVAL_LIMIT_VAL);
     int dec = constrain(msg.getInt(4), 0, TVAL_LIMIT_VAL);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setHoldTVAL(hold);
-        stepper[motorID - MOTOR_ID_FIRST].setRunTVAL(run);
-        stepper[motorID - MOTOR_ID_FIRST].setAccTVAL(acc);
-        stepper[motorID - MOTOR_ID_FIRST].setDecTVAL(dec);
+        motorID -= MOTOR_ID_FIRST;
+        if (isCurrentMode[motorID]) {
+            stepper[motorID].setHoldTVAL(hold);
+            stepper[motorID].setRunTVAL(run);
+            stepper[motorID].setAccTVAL(acc);
+            stepper[motorID].setDecTVAL(dec);
+        }
+        tvalHold[motorID] = hold;
+        tvalRun[motorID] = run;
+        tvalAcc[motorID] = acc;
+        tvalDec[motorID] = dec;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setHoldTVAL(hold);
-            stepper[i].setRunTVAL(run);
-            stepper[i].setAccTVAL(acc);
-            stepper[i].setDecTVAL(dec);
+            if (isCurrentMode[i]) {
+                stepper[i].setHoldTVAL(hold);
+                stepper[i].setRunTVAL(run);
+                stepper[i].setAccTVAL(acc);
+                stepper[i].setDecTVAL(dec);
+            }
+            tvalHold[i] = hold;
+            tvalRun[i] = run;
+            tvalAcc[i] = acc;
+            tvalDec[i] = dec;
         }
     }
 }
 
-void setHoldTVAL(OSCMessage& msg, int addrOffset) {
+void setHoldTval(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     uint8_t tvalInput = constrain(msg.getInt(1), 0, TVAL_LIMIT_VAL);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setHoldTVAL(tvalInput);
+        motorID -= MOTOR_ID_FIRST;
+        if (isCurrentMode[motorID]) {
+            stepper[motorID].setHoldTVAL(tvalInput);
+        }
+        tvalHold[motorID] = tvalInput;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setHoldTVAL(tvalInput);
+            if (isCurrentMode[i]) {
+                stepper[i].setHoldTVAL(tvalInput);
+            }
+            tvalHold[i] = tvalInput;
         }
     }
 }
-void setRunTVAL(OSCMessage& msg, int addrOffset) {
+void setRunTval(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     uint8_t tvalInput = constrain(msg.getInt(1), 0, TVAL_LIMIT_VAL);
 
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setRunTVAL(tvalInput);
+        motorID -= MOTOR_ID_FIRST;
+        if (isCurrentMode[motorID]) {
+            stepper[motorID].setRunTVAL(tvalInput);
+        }
+        tvalRun[motorID] = tvalInput;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setRunTVAL(tvalInput);
+            if (isCurrentMode[i]) {
+                stepper[i].setRunTVAL(tvalInput);
+            }
+            tvalRun[i] = tvalInput;
         }
+        
     }
 }
-void setAccTVAL(OSCMessage& msg, int addrOffset) {
+void setAccTval(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     uint8_t tvalInput = constrain(msg.getInt(1), 0, TVAL_LIMIT_VAL);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setAccTVAL(tvalInput);
+        motorID -= MOTOR_ID_FIRST;
+        if (isCurrentMode[motorID]) {
+            stepper[motorID].setAccTVAL(tvalInput);
+        }
+        tvalAcc[motorID] = tvalInput;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setAccTVAL(tvalInput);
-        }
+            if (isCurrentMode[i]) {
+                stepper[i].setAccTVAL(tvalInput);
+            }
+            tvalAcc[i] = tvalInput;
+        }       
     }
 }
-void setDecTVAL(OSCMessage& msg, int addrOffset) {
+void setDecTval(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     uint8_t tvalInput = constrain(msg.getInt(1), 0, TVAL_LIMIT_VAL);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setDecTVAL(tvalInput);
+        motorID -= MOTOR_ID_FIRST;
+        if (isCurrentMode[motorID]) {
+            stepper[motorID].setDecTVAL(tvalInput);
+        }
+        tvalDec[motorID] = tvalInput;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setDecTVAL(tvalInput);
+            if (isCurrentMode[i]) {
+                stepper[i].setDecTVAL(tvalInput);
+            }
+            tvalDec[i] = tvalInput;
         }
     }
 }
 
-void getTVAL(OSCMessage& msg, int addrOffset) {
+void getTval(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        getTVAL(motorID);
+        getTval(motorID);
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            getTVAL(i + 1);
+            getTval(i + MOTOR_ID_FIRST);
         }
     }
 }
-void getTVAL(uint8_t motorID) {
+void getTval(uint8_t motorID) {
     if (!isDestIpSet) { return; }
     OSCMessage newMes("/tval");
     newMes.add((int32_t)motorID);
-    newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getHoldTVAL());
-    newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getRunTVAL());
-    newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getAccTVAL());
-    newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getDecTVAL());
+    motorID -= MOTOR_ID_FIRST;
+    //newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getHoldTVAL());
+    //newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getRunTVAL());
+    //newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getAccTVAL());
+    //newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getDecTVAL());
+    newMes.add(tvalHold[motorID]).add(tvalRun[motorID]).add(tvalAcc[motorID]).add(tvalDec[motorID]);
     Udp.beginPacket(destIp, outPort);
     newMes.send(Udp);
     Udp.endPacket();
@@ -999,28 +1091,29 @@ void getTVAL(uint8_t motorID) {
 float TvalToCurrent(uint8_t tval) {
     return (tval + 1) * 7.8f;
 }
-void getTVAL_mA(uint8_t motorID) {
+void getTval_mA(uint8_t motorID) {
     if (!isDestIpSet) { return; }
     OSCMessage newMes("/tval_mA");
     newMes.add((int32_t)motorID);
-    newMes.add(TvalToCurrent( stepper[motorID - MOTOR_ID_FIRST].getHoldTVAL()));
-    newMes.add(TvalToCurrent(stepper[motorID - MOTOR_ID_FIRST].getRunTVAL()));
-    newMes.add(TvalToCurrent(stepper[motorID - MOTOR_ID_FIRST].getAccTVAL()));
-    newMes.add(TvalToCurrent(stepper[motorID - MOTOR_ID_FIRST].getDecTVAL()));
+    motorID -= MOTOR_ID_FIRST;
+    newMes.add(TvalToCurrent(tvalHold[motorID]));
+    newMes.add(TvalToCurrent(tvalRun[motorID]));
+    newMes.add(TvalToCurrent(tvalAcc[motorID]));
+    newMes.add(TvalToCurrent(tvalDec[motorID]));
     Udp.beginPacket(destIp, outPort);
     newMes.send(Udp);
     Udp.endPacket();
     newMes.empty();
     turnOnTXL();
 }
-void getTVAL_mA(OSCMessage& msg, int addrOffset) {
+void getTval_mA(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        getTVAL_mA(motorID);
+        getTval_mA(motorID);
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            getTVAL_mA(i + 1);
+            getTval_mA(i + 1);
         }
     }
 }
@@ -1599,7 +1692,7 @@ void getServoParam(OSCMessage& msg, int addrOffset) {
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            getServoParam(i + 1);
+            getServoParam(i + MOTOR_ID_FIRST);
         }
     }
 }
@@ -1610,14 +1703,15 @@ void getServoParam(OSCMessage& msg, int addrOffset) {
 #pragma region PowerSTEP01_config_osc_listener
 
 void setVoltageMode(uint8_t motorID) {
-    motorID -= 1;
+    motorID -= MOTOR_ID_FIRST;
     stepper[motorID].hardHiZ();
     stepper[motorID].setPWMFreq(PWM_DIV_1, PWM_MUL_0_75);
-    stepper[motorID].setHoldKVAL(0);
-    stepper[motorID].setRunKVAL(0);
-    stepper[motorID].setAccKVAL(0);
-    stepper[motorID].setDecKVAL(0);
+    stepper[motorID].setHoldKVAL(kvalHold[motorID]);
+    stepper[motorID].setRunKVAL(kvalRun[motorID]);
+    stepper[motorID].setAccKVAL(kvalAcc[motorID]);
+    stepper[motorID].setDecKVAL(kvalDec[motorID]);
     stepper[motorID].setVoltageMode();
+    isCurrentMode[motorID] = false;
 }
 void setVoltageMode(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
@@ -1632,7 +1726,7 @@ void setVoltageMode(OSCMessage& msg, int addrOffset) {
 }
 
 void setCurrentMode(uint8_t motorID) {
-    motorID = -1;
+    motorID -= MOTOR_ID_FIRST;
     stepper[motorID].hardHiZ();
     stepper[motorID].setPredictiveControl(CONFIG_PRED_ENABLE);
     stepper[motorID].setSwitchingPeriod(5);
@@ -1640,12 +1734,12 @@ void setCurrentMode(uint8_t motorID) {
     {
         stepper[motorID].configStepMode(STEP_SEL_1_16);
     }
-    stepper[motorID].setHoldTVAL(0);
-    stepper[motorID].setRunTVAL(0);
-    stepper[motorID].setAccTVAL(0);
-    stepper[motorID].setDecTVAL(0);
+    stepper[motorID].setHoldTVAL(tvalHold[motorID]);
+    stepper[motorID].setRunTVAL(tvalRun[motorID]);
+    stepper[motorID].setAccTVAL(tvalAcc[motorID]);
+    stepper[motorID].setDecTVAL(tvalDec[motorID]);
     stepper[motorID].setCurrentMode();
-
+    isCurrentMode[motorID] = true;
 }
 void setCurrentMode(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
@@ -1710,22 +1804,22 @@ void OSCMsgReceive() {
             msgIN.route("/setDec", setDec);
             msgIN.route("/getSpeedProfile", getSpeedProfile);
 
-            // KVAL
-            msgIN.route("/setKVAL", setKVAL);
-            msgIN.route("/setAccKVAL", setAccKVAL);
-            msgIN.route("/setDecKVAL", setDecKVAL);
-            msgIN.route("/setRunKVAL", setRunKVAL);
-            msgIN.route("/setHoldKVAL", setHoldKVAL);
-            msgIN.route("/getKVAL", getKVAL);
+            // Kval
+            msgIN.route("/setKval", setKval);
+            msgIN.route("/setAccKval", setAccKval);
+            msgIN.route("/setDecKval", setDecKval);
+            msgIN.route("/setRunKval", setRunKval);
+            msgIN.route("/setHoldKval", setHoldKval);
+            msgIN.route("/getKval", getKval);
 
             //TVAL
-            msgIN.route("/setTVAL", setTVAL);
-            msgIN.route("/setAccTVAL", setAccTVAL);
-            msgIN.route("/setDecTVAL", setDecTVAL);
-            msgIN.route("/setRunTVAL", setRunTVAL);
-            msgIN.route("/setHoldTVAL", setHoldTVAL);
-            msgIN.route("/getTVAL", getTVAL);
-            msgIN.route("/getTVAL_mA", getTVAL_mA);
+            msgIN.route("/setTval", setTval);
+            msgIN.route("/setAccTval", setAccTval);
+            msgIN.route("/setDecTval", setDecTval);
+            msgIN.route("/setRunTval", setRunTval);
+            msgIN.route("/setHoldTval", setHoldTval);
+            msgIN.route("/getTval", getTval);
+            msgIN.route("/getTval_mA", getTval_mA);
 
             // config
             msgIN.route("/setDestIp", setDestIp);
