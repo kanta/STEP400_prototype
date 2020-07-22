@@ -12,8 +12,9 @@
 #include <SPI.h>
 #include <OSCMessage.h>
 #include <Ethernet.h>
-#include <Adafruit_SleepyDog.h>
+//#include <Adafruit_SleepyDog.h>
 #include <Ponoor_PowerSTEP01Library.h>
+
 
 #define COMPILE_DATE __DATE__
 #define COMPILE_TIME __TIME__
@@ -45,7 +46,7 @@ powerSTEP stepper[] = {
 #define MOTOR_ID_FIRST  1
 #define MOTOR_ID_LAST   4
 
-#define TVAL_LIMIT_VAL  128 // approx. 5A
+#define TVAL_LIMIT_VAL  64 // approx. 5A
 // KVAL and TVAL storage.
 uint8_t kvalHold[NUM_OF_MOTOR], kvalRun[NUM_OF_MOTOR], kvalAcc[NUM_OF_MOTOR], kvalDec[NUM_OF_MOTOR];
 uint8_t tvalHold[NUM_OF_MOTOR], tvalRun[NUM_OF_MOTOR], tvalAcc[NUM_OF_MOTOR], tvalDec[NUM_OF_MOTOR];
@@ -63,7 +64,7 @@ boolean isDestIpSet = false;
 
 #define W5500_RESET_PIN A3
 
-#define STATUS_POLL_PERIOD   10 // [ms]
+#define STATUS_POLL_PERIOD   1 // [ms]
 
 // these values will be initialized at setup()
 bool busy[NUM_OF_MOTOR];
@@ -160,11 +161,11 @@ void setup() {
         reportDir[i] = false;
         reportMotorStatus[i] = false;
         reportSwEvn[i] = false;
-        reportCommandError[i] = false;
-        reportUVLO[i] = false;
-        reportThermalStatus[i] = false;
-        reportOCD[i] = false;
-        reportStall[i] = false;
+        reportCommandError[i] = true;
+        reportUVLO[i] = true;
+        reportThermalStatus[i] = true;
+        reportOCD[i] = true;
+        reportStall[i] = true;
 
         limitSwState[i] = false;
         reportLimitSwStatus[i] = false;
@@ -219,7 +220,7 @@ void resetEthernet() {
 void resetMotorDriver(uint8_t deviceID) {
     if (MOTOR_ID_FIRST <= deviceID && deviceID <= MOTOR_ID_LAST) {
         deviceID -= MOTOR_ID_FIRST;
-        stepper[deviceID].hardHiZ();
+        stepper[deviceID].resetDev();
         stepper[deviceID].configStepMode(STEP_FS_128);
         stepper[deviceID].setMaxSpeed(650.);
         stepper[deviceID].setLoSpdOpt(true);
@@ -279,6 +280,17 @@ void sendTwoInt(char* address, int32_t data1, int32_t data2) {
     if (!isDestIpSet) { return; }
     OSCMessage newMes(address);
     newMes.add(data1).add(data2);
+    Udp.beginPacket(destIp, outPort);
+    newMes.send(Udp);
+    Udp.endPacket();
+    newMes.empty();
+    turnOnTXL();
+}
+
+void sendThreeInt(char* address, int32_t data1, int32_t data2, int32_t data3) {
+    if (!isDestIpSet) { return; }
+    OSCMessage newMes(address);
+    newMes.add(data1).add(data2).add(data3);
     Udp.beginPacket(destIp, outPort);
     newMes.send(Udp);
     Udp.endPacket();
@@ -363,7 +375,7 @@ void enableBusyReport(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     bool bEnable = msg.getInt(1) > 0;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        reportBUSY[motorID - 1] = bEnable;
+        reportBUSY[motorID - MOTOR_ID_FIRST] = bEnable;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -376,7 +388,7 @@ void enableHizReport(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     bool bEnable = msg.getInt(1) > 0;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        reportHiZ[motorID - 1] = bEnable;
+        reportHiZ[motorID - MOTOR_ID_FIRST] = bEnable;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -388,7 +400,7 @@ void enableHomeSwReport(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     bool bEnable = msg.getInt(1) > 0;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        reportHomeSwStatus[motorID - 1] = bEnable;
+        reportHomeSwStatus[motorID - MOTOR_ID_FIRST] = bEnable;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -400,7 +412,7 @@ void enableLimitSwReport(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     bool bEnable = msg.getInt(1) > 0;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        reportLimitSwStatus[motorID - 1] = bEnable;
+        reportLimitSwStatus[motorID - MOTOR_ID_FIRST] = bEnable;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -412,7 +424,7 @@ void enableDirReport(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     bool bEnable = msg.getInt(1) > 0;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        reportDir[motorID - 1] = bEnable;
+        reportDir[motorID - MOTOR_ID_FIRST] = bEnable;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -424,7 +436,7 @@ void enableMotorStatusReport(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     bool bEnable = msg.getInt(1) > 0;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        reportMotorStatus[motorID - 1] = bEnable;
+        reportMotorStatus[motorID - MOTOR_ID_FIRST] = bEnable;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -436,7 +448,7 @@ void enableSwEventReport(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     bool bEnable = msg.getInt(1) > 0;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        reportSwEvn[motorID - 1] = bEnable;
+        reportSwEvn[motorID - MOTOR_ID_FIRST] = bEnable;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -448,7 +460,7 @@ void enableCommandErrorReport(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     bool bEnable = msg.getInt(1) > 0;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        reportCommandError[motorID - 1] = bEnable;
+        reportCommandError[motorID - MOTOR_ID_FIRST] = bEnable;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -460,7 +472,7 @@ void enableUvloReport(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     bool bEnable = msg.getInt(1) > 0;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        reportUVLO[motorID - 1] = bEnable;
+        reportUVLO[motorID - MOTOR_ID_FIRST] = bEnable;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -472,7 +484,7 @@ void enableThermalStatusReport(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     bool bEnable = msg.getInt(1) > 0;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        reportThermalStatus[motorID - 1] = bEnable;
+        reportThermalStatus[motorID - MOTOR_ID_FIRST] = bEnable;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -484,7 +496,7 @@ void enableOverCurrentReport(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     bool bEnable = msg.getInt(1) > 0;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        reportOCD[motorID - 1] = bEnable;
+        reportOCD[motorID - MOTOR_ID_FIRST] = bEnable;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -496,7 +508,7 @@ void enableStallReport(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     bool bEnable = msg.getInt(1) > 0;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        reportStall[motorID - 1] = bEnable;
+        reportStall[motorID - MOTOR_ID_FIRST] = bEnable;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
@@ -517,14 +529,7 @@ void getHomeSw(OSCMessage& msg, int addrOffset) {
     }
 }
 void getHomeSw(uint8_t motorID) {
-    if (!isDestIpSet) { return; }
-    OSCMessage newMes("/homeSw");
-    newMes.add(motorID).add(homeSwState[motorID - MOTOR_ID_FIRST]).add(dir[motorID - MOTOR_ID_FIRST]);
-    Udp.beginPacket(destIp, outPort);
-    newMes.send(Udp);
-    Udp.endPacket();
-    newMes.empty();
-    turnOnTXL();
+    sendThreeInt("/homeSw", motorID, homeSwState[motorID - MOTOR_ID_FIRST], dir[motorID - MOTOR_ID_FIRST]);
 }
 void getLimitSw(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
@@ -1088,7 +1093,7 @@ void getTval(uint8_t motorID) {
     turnOnTXL();
 }
 float TvalToCurrent(uint8_t tval) {
-    return (tval + 1) * 7.8f;
+    return (tval + 1) * 78.125f;
 }
 void getTval_mA(uint8_t motorID) {
     if (!isDestIpSet) { return; }
@@ -1676,7 +1681,9 @@ void setServoParam(OSCMessage& msg, int addrOffset) {
 void getServoParam(uint8_t motorID) {
     if (!isDestIpSet) { return; }
     OSCMessage newMes("/servoParam");
-    newMes.add(motorID).add(kP[motorID - 1]).add(kI[motorID - 1]).add(kD[motorID - 1]);
+    newMes.add(motorID);
+    motorID -= MOTOR_ID_FIRST;
+    newMes.add(kP[motorID]).add(kI[motorID]).add(kD[motorID]);
     Udp.beginPacket(destIp, outPort);
     newMes.send(Udp);
     Udp.endPacket();
@@ -1964,7 +1971,7 @@ void checkLimitSw() {
             }
             if (reportLimitSwStatus[i])
             {
-                sendTwoInt("/limitSw", i + MOTOR_ID_FIRST, limitSwState[i]);
+                sendThreeInt("/limitSw", i + MOTOR_ID_FIRST, limitSwState[i], dir[i]);
             }
         }
     }
