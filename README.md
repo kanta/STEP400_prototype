@@ -8,8 +8,8 @@ Stepper driver chips are STMicroelectronics's [powerSTEP01](https://www.st.com/e
 
 
 # Repository Contents
-- **/firmware** - Source files for the firmware.
-- **/hardware** - PCB design files for Eagle.
+- **/rev4/STEP400_proto_r4_firmware/STEP400_proto_r4_firmware/** - Source files for the firmware. Some Visual Studio files are included but you can open .ino file with Arduino IDE.
+- **/rev4/hardware/** - PCB design files for Eagle.
 
 ## Firmware dependency
 - **[OSC Library](https://github.com/CNMAT/OSC)** from CNMAT
