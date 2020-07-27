@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="9.6.0">
+<eagle version="9.6.2">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -14984,8 +14984,8 @@ VDD Range: 1.62-3.63V</text>
 <text x="241.3" y="185.42" size="1.778" layer="97" align="center-left">SDA</text>
 <text x="241.3" y="182.88" size="1.778" layer="97" align="center-left">SCL</text>
 <text x="243.84" y="154.94" size="1.778" layer="97" align="center-left">D31</text>
-<text x="12.7" y="40.64" size="1.778" layer="97">Prototype r3 for TASKO</text>
-<text x="12.7" y="35.56" size="1.778" layer="97" align="top-left">update components
+<text x="12.7" y="40.64" size="1.778" layer="97">r4 memo</text>
+<text x="12.7" y="35.56" size="1.778" layer="97" align="top-left">updated components
 - screw terminal
 - connector XA + 3.81mm
 - microSD card slot
