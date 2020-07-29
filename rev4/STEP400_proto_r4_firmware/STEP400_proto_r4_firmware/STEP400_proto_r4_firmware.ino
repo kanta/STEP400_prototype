@@ -224,8 +224,8 @@ void resetMotorDriver(uint8_t deviceID) {
         stepper[deviceID].configStepMode(STEP_FS_128);
         stepper[deviceID].setMaxSpeed(650.);
         stepper[deviceID].setLoSpdOpt(true);
-        stepper[deviceID].setMinSpeed(20.);
-        stepper[deviceID].setFullSpeed(2000.);
+        stepper[deviceID].setMinSpeed(20.); // Low speed optimazation threshold
+        stepper[deviceID].setFullSpeed(15610.);
         stepper[deviceID].setAcc(2000.);
         stepper[deviceID].setDec(2000.);
         stepper[deviceID].setSlewRate(SR_980V_us);
@@ -1172,6 +1172,20 @@ void setFullstepSpeed(OSCMessage& msg, int addrOffset) {
         }
     }
 }
+void getFullstepSpeed(OSCMessage& msg, int addrOffset) {
+    uint8_t motorID = msg.getInt(0);
+    float s;
+    if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
+        s = stepper[motorID - MOTOR_ID_FIRST].getFullSpeed();
+        sendIdFloat("/fullstepSpeed", motorID, s);
+    }
+    else if (motorID == MOTOR_ID_ALL) {
+        for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
+            s = stepper[i].getFullSpeed();
+            sendIdFloat("/fullstepSpeed", i + 1, s);
+        }
+    }
+}
 void setAcc(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
     float stepsPerSecondPerSecond = msg.getFloat(1);
@@ -1806,6 +1820,7 @@ void OSCMsgReceive() {
             msgIN.route("/setSpeedProfile", setSpeedProfile);
             msgIN.route("/setMaxSpeed", setMaxSpeed);
             msgIN.route("/setFullstepSpeed", setFullstepSpeed);
+            msgIN.route("/getFullstepSpeed", getFullstepSpeed);
             msgIN.route("/setAcc", setAcc);
             msgIN.route("/setDec", setDec);
             msgIN.route("/getSpeedProfile", getSpeedProfile);
