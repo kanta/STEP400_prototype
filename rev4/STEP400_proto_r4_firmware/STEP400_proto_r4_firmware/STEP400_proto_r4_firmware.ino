@@ -19,6 +19,7 @@
 #define COMPILE_DATE __DATE__
 #define COMPILE_TIME __TIME__
 constexpr auto PROJECT_NAME = "STEP400proto_r4";
+boolean debugMode = false;
 
 #define ledPin	13u
 const uint8_t dipSwPin[8] = { A5,SCL,7u,SDA,2u,9u,3u,0u };
@@ -356,6 +357,10 @@ void resetMotorDriver(OSCMessage& msg, int addrOffset) {
             resetMotorDriver(i);
         }
     }
+}
+
+void setDebugMode(OSCMessage& msg, int addrOffset) {
+    debugMode = msg.getInt(0) > 0;
 }
 
 // simply send reset command to the driverchip via SPI
@@ -1893,6 +1898,7 @@ void OSCMsgReceive() {
 
             msgIN.route("/setVoltageMode", setVoltageMode);
             msgIN.route("/setCurrentMode", setCurrentMode);
+            msgIN.route("/setDebugMode", setDebugMode);
             turnOnRXL();
         }
     }
@@ -1918,6 +1924,7 @@ void checkStatus() {
         {
             HiZ[i] = t;
             if (reportHiZ[i]) sendTwoInt("/HiZ", i + MOTOR_ID_FIRST, t);
+            if (debugMode) sendStatusDebug("/HiZ", i + MOTOR_ID_FIRST, t, status);
         }
         // BUSY, low for busy
         t = (status & STATUS_BUSY) == 0;
@@ -1925,6 +1932,7 @@ void checkStatus() {
         {
         	busy[i] = t;
         	if ( reportBUSY[i] ) sendTwoInt("/busy", i + MOTOR_ID_FIRST, t);
+            if (debugMode) sendStatusDebug("/busy", i + MOTOR_ID_FIRST, t, status);
         }
         // DIR
         t = (status & STATUS_DIR) > 0;
@@ -1932,6 +1940,7 @@ void checkStatus() {
         {
             dir[i] = t;
             if (reportDir[i]) sendTwoInt("/dir", i + MOTOR_ID_FIRST, t);
+            if (debugMode) sendStatusDebug("/dir", i + MOTOR_ID_FIRST, t, status);
         }
         // SW_F, low for open, high for close
         t = (status & STATUS_SW_F) > 0;
@@ -1939,38 +1948,47 @@ void checkStatus() {
         {
             homeSwState[i] = t;
             if (reportHomeSwStatus[i]) getHomeSw(i + 1);
+            if (debugMode) sendStatusDebug("/homeSw", i + MOTOR_ID_FIRST, t, status);
         }
         // SW_EVN, active high, latched
         t = (status & STATUS_SW_EVN) > 0;
         if (t && reportSwEvn[i]) sendOneInt("/swEvent", i + MOTOR_ID_FIRST);
+        if (debugMode && t) sendStatusDebug("/swEvent", i + MOTOR_ID_FIRST, t, status);
         // MOT_STATUS
         t = (status & STATUS_MOT_STATUS) >> 5;
         if (motorStatus[i] != t) {
             motorStatus[i] = t;
             if (reportMotorStatus[i]) sendTwoInt("/motorStatus", i + MOTOR_ID_FIRST, motorStatus[i]);
+            if (debugMode) sendStatusDebug("/motorStatus", i + MOTOR_ID_FIRST, t, status);
         }
         // CMD_ERROR, active high, latched
         t = (status & STATUS_CMD_ERROR) > 0;
         if (t && reportCommandError[i]) sendOneInt("commandError", i + MOTOR_ID_FIRST);
+        if (debugMode && t) sendStatusDebug("/commandError", i + MOTOR_ID_FIRST, t, status);
         // UVLO, active low
         t = (status & STATUS_UVLO) == 0;
         if (t != uvloStatus[i])
         {
             uvloStatus[i] = !uvloStatus[i];
             if (reportUVLO[i]) sendTwoInt("/uvlo", i + MOTOR_ID_FIRST, uvloStatus[i]);
+            if (debugMode) sendStatusDebug("/ulvo", i + MOTOR_ID_FIRST, t, status);
         }
         // TH_STATUS
         t = (status & STATUS_TH_STATUS) >> 11;
         if (thermalStatus[i] != t) {
             thermalStatus[i] = t;
             if (reportThermalStatus[i]) sendTwoInt("/thermalStatus", i + MOTOR_ID_FIRST, thermalStatus[i]);
+            if (debugMode) sendStatusDebug("/thermalStatus", i + MOTOR_ID_FIRST, t, status);
         }
         // OCD, active low, latched
         t = (status & STATUS_OCD) == 0;
         if (t && reportOCD[i]) sendOneInt("/overCurrent", i + 1);
+        if (debugMode && t) sendStatusDebug("/overCurrent", i + MOTOR_ID_FIRST, t, status);
+
         // STALL A&B, active low, latched
         t = (status & (STATUS_STALL_A | STATUS_STALL_B)) >> 14;
         if ((t != 3) && reportStall[i]) sendOneInt("/stall", i + MOTOR_ID_FIRST);
+        if (debugMode && (t != 3)) sendStatusDebug("/stall", i + MOTOR_ID_FIRST, t, status);
     }
 }
 
