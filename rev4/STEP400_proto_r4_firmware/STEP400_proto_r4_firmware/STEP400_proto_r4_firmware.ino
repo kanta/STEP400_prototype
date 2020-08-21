@@ -95,6 +95,16 @@ bool limitSwState[NUM_OF_MOTOR];
 bool reportLimitSwStatus[NUM_OF_MOTOR];
 bool limitSwMode[NUM_OF_MOTOR];
 
+uint16_t intersectSpeed[NUM_OF_MOTOR]; // INT_SPEED
+uint8_t 
+    startSlope[NUM_OF_MOTOR], // ST_SLP
+    accFinalSlope[NUM_OF_MOTOR], // FN_SLP_ACC
+    decFinalSlope[NUM_OF_MOTOR]; // FN_SLP_DEC
+uint8_t
+    fastDecaySetting[NUM_OF_MOTOR], // T_FAST
+    minOnTime[NUM_OF_MOTOR], // TON_MIN
+    minOffTime[NUM_OF_MOTOR]; // TOFF_MIN
+
 // servo mode
 uint32_t lastServoUpdateTime;
 int32_t targetPosition[NUM_OF_MOTOR]; // these values will be initialized at setup()
@@ -171,6 +181,14 @@ void setup() {
         limitSwState[i] = false;
         reportLimitSwStatus[i] = false;
 
+        intersectSpeed[i] = 0x0408; // INT_SPEED
+        startSlope[i] = 0x19;// ST_SLP
+        accFinalSlope[i] = 0x29; // FN_SLP_ACC
+        decFinalSlope[i] = 0x29; // FN_SLP_DEC
+        fastDecaySetting[i] = 0x19; // T_FAST
+        minOnTime[i] = 0x29; // TON_MIN
+        minOffTime[i] = 0x29; // TOFF_MIN
+
         targetPosition[i] = 0;
         kP[i] = 0.06f;
         kI[i] = 0.0f;
@@ -227,6 +245,10 @@ void resetMotorDriver(uint8_t deviceID) {
         stepper[deviceID].setLoSpdOpt(true);
         stepper[deviceID].setMinSpeed(20.); // Low speed optimazation threshold
         stepper[deviceID].setFullSpeed(15610.);
+        stepper[deviceID].setParam(INT_SPD, intersectSpeed[deviceID]);
+        stepper[deviceID].setParam(ST_SLP, startSlope[deviceID]);
+        stepper[deviceID].setParam(FN_SLP_ACC, accFinalSlope[deviceID]);
+        stepper[deviceID].setParam(FN_SLP_DEC, decFinalSlope[deviceID]);
         stepper[deviceID].setAcc(2000.);
         stepper[deviceID].setDec(2000.);
         stepper[deviceID].setSlewRate(SR_980V_us);
@@ -814,6 +836,111 @@ void getLowSpeedOptimizeThreshold(uint8_t motorID) {
     newMes.empty();
     turnOnTXL();
 }
+
+void setBemfParam(OSCMessage& msg, int addrOffset) {
+    uint8_t motorID = msg.getInt(0);
+    uint16_t intSpeed = constrain(msg.getInt(1), 0, 0x3FFF);
+    uint8_t
+        stSlp = constrain(msg.getInt(2), 0, 255),
+        fnSlpAcc = constrain(msg.getInt(3), 0, 255),
+        fnSlpDec = constrain(msg.getInt(4), 0, 255);
+    if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
+        motorID -= MOTOR_ID_FIRST;
+        intersectSpeed[motorID] = intSpeed;
+        startSlope[motorID] = stSlp;
+        accFinalSlope[motorID] = fnSlpAcc;
+        decFinalSlope[motorID] = fnSlpDec;
+        stepper[motorID].setParam(INT_SPD, intersectSpeed[motorID]);
+        stepper[motorID].setParam(ST_SLP, startSlope[motorID]);
+        stepper[motorID].setParam(FN_SLP_ACC, accFinalSlope[motorID]);
+        stepper[motorID].setParam(FN_SLP_DEC, decFinalSlope[motorID]);
+    }
+    else if (motorID == MOTOR_ID_ALL) {
+        for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
+            intersectSpeed[i] = intSpeed;
+            startSlope[i] = stSlp;
+            accFinalSlope[i] = fnSlpAcc;
+            decFinalSlope[i] = fnSlpDec;
+            stepper[i].setParam(INT_SPD, intersectSpeed[i]);
+            stepper[i].setParam(ST_SLP, startSlope[i]);
+            stepper[i].setParam(FN_SLP_ACC, accFinalSlope[i]);
+            stepper[i].setParam(FN_SLP_DEC, decFinalSlope[i]);
+        }
+    }
+}
+void getBemfParam(OSCMessage& msg, int addrOffset) {
+    uint8_t motorID = msg.getInt(0);
+    if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
+        getBemfParam(motorID);
+    }
+    else if (motorID == MOTOR_ID_ALL) {
+        for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
+            getBemfParam(i + MOTOR_ID_FIRST);
+        }
+    }
+}
+void getBemfParam(uint8_t motorID) {
+    if (!isDestIpSet) { return; }
+    OSCMessage newMes("/bemfParam");
+    newMes.add((int32_t)motorID);
+    motorID -= MOTOR_ID_FIRST;
+    newMes.add(intersectSpeed[motorID]).add(startSlope[motorID]).add(accFinalSlope[motorID]).add(decFinalSlope[motorID]);
+    Udp.beginPacket(destIp, outPort);
+    newMes.send(Udp);
+    Udp.endPacket();
+    newMes.empty();
+    turnOnTXL();
+}
+
+void setDecayModeParam(OSCMessage& msg, int addrOffset) {
+    uint8_t motorID = msg.getInt(0);
+    uint8_t
+        tFast = constrain(msg.getInt(1), 0, 255),
+        tOnMin = constrain(msg.getInt(2), 0, 255),
+        tOffMin = constrain(msg.getInt(3), 0, 255);
+    if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
+        motorID -= MOTOR_ID_FIRST;
+        fastDecaySetting[motorID] = tFast;
+        minOnTime[motorID] = tOnMin;
+        minOffTime[motorID] = tOffMin;
+        stepper[motorID].setParam(T_FAST, fastDecaySetting[motorID]);
+        stepper[motorID].setParam(TON_MIN, minOnTime[motorID]);
+        stepper[motorID].setParam(TOFF_MIN, minOffTime[motorID]);
+    }
+    else if (motorID == MOTOR_ID_ALL) {
+        for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
+            fastDecaySetting[i] = tFast;
+            minOnTime[i] = tOnMin;
+            minOffTime[i] = tOffMin;
+            stepper[i].setParam(T_FAST, fastDecaySetting[i]);
+            stepper[i].setParam(TON_MIN, minOnTime[i]);
+            stepper[i].setParam(TOFF_MIN, minOffTime[i]);
+        }
+    }
+}
+void getDecayModeParam(OSCMessage& msg, int addrOffset) {
+    uint8_t motorID = msg.getInt(0);
+    if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
+        getDecayModeParam(motorID);
+    }
+    else if (motorID == MOTOR_ID_ALL) {
+        for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
+            getDecayModeParam(i + MOTOR_ID_FIRST);
+        }
+    }
+}
+void getDecayModeParam(uint8_t motorID) {
+    if (!isDestIpSet) { return; }
+    OSCMessage newMes("/decayModeParam");
+    newMes.add((int32_t)motorID);
+    motorID -= MOTOR_ID_FIRST;
+    newMes.add(fastDecaySetting[motorID]).add(minOnTime[motorID]).add(minOffTime[motorID]);
+    Udp.beginPacket(destIp, outPort);
+    newMes.send(Udp);
+    Udp.endPacket();
+    newMes.empty();
+    turnOnTXL();
+}
 #pragma endregion config_commands_osc_listener
 
 #pragma region kval_commands_osc_listener
@@ -942,10 +1069,6 @@ void getKval(uint8_t motorID) {
     OSCMessage newMes("/kval");
     newMes.add((int32_t)motorID);
     motorID -= MOTOR_ID_FIRST;
-    //newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getHoldKval());
-    //newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getRunKval());
-    //newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getAccKval());
-    //newMes.add((int32_t)stepper[motorID - MOTOR_ID_FIRST].getDecKval());
     newMes.add(kvalHold[motorID]).add(kvalRun[motorID]).add(kvalAcc[motorID]).add(kvalDec[motorID]);
     Udp.beginPacket(destIp, outPort);
     newMes.send(Udp);
@@ -1735,6 +1858,9 @@ void setVoltageMode(uint8_t motorID) {
     stepper[motorID].setRunKVAL(kvalRun[motorID]);
     stepper[motorID].setAccKVAL(kvalAcc[motorID]);
     stepper[motorID].setDecKVAL(kvalDec[motorID]);
+    stepper[motorID].setParam(ST_SLP, startSlope[motorID]);
+    stepper[motorID].setParam(FN_SLP_ACC, accFinalSlope[motorID]);
+    stepper[motorID].setParam(FN_SLP_DEC, decFinalSlope[motorID]);
     stepper[motorID].setVoltageMode();
     isCurrentMode[motorID] = false;
 }
@@ -1763,6 +1889,9 @@ void setCurrentMode(uint8_t motorID) {
     stepper[motorID].setRunTVAL(tvalRun[motorID]);
     stepper[motorID].setAccTVAL(tvalAcc[motorID]);
     stepper[motorID].setDecTVAL(tvalDec[motorID]);
+    stepper[motorID].setParam(T_FAST, fastDecaySetting[motorID]);
+    stepper[motorID].setParam(TON_MIN, minOnTime[motorID]);
+    stepper[motorID].setParam(TOFF_MIN, minOffTime[motorID]);
     stepper[motorID].setCurrentMode();
     isCurrentMode[motorID] = true;
 }
@@ -1898,6 +2027,10 @@ void OSCMsgReceive() {
 
             msgIN.route("/setVoltageMode", setVoltageMode);
             msgIN.route("/setCurrentMode", setCurrentMode);
+            msgIN.route("/setBemfParam", setBemfParam);
+            msgIN.route("/getBemfParam", getBemfParam);
+            msgIN.route("/setDecayModeParam", setDecayModeParam);
+            msgIN.route("/getDecayModeParam", getDecayModeParam);
             msgIN.route("/setDebugMode", setDebugMode);
             turnOnRXL();
         }
