@@ -10,7 +10,7 @@
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ -1371.0, 149.0, 881.0, 806.0 ],
+		"rect" : [ -1650.0, 132.0, 881.0, 806.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -1793,7 +1793,7 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 488.333333333333371, 29.0, 238.0, 22.0 ],
-									"text" : "commandError 1"
+									"text" : "/tval_mA 1 78.125 625. 625. 625."
 								}
 
 							}
@@ -8838,7 +8838,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ 0.0, 26.0, 881.0, 780.0 ],
+						"rect" : [ -1650.0, 158.0, 881.0, 780.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -8868,6 +8868,21 @@
 						"showontab" : 2,
 						"assistshowspatchername" : 0,
 						"boxes" : [ 							{
+								"box" : 								{
+									"format" : 1,
+									"id" : "obj-34",
+									"maxclass" : "number",
+									"maximum" : 255,
+									"minimum" : 0,
+									"numinlets" : 1,
+									"numoutlets" : 2,
+									"outlettype" : [ "", "bang" ],
+									"parameter_enable" : 0,
+									"patching_rect" : [ 658.199999999999932, 234.0, 50.0, 22.0 ]
+								}
+
+							}
+, 							{
 								"box" : 								{
 									"id" : "obj-9",
 									"maxclass" : "comment",
@@ -9834,6 +9849,30 @@
 							}
 , 							{
 								"patchline" : 								{
+									"destination" : [ "obj-69", 0 ],
+									"order" : 2,
+									"source" : [ "obj-34", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-70", 0 ],
+									"order" : 1,
+									"source" : [ "obj-34", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
+									"destination" : [ "obj-71", 0 ],
+									"order" : 0,
+									"source" : [ "obj-34", 0 ]
+								}
+
+							}
+, 							{
+								"patchline" : 								{
 									"destination" : [ "obj-47", 1 ],
 									"source" : [ "obj-44", 1 ]
 								}
@@ -10788,7 +10827,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 343.0, 463.0, 57.0, 20.0 ],
+					"patching_rect" : [ 347.0, 463.0, 57.0, 20.0 ],
 					"text" : "[step/s/s]"
 				}
 
@@ -10799,7 +10838,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 322.0, 435.0, 57.0, 20.0 ],
+					"patching_rect" : [ 326.0, 435.0, 57.0, 20.0 ],
 					"text" : "[step/s/s]"
 				}
 
@@ -10826,7 +10865,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 321.0, 493.0, 50.0, 22.0 ]
+					"patching_rect" : [ 321.0, 493.0, 52.0, 22.0 ]
 				}
 
 			}
@@ -10841,7 +10880,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 294.0, 462.0, 50.0, 22.0 ]
+					"patching_rect" : [ 294.0, 462.0, 55.0, 22.0 ]
 				}
 
 			}
@@ -10856,7 +10895,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 272.0, 434.0, 50.0, 22.0 ]
+					"patching_rect" : [ 272.0, 434.0, 55.0, 22.0 ]
 				}
 
 			}
@@ -11385,7 +11424,7 @@
 						}
 ,
 						"classnamespace" : "box",
-						"rect" : [ -1371.0, 175.0, 881.0, 780.0 ],
+						"rect" : [ 0.0, 26.0, 881.0, 780.0 ],
 						"bglocked" : 0,
 						"openinpresentation" : 0,
 						"default_fontsize" : 12.0,
@@ -11577,7 +11616,6 @@
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 340.0, 669.0, 138.0, 22.0 ],
-									"presentation_linecount" : 2,
 									"text" : "/getDecayModeParam 1"
 								}
 
@@ -12389,6 +12427,8 @@
 									"format" : 6,
 									"id" : "obj-37",
 									"maxclass" : "flonum",
+									"maximum" : 15625.0,
+									"minimum" : 7.63,
 									"numinlets" : 1,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "bang" ],
@@ -13597,13 +13637,11 @@
 								"box" : 								{
 									"dontreplace" : 1,
 									"id" : "obj-36",
-									"linecount" : 2,
 									"maxclass" : "message",
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 103.0, 82.0, 166.0, 36.0 ],
-									"text" : "\"Aug 21 2020 16:46:43 STEP400proto_r4\""
+									"patching_rect" : [ 103.0, 82.0, 166.0, 22.0 ]
 								}
 
 							}
@@ -13615,8 +13653,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 238.5, 446.0, 166.0, 22.0 ],
-									"text" : "1 19.992001 1"
+									"patching_rect" : [ 238.5, 446.0, 166.0, 22.0 ]
 								}
 
 							}
