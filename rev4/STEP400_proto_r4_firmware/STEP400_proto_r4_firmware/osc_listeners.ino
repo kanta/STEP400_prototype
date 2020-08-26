@@ -900,7 +900,7 @@ void getTval_mA(OSCMessage& msg, int addrOffset) {
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            getTval_mA(i + 1);
+            getTval_mA(i + MOTOR_ID_FIRST);
         }
     }
 }
@@ -1089,7 +1089,7 @@ void getSpeed(OSCMessage& msg, int addrOffset) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
             s = stepper[i].getSpeed();
             if (dir[i] == REV) { s *= -1.0; }
-            sendIdFloat("/speed", i + 1, s);
+            sendIdFloat("/speed", i + MOTOR_ID_FIRST, s);
         }
     }
 }
@@ -1101,7 +1101,7 @@ void getSpeedProfile(OSCMessage& msg, int addrOffset) {
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            getSpeedProfile(i);
+            getSpeedProfile(i + MOTOR_ID_FIRST);
         }
     }
 }
@@ -1127,7 +1127,7 @@ void getSpeedProfileRaw(OSCMessage& msg, int addrOffset) {
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            getSpeedProfileRaw(i);
+            getSpeedProfileRaw(i + MOTOR_ID_FIRST);
         }
     }
 }
