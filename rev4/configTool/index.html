@@ -2,19 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>step400 config tool</title>
+    <title>STEP400 config tool</title>
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-    <h1>step400 config tool</h1>
+    <h1>STEP400 config tool</h1>
+    <label>Read an existing config file</label>
     <input type="file" name="load">
     <form action="">
     <h2>Network</h2>
     <ul>
         <li>
             <label>my ip</label>
-            <input type="number" name="myIp" size="10" min="0" max="255" value="192">
-            <input type="number" name="myIp" size="10" min="0" max="255" value="168">
+            <input type="number" name="myIp" size="10" min="0" max="255" value="10">
+            <input type="number" name="myIp" size="10" min="0" max="255" value="0">
             <input type="number" name="myIp" size="10" min="0" max="255" value="0">
             <input type="number" name="myIp" size="10" min="0" max="255" value="100">
         </li>
@@ -24,20 +25,27 @@
         </li>
         <li>
             <label>dest ip</label>
-            <input type="number" name="destIp" size="10" min="0" max="255" value="192">
-            <input type="number" name="destIp" size="10" min="0" max="255" value="168">
+            <input type="number" name="destIp" size="10" min="0" max="255" value="10">
             <input type="number" name="destIp" size="10" min="0" max="255" value="0">
-            <input type="number" name="destIp" size="10" min="0" max="255" value="2">
+            <input type="number" name="destIp" size="10" min="0" max="255" value="0">
+            <input type="number" name="destIp" size="10" min="0" max="255" value="10">
         </li>
         <li>
-            <label>gateway</label>
-            <input type="number" name="gateway" size="10" min="0" max="255" value="192">
-            <input type="number" name="gateway" size="10" min="0" max="255" value="168">
+            <label>DNS</label>
+            <input type="number" name="dns" size="10" min="0" max="255" value="10">
+            <input type="number" name="dns" size="10" min="0" max="255" value="0">
+            <input type="number" name="dns" size="10" min="0" max="255" value="0">
+            <input type="number" name="dns" size="10" min="0" max="255" value="1">
+        </li>
+        <li>
+            <label>Gateway</label>
+            <input type="number" name="gateway" size="10" min="0" max="255" value="10">
+            <input type="number" name="gateway" size="10" min="0" max="255" value="0">
             <input type="number" name="gateway" size="10" min="0" max="255" value="0">
             <input type="number" name="gateway" size="10" min="0" max="255" value="1">
         </li>
         <li>
-            <label>subnet</label>
+            <label>Subnet Mask</label>
             <input type="number" name="subnet" size="10" min="0" max="255" value="255">
             <input type="number" name="subnet" size="10" min="0" max="255" value="255">
             <input type="number" name="subnet" size="10" min="0" max="255" value="255">
@@ -45,11 +53,11 @@
         </li>
         <li>
             <label>in port</label>
-            <input type="number" name="inPort" size="30" value="20000">
+            <input type="number" name="inPort" size="30" value="50000">
         </li>
         <li>
             <label>out port</label>
-            <input type="number" name="outPort" size="30" value="2100">
+            <input type="number" name="outPort" size="30" value="50100">
         </li>
         <li>
             <label>out port add id</label>
@@ -57,12 +65,12 @@
         </li>
         <li>
             <label>mac</label>
-            <input type="number" name="mac" size="10" min="0" max="255">
-            <input type="number" name="mac" size="10" min="0" max="255">
-            <input type="number" name="mac" size="10" min="0" max="255">
-            <input type="number" name="mac" size="10" min="0" max="255">
-            <input type="number" name="mac" size="10" min="0" max="255">
-            <input type="number" name="mac" size="10" min="0" max="255">
+            <input type="number" name="mac" size="10" min="0" max="255" value="96">
+            <input type="number" name="mac" size="10" min="0" max="255" value="149">
+            <input type="number" name="mac" size="10" min="0" max="255" value="206">
+            <input type="number" name="mac" size="10" min="0" max="255" value="16">
+            <input type="number" name="mac" size="10" min="0" max="255" value="2">
+            <input type="number" name="mac" size="10" min="0" max="255" value="0">
         </li>
         <li>
             <label>mac add id</label>
@@ -135,15 +143,15 @@
             <input type="number" name="stepMode" min="0" max="7" value="7">
         </li>
         <li>
-            <label>homeSwMode</label>
-            <input type="checkbox" name="homeSwMode">
+            <label>Home Sensors won't cause HardStop</label>
+            <input type="checkbox" name="homeSwMode" checked>
         </li>
         <li>
-            <label>limitSwMode</label>
-            <input type="checkbox" name="limitSwMode">
+            <label>Limit Sensors won't cause HardStop</label>
+            <input type="checkbox" name="limitSwMode" checked>
         </li>
         <li>
-            <label>isCurrentMode</label>
+            <label>start with current mode</label>
             <input type="checkbox" name="isCurrentMode">
         </li>
         <li>
@@ -174,7 +182,7 @@
     <ul>
         <li>
             <label>KVAL_HOLD</label>
-            <input type=number name="KVAL_HOLD" min="0" max="255" value="16">
+            <input type=number name="KVAL_HOLD" min="0" max="255" value="0">
         </li>
         <li>
             <label>KVAL_RUN</label>
@@ -190,19 +198,19 @@
         </li>
         <li>
             <label>INT_SPEED</label>
-            <input type=number name="INT_SPEED" min="0" max="255" value="16">
+            <input type=number name="INT_SPEED" min="0" max="16383" value="1032">
         </li>
         <li>
             <label>ST_SLP</label>
-            <input type=number name="ST_SLP" min="0" max="255" value="16">
+            <input type=number name="ST_SLP" min="0" max="255" value="25">
         </li>
         <li>
             <label>FN_SLP_ACC</label>
-            <input type=number name="FN_SLP_ACC" min="0" max="255" value="16">
+            <input type=number name="FN_SLP_ACC" min="0" max="255" value="41">
         </li>
         <li>
             <label>FN_SLP_DEC</label>
-            <input type=number name="FN_SLP_DEC" min="0" max="255" value="16">
+            <input type=number name="FN_SLP_DEC" min="0" max="255" value="41">
         </li>
         <li>
             <label>STALL_TH</label>
@@ -210,14 +218,14 @@
         </li>
         <li>
             <label>lowSpeedOptimize</label>
-            <input type=number name="lowSpeedOptimize" min="0" max="976.3" value="">
+            <input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
         </li>
     </ul>
     <h2>Current Mode</h2>
     <ul>
         <li>
             <label>TVAL_HOLD</label>
-            <input type=number name="TVAL_HOLD" min="0" max="64" value="16">
+            <input type=number name="TVAL_HOLD" min="0" max="64" value="0">
         </li>
         <li>
             <label>TVAL_RUN</label>
@@ -233,15 +241,15 @@
         </li>
         <li>
             <label>T_FAST</label>
-            <input type=number name="T_FAST" min="0" max="255" value="">
+            <input type=number name="T_FAST" min="0" max="255" value="25">
         </li>
         <li>
             <label>TON_MIN</label>
-            <input type=number name="TON_MIN" min="0" max="255" value="">
+            <input type=number name="TON_MIN" min="0" max="255" value="41">
         </li>
         <li>
             <label>TOFF_MIN</label>
-            <input type=number name="TOFF_MIN"  min="0" max="255" value="">
+            <input type=number name="TOFF_MIN"  min="0" max="255" value="41">
         </li>
     </ul>
     <h2>Servo Mode</h2>

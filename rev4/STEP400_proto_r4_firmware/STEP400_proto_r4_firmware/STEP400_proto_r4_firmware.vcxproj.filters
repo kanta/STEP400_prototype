@@ -16,6 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="STEP400_proto_r4_firmware.ino" />
+    <None Include="osc_listeners.ino" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="__vm\.STEP400_proto_r4_firmware.vsarduino.h">

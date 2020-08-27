@@ -3,6 +3,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var myIpInput = document.querySelectorAll("input[name='myIp']");
     var isMyIpAddIdInput = document.querySelector("input[name='isMyIpAddId']");
     var destIpInput = document.querySelectorAll("input[name='destIp']");
+    var dnsInput = document.querySelectorAll("input[name='dns']");
     var gatewayInput = document.querySelectorAll("input[name='gateway']");
     var subnetInput = document.querySelectorAll("input[name='subnet']");
     var inPortInput = document.querySelector("input[name='inPort']");
@@ -74,6 +75,12 @@ window.addEventListener('DOMContentLoaded', function() {
                 Number(destIpInput[1].value), 
                 Number(destIpInput[2].value), 
                 Number(destIpInput[3].value)
+                ],
+                dns: [
+                Number(dnsInput[0].value), 
+                Number(dnsInput[1].value), 
+                Number(dnsInput[2].value), 
+                Number(dnsInput[3].value)
                 ],
                 gateway: [
                 Number(gatewayInput[0].value), 
