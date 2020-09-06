@@ -1,4 +1,4 @@
-# STEP400_prototype
+## STEP400_prototype
 ![STEP400_proto_r4](http://ponoor.com/manage/wp-content/uploads/2020/09/step400-angled-view.jpg)
 
 STEP400 is a 4-axis stepper motor driver designed for art or design projects. STEP400 combines the following elements into one single board:
@@ -12,12 +12,23 @@ The current firmware is focused on working with [Open Sound Control](http://open
 
 Stepper driver chips are STMicroelectronics's [powerSTEP01](https://www.st.com/en/motor-drivers/powerstep01.html) which provide most of functionalities as a stepper driver.
 
-# Repository Contents
+## Repository Contents
 
 This repo is temporal place for working. All information will be moved to a new repo when the clean up is done.
 
-- **/rev4/STEP400_proto_r4_firmware/STEP400_proto_r4_firmware/** - Source files for the firmware. Some Visual Studio files are included but you can open .ino file with Arduino IDE.
-- **/rev4/hardware/** - PCB design files for Eagle.
+### Firmware
+[/rev4/STEP400_proto_r4_firmware/STEP400_proto_r4_firmware/](https://github.com/kanta/STEP400_prototype/tree/master/rev4/STEP400_proto_r4_firmware/STEP400_proto_r4_firmware)
+
+Source files for the firmware. Some Visual Studio files are included but you can open .ino file with Arduino IDE.
+
+### Hardware
+[/rev4/hardware/](https://github.com/kanta/STEP400_prototype/tree/master/rev4/hardware)
+
+PCB design files for Eagle.
+
+## Firmware dependency
+- **[OSC Library](https://github.com/CNMAT/OSC)** from CNMAT
+- **[Ponoor_PowerSTEP01_Library](https://github.com/ponoor/Ponoor_PowerSTEP01_Library)**
 
 ## Examples
 ### Max
@@ -29,14 +40,10 @@ https://github.com/ponoor/step-series-example-openFrameworks
 ### Unity
 https://github.com/ponoor/step-series-example-Unity
 
-## Firmware dependency
-- **[OSC Library](https://github.com/CNMAT/OSC)** from CNMAT
-- **[Ponoor_PowerSTEP01_Library](https://github.com/ponoor/Ponoor_PowerSTEP01_Library)**
-
-# Documentation
+## Documentation
 Now working on [Wiki](https://github.com/kanta/STEP400_prototype/wiki).
 
-# License Information
+## License Information
 This product is open source.
 Various bits of the code have different licenses applied.
 Distributed as-is; no warranty is given.
