@@ -1,6 +1,9 @@
 window.addEventListener('DOMContentLoaded', function() {
     var NUM_MOTOR = 4;
     var inputElements = {
+        information: {
+            configName: document.querySelector("input[name='configName']")
+        },
         network: {
             myIp: document.querySelectorAll("input[name='myIp']"),
             isMyIpAddId: document.querySelector("input[name='isMyIpAddId']"),
@@ -134,7 +137,7 @@ window.addEventListener('DOMContentLoaded', function() {
         for(catName in inputElements) {
             configObject[catName] = {};
             for (paramName in inputElements[catName]) {
-                if (catName === 'network') {
+                if (catName === 'network' || catName === 'information') {
                     if (0 < inputElements[catName][paramName].length) {
                         configObject[catName][paramName] = [];
                         for (var i = 0; i < inputElements[catName][paramName].length; i++) {
@@ -166,6 +169,9 @@ window.addEventListener('DOMContentLoaded', function() {
                     case 'number':
                     return Number(elm.value);
                     break;
+                    case 'text':
+                    return elm.value;
+                    break;
                     case 'checkbox':
                     return elm.checked;
                     break;
@@ -193,11 +199,10 @@ window.addEventListener('DOMContentLoaded', function() {
 
         fileReader.onload = function(e) {
             var jsonObject = JSON.parse(e.target.result);
-            console.log(jsonObject);
 
             for(catName in inputElements) {
                 for (paramName in inputElements[catName]) {
-                    if (catName === 'network') {
+                    if (catName === 'network' || catName === 'information') {
                         if (0 < inputElements[catName][paramName].length) {
                             for (var i = 0; i < inputElements[catName][paramName].length; i++) {
                                 setInputValue(inputElements[catName][paramName][i], jsonObject[catName][paramName][i]);
@@ -220,6 +225,9 @@ window.addEventListener('DOMContentLoaded', function() {
                     var type = elm.getAttribute('type');
                     switch (type) {
                         case 'number':
+                        elm.value = val;
+                        break;
+                        case 'text':
                         elm.value = val;
                         break;
                         case 'checkbox':
