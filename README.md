@@ -42,8 +42,3 @@ https://github.com/ponoor/step-series-example-Unity
 
 ## Documentation
 Now working on [Wiki](https://github.com/kanta/STEP400_prototype/wiki).
-
-## License Information
-This product is open source.
-Various bits of the code have different licenses applied.
-Distributed as-is; no warranty is given.
