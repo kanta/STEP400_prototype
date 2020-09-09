@@ -110,6 +110,14 @@
 	<label>mac add id</label>
 	<div><input type="checkbox" name="isMacAddId" checked></div>
 </li>
+<li>
+	<label>booted msg enable</label>
+	<div><input type="checkbox" name="bootedMsgEnable" checked></div>
+</li>
+<li>
+	<label>can send msg before dest ip</label>
+	<div><input type="checkbox" name="canSendMsgBeforeDestIp"></div>
+</li>
 </ul>
 
 <h2>Alarm and Report</h2>
@@ -465,46 +473,56 @@
 <li>
 	<label>slewRate</label>
 	<div>
-<select name="slewRate">
-	<option value="0">114V/us</option>
-	<option value="1">220V/us</option>
-	<option value="2">400V/us</option>
-	<option value="3" selected="">520V/us</option>
-	<option value="4">790V/us</option>
-	<option value="5">980V/us</option>
-</select>
-<select name="slewRate">
-	<option value="0">114V/us</option>
-	<option value="1">220V/us</option>
-	<option value="2">400V/us</option>
-	<option value="3" selected="">520V/us</option>
-	<option value="4">790V/us</option>
-	<option value="5">980V/us</option>
-</select>
-<select name="slewRate">
-	<option value="0">114V/us</option>
-	<option value="1">220V/us</option>
-	<option value="2">400V/us</option>
-	<option value="3" selected="">520V/us</option>
-	<option value="4">790V/us</option>
-	<option value="5">980V/us</option>
-</select>
-<select name="slewRate">
-	<option value="0">114V/us</option>
-	<option value="1">220V/us</option>
-	<option value="2">400V/us</option>
-	<option value="3" selected="">520V/us</option>
-	<option value="4">790V/us</option>
-	<option value="5">980V/us</option>
-</select>
-<select name="slewRate">
-	<option value="0">114V/us</option>
-	<option value="1">220V/us</option>
-	<option value="2">400V/us</option>
-	<option value="3" selected="">520V/us</option>
-	<option value="4">790V/us</option>
-	<option value="5">980V/us</option>
-</select>
+		<select name="slewRate">
+			<option value="0">114V/us</option>
+			<option value="1">220V/us</option>
+			<option value="2">400V/us</option>
+			<option value="3" selected="">520V/us</option>
+			<option value="4">790V/us</option>
+			<option value="5">980V/us</option>
+		</select>
+		<select name="slewRate">
+			<option value="0">114V/us</option>
+			<option value="1">220V/us</option>
+			<option value="2">400V/us</option>
+			<option value="3" selected="">520V/us</option>
+			<option value="4">790V/us</option>
+			<option value="5">980V/us</option>
+		</select>
+		<select name="slewRate">
+			<option value="0">114V/us</option>
+			<option value="1">220V/us</option>
+			<option value="2">400V/us</option>
+			<option value="3" selected="">520V/us</option>
+			<option value="4">790V/us</option>
+			<option value="5">980V/us</option>
+		</select>
+		<select name="slewRate">
+			<option value="0">114V/us</option>
+			<option value="1">220V/us</option>
+			<option value="2">400V/us</option>
+			<option value="3" selected="">520V/us</option>
+			<option value="4">790V/us</option>
+			<option value="5">980V/us</option>
+		</select>
+		<select name="slewRate">
+			<option value="0">114V/us</option>
+			<option value="1">220V/us</option>
+			<option value="2">400V/us</option>
+			<option value="3" selected="">520V/us</option>
+			<option value="4">790V/us</option>
+			<option value="5">980V/us</option>
+		</select>
+	</div>
+</li>
+<li>
+	<label>electromagnet brake enable</label>
+	<div>
+		<input type="checkbox" name="electromagnetBrakeEnable">
+		<input type="checkbox" name="electromagnetBrakeEnable">
+		<input type="checkbox" name="electromagnetBrakeEnable">
+		<input type="checkbox" name="electromagnetBrakeEnable">
+		<input type="checkbox" name="electromagnetBrakeEnable">
 	</div>
 </li>
 </ul>

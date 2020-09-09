@@ -15,7 +15,9 @@ window.addEventListener('DOMContentLoaded', function() {
             outPort: document.querySelector("input[name='outPort']"),
             isOutPortAddId: document.querySelector("input[name='isOutPortAddId']"),
             mac: document.querySelectorAll("input[name='mac']"),
-            isMacAddId: document.querySelector("input[name='isMacAddId']")
+            isMacAddId: document.querySelector("input[name='isMacAddId']"),
+            bootedMsgEnable: document.querySelector("input[name='bootedMsgEnable']"),
+            canSendMsgBeforeDestIp: document.querySelector("input[name='canSendMsgBeforeDestIp']")
         }, 
         alarmAndReport: {
             reportBUSY: document.querySelectorAll("input[name='reportBUSY']"),
@@ -38,7 +40,8 @@ window.addEventListener('DOMContentLoaded', function() {
             homeSwMode: document.querySelectorAll("input[name='homeSwMode']"),
             limitSwMode: document.querySelectorAll("input[name='limitSwMode']"),
             isCurrentMode: document.querySelectorAll("input[name='isCurrentMode']"),
-            slewRate: document.querySelectorAll("select[name='slewRate']")
+            slewRate: document.querySelectorAll("select[name='slewRate']"),
+            electromagnetBrakeEnable: document.querySelectorAll("input[name='electromagnetBrakeEnable']")
         }, 
         speedProfile: {
             acc: document.querySelectorAll("input[name='acc']"),
