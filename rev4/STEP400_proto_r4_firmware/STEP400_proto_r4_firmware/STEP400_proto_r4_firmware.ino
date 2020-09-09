@@ -576,6 +576,15 @@ void checkLimitSw() {
     }
 }
 
+void checkSetupSw() {
+    static boolean lastSetupSwState = false;
+    if ( digitalRead(SETUP_SW_PIN) != lastSetupSwState )
+    {
+        lastSetupSwState = !lastSetupSwState;
+        sendOneInt("/setupSw", !lastSetupSwState);
+    }
+}
+
 void checkLED(uint32_t _currentTimeMillis) {
     if (rxLedEnabled)
     {
@@ -634,6 +643,7 @@ void loop() {
     {
         checkStatus();
         checkLimitSw();
+        checkSetupSw();
         checkLED(currentTimeMillis);
         uint8_t t = getMyId();
         if (myId != t) {
