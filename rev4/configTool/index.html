@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>STEP400 config tool</title>
+	<title>STEP400 configuration tool</title>
 	<link rel="stylesheet" href="./css/styles.css">
 	<link rel="stylesheet" href="./css/temp.css">
 	<script type="text/javascript" src="./js/styles.js"></script>
@@ -12,7 +12,7 @@
 <div class="container">
 
 
-<h1>STEP400 config tool</h1>
+<h1>STEP400 configuration tool</h1>
 
 <div class="file-input">
 	<input type='file' name="load" id="file" onchange="pressed()">
@@ -20,10 +20,10 @@
 </div>
 
 <form action="">
-<h2>Network</h2>
+<h2>Information</h2>
 <ul class="input-list">
 	<li>
-	<label>config name</label>
+	<label>configuration name</label>
 	<div>
 		<input type="text" name="configName">
 	</div>
@@ -33,7 +33,7 @@
 <h2>Network</h2>
 <ul class="input-list">
 <li>
-	<label>my ip</label>
+	<label>My IP address</label>
 	<div>
 		<input type="number" name="myIp" size="10" min="0" max="255" value="10">
 		<input type="number" name="myIp" size="10" min="0" max="255" value="0">
@@ -42,13 +42,13 @@
 	</div>
 </li>
 <li>
-	<label>my ip add id</label>
+	<label>ID adds to my IP</label>
 	<div>
 		<input type="checkbox" name="isMyIpAddId" checked>
 	</div>
 </li>
 <li>
-	<label>dest ip</label>
+	<label>Destination IP</label>
 	<div>
 		<input type="number" name="destIp" size="10" min="0" max="255" value="10">
 		<input type="number" name="destIp" size="10" min="0" max="255" value="0">
@@ -75,7 +75,7 @@
 	</div>
 </li>
 <li>
-	<label>Subnet Mask</label>
+	<label>Subnet mask</label>
 	<div>
 		<input type="number" name="subnet" size="10" min="0" max="255" value="255">
 		<input type="number" name="subnet" size="10" min="0" max="255" value="255">
@@ -84,11 +84,11 @@
 	</div>
 </li>
 <li>
-	<label>in port</label>
+	<label>Incoming port</label>
 	<div><input type="number" name="inPort" size="30" value="50000"></div>
 </li>
 <li>
-	<label>out port</label>
+	<label>Outgoing port</label>
 	<div><input type="number" name="outPort" size="30" value="50100"></div>
 </li>
 <li>
@@ -96,7 +96,7 @@
 	<div><input type="checkbox" name="isOutPortAddId" checked></div>
 </li>
 <li>
-	<label>mac</label>
+	<label>MAC address</label>
 	<div>
 		<input type="number" name="mac" size="10" min="0" max="255" value="96">
 		<input type="number" name="mac" size="10" min="0" max="255" value="149">
