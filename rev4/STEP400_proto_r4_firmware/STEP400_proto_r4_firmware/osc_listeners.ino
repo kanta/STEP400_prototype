@@ -23,6 +23,32 @@ void getVersion(OSCMessage& msg, int addrOffset) {
     sendOneString("/version", version.c_str());
 }
 
+void getConfigName(OSCMessage& msg, int addrOffset) {
+    if (!isDestIpSet) { return; }
+    OSCMessage newMes("/configName");
+    newMes.add(configName).add(sdInitializeSucceeded).add(configFileOpenSucceeded).add(configFileParseSucceeded);
+    Udp.beginPacket(destIp, outPort);
+    newMes.send(Udp);
+    Udp.endPacket();
+    newMes.empty();
+    turnOnTXL();
+}
+
+void getConfigRegister(uint8_t deviceID) {
+    sendTwoInt("/configRegister", deviceID, stepper[deviceID-MOTOR_ID_FIRST].getParam(CONFIG));
+}
+void getConfigRegister(OSCMessage& msg, int addrOffset) {
+    uint8_t motorID = msg.getInt(0);
+    if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
+        getConfigRegister(motorID);
+    }
+    else if (motorID == MOTOR_ID_ALL) {
+        for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
+            getConfigRegister(i + MOTOR_ID_FIRST);
+        }
+    }
+}
+
 // reset the motor driver chip and setup it
 void resetMotorDriver(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
@@ -31,7 +57,7 @@ void resetMotorDriver(OSCMessage& msg, int addrOffset) {
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            resetMotorDriver(i);
+            resetMotorDriver(i + MOTOR_ID_FIRST);
         }
     }
 }
@@ -315,13 +341,15 @@ void getStatusList(OSCMessage& msg, int addrOffset) {
 
 void setMicrostepMode(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
-    uint8_t microstepMode = constrain(msg.getInt(1), STEP_FS, STEP_FS_128); // 0-7
+    uint8_t value = constrain(msg.getInt(1), STEP_FS, STEP_FS_128); // 0-7
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].configStepMode(microstepMode);
+        stepper[motorID - MOTOR_ID_FIRST].configStepMode(value);
+        microStepMode[motorID - MOTOR_ID_FIRST] = value;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].configStepMode(microstepMode);
+            stepper[i].configStepMode(value);
+            microStepMode[i] = value;
         }
     }
 }
@@ -354,13 +382,15 @@ void getHomeSwMode(OSCMessage& msg, int addrOffset) {
 
 void setHomeSwMode(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
-    uint16_t switchMode = (msg.getInt(1) > 0) ? SW_USER : SW_HARD_STOP;
+    uint16_t value = (msg.getInt(1) > 0) ? SW_USER : SW_HARD_STOP;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setSwitchMode(switchMode);
+        stepper[motorID - MOTOR_ID_FIRST].setSwitchMode(value);
+        homeSwMode[motorID - MOTOR_ID_FIRST] = (value > 0);
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setSwitchMode(switchMode);
+            stepper[i].setSwitchMode(value);
+            homeSwMode[i] = (value > 0);
         }
     }
 }
@@ -429,10 +459,12 @@ void setOverCurrentThreshold(OSCMessage& msg, int addrOffset) {
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
         stepper[motorID - MOTOR_ID_FIRST].setParam(OCD_TH, threshold);
         getOverCurrentThreshold(motorID);
+        overCurrentThreshold[motorID - MOTOR_ID_FIRST] = threshold;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
             stepper[i].setParam(OCD_TH, threshold);
+            overCurrentThreshold[i] = threshold;
             getOverCurrentThreshold(i + 1);
         }
     }
@@ -457,13 +489,16 @@ void getOverCurrentThreshold(OSCMessage& msg, int addrOffset) {
 
 void setLowSpeedOptimizeThreshold(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
-    float stepsPerSecond = msg.getFloat(1);
+    float _minSpeed = msg.getFloat(1);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setMinSpeed(stepsPerSecond);
+        motorID -= MOTOR_ID_FIRST;
+        stepper[motorID].setMinSpeed(_minSpeed);
+        lowSpeedOptimize[motorID] = _minSpeed;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setMinSpeed(stepsPerSecond);
+            stepper[i].setMinSpeed(_minSpeed);
+            lowSpeedOptimize[i] = _minSpeed;
         }
     }
 }
@@ -910,34 +945,43 @@ void getTval_mA(OSCMessage& msg, int addrOffset) {
 
 void setSpeedProfile(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
-    float acc = msg.getFloat(1);
-    float dec = msg.getFloat(2);
-    float maxSpeed = msg.getFloat(3);
+    float _acc = msg.getFloat(1);
+    float _dec = msg.getFloat(2);
+    float _maxSpeed = msg.getFloat(3);
 
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setAcc(acc);
-        stepper[motorID - MOTOR_ID_FIRST].setDec(dec);
-        stepper[motorID - MOTOR_ID_FIRST].setMaxSpeed(maxSpeed);
-
+        motorID -= MOTOR_ID_FIRST;
+        stepper[motorID].setAcc(_acc);
+        stepper[motorID].setDec(_dec);
+        stepper[motorID].setMaxSpeed(_maxSpeed);
+        acc[motorID] = _acc;
+        dec[motorID] = _dec;
+        maxSpeed[motorID] = _maxSpeed;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setAcc(acc);
-            stepper[i].setDec(dec);
-            stepper[i].setMaxSpeed(maxSpeed);
+            stepper[i].setAcc(_acc);
+            stepper[i].setDec(_dec);
+            stepper[i].setMaxSpeed(_maxSpeed);
+            acc[i] = _acc;
+            dec[i] = _dec;
+            maxSpeed[i] = _maxSpeed;
         }
     }
 }
 
 void setMaxSpeed(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
-    float stepsPerSecond = msg.getFloat(1);
+    float _maxSpeed = msg.getFloat(1);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setMaxSpeed(stepsPerSecond);
+        motorID -= MOTOR_ID_FIRST;
+        stepper[motorID].setMaxSpeed(_maxSpeed);
+        maxSpeed[motorID] = _maxSpeed;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setMaxSpeed(stepsPerSecond);
+            stepper[i].setMaxSpeed(_maxSpeed);
+            maxSpeed[i] = _maxSpeed;
         }
     }
 }
@@ -945,71 +989,80 @@ void setMaxSpeed(OSCMessage& msg, int addrOffset) {
 
 void setFullstepSpeed(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
-    float stepsPerSecond = msg.getFloat(1);
+    float _fullStepSpeed = msg.getFloat(1);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setFullSpeed(stepsPerSecond);
+        motorID -= MOTOR_ID_FIRST;
+        stepper[motorID].setFullSpeed(_fullStepSpeed);
+        fullStepSpeed[motorID] = _fullStepSpeed;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setFullSpeed(stepsPerSecond);
+            stepper[i].setFullSpeed(_fullStepSpeed);
+            fullStepSpeed[i] = _fullStepSpeed;
         }
     }
 }
 void getFullstepSpeed(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
-    float s;
+    float _fullStepSpeed;
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        s = stepper[motorID - MOTOR_ID_FIRST].getFullSpeed();
-        sendIdFloat("/fullstepSpeed", motorID, s);
+        _fullStepSpeed = stepper[motorID - MOTOR_ID_FIRST].getFullSpeed();
+        sendIdFloat("/fullstepSpeed", motorID, _fullStepSpeed);
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            s = stepper[i].getFullSpeed();
-            sendIdFloat("/fullstepSpeed", i + 1, s);
+            _fullStepSpeed = stepper[i].getFullSpeed();
+            sendIdFloat("/fullstepSpeed", i + 1, _fullStepSpeed);
         }
     }
 }
 void setAcc(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
-    float stepsPerSecondPerSecond = msg.getFloat(1);
+    float _acc = msg.getFloat(1);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setAcc(stepsPerSecondPerSecond);
+        motorID -= MOTOR_ID_FIRST;
+        stepper[motorID].setAcc(_acc);
+        acc[motorID] = _acc;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setAcc(stepsPerSecondPerSecond);
+            stepper[i].setAcc(_acc);
+            acc[i] = _acc;
         }
     }
 }
 void setDec(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
-    float stepsPerSecondPerSecond = msg.getFloat(1);
+    float _dec = msg.getFloat(1);
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setDec(stepsPerSecondPerSecond);
+        motorID -= MOTOR_ID_FIRST;
+        stepper[motorID].setDec(_dec);
+        dec[motorID] = _dec;
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setDec(stepsPerSecondPerSecond);
+            stepper[i].setDec(_dec);
+            dec[i] = _dec;
         }
     }
 }
 
 void setSpeedProfileRaw(OSCMessage& msg, int addrOffset) {
     uint8_t motorID = msg.getInt(0);
-    uint16_t acc = msg.getInt(1);
-    uint16_t dec = msg.getInt(2);
-    uint16_t maxSpeed = msg.getInt(3);
+    uint16_t _accRaw = msg.getInt(1);
+    uint16_t _decRaw = msg.getInt(2);
+    uint16_t _maxSpeedRaw = msg.getInt(3);
 
     if (MOTOR_ID_FIRST <= motorID && motorID <= MOTOR_ID_LAST) {
-        stepper[motorID - MOTOR_ID_FIRST].setAccRaw(acc);
-        stepper[motorID - MOTOR_ID_FIRST].setDecRaw(dec);
-        stepper[motorID - MOTOR_ID_FIRST].setMaxSpeedRaw(maxSpeed);
+        stepper[motorID - MOTOR_ID_FIRST].setAccRaw(_accRaw);
+        stepper[motorID - MOTOR_ID_FIRST].setDecRaw(_decRaw);
+        stepper[motorID - MOTOR_ID_FIRST].setMaxSpeedRaw(_maxSpeedRaw);
     }
     else if (motorID == MOTOR_ID_ALL) {
         for (uint8_t i = 0; i < NUM_OF_MOTOR; i++) {
-            stepper[i].setAccRaw(acc);
-            stepper[i].setDecRaw(dec);
-            stepper[i].setMaxSpeedRaw(maxSpeed);
+            stepper[i].setAccRaw(_accRaw);
+            stepper[i].setDecRaw(_decRaw);
+            stepper[i].setMaxSpeedRaw(_maxSpeedRaw);
         }
     }
 }
@@ -1539,6 +1592,7 @@ void setCurrentMode(uint8_t motorID) {
     if (stepper[motorID].getStepMode() > STEP_SEL_1_16)
     {
         stepper[motorID].configStepMode(STEP_SEL_1_16);
+        microStepMode[motorID] = STEP_SEL_1_16;
     }
     stepper[motorID].setHoldTVAL(tvalHold[motorID]);
     stepper[motorID].setRunTVAL(tvalRun[motorID]);

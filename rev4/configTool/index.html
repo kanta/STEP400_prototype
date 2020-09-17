@@ -25,7 +25,7 @@
 	<li>
 	<label>configuration name</label>
 	<div>
-		<input type="text" name="configName">
+		<input type="text" name="configName" maxlength="32">
 	</div>
 	</li>
 </ul>
@@ -92,7 +92,7 @@
 	<div><input type="number" name="outPort" size="30" value="50100"></div>
 </li>
 <li>
-	<label>out port add id</label>
+	<label>ID adds to Outgoing port</label>
 	<div><input type="checkbox" name="isOutPortAddId" checked></div>
 </li>
 <li>
@@ -107,30 +107,30 @@
 	</div>
 </li>
 <li>
-	<label>mac add id</label>
+	<label>ID adds to MAC address</label>
 	<div><input type="checkbox" name="isMacAddId" checked></div>
 </li>
 <li>
-	<label>booted msg enable</label>
+	<label>Booted message enable</label>
 	<div><input type="checkbox" name="bootedMsgEnable" checked></div>
 </li>
 <li>
-	<label>can send msg before dest ip</label>
+	<label>Allow OSC reply before /setDestIp</label>
 	<div><input type="checkbox" name="canSendMsgBeforeDestIp"></div>
 </li>
 </ul>
 
 <h2>Alarm and Report</h2>
 <div>
-	<label>target all</label>
+	<label>Set all motors</label>
 	<div><input type="checkbox" name="targetAll" class="alarmAndReport"></div>
 </div>
 <div>
 	<div>
-		<p>parameter name</p>
+		<p>Parameter</p>
 	</div>
 	<div class="rowLabel alarmAndReport">
-		<p>motor 1~4</p>
+		<p>motor 1-4</p>
 		<p>motor 1</p>
 		<p>motor 2</p>
 		<p>motor 3</p>
@@ -139,7 +139,7 @@
 </div>
 <ul class="input-list">
 <li>
-	<label>report BUSY</label>
+	<label>Report BUSY</label>
 	<div>
 		<input type="checkbox" name="reportBUSY">
 		<input type="checkbox" name="reportBUSY">
@@ -149,7 +149,7 @@
 	</div>
 </li>
 <li>
-	<label>report FLAG</label>
+	<label>Report FLAG</label>
 	<div>
 		<input type="checkbox" name="reportFLAG">
 		<input type="checkbox" name="reportFLAG">
@@ -159,7 +159,7 @@
 	</div>
 </li>
 <li>
-	<label>report HiZ</label>
+	<label>Report HiZ state</label>
 	<div>
 		<input type="checkbox" name="reportHiZ">
 		<input type="checkbox" name="reportHiZ">
@@ -169,7 +169,7 @@
 	</div>
 </li>
 <li>
-	<label>report home sw status</label>
+	<label>Report HOME switch status</label>
 	<div>
 		<input type="checkbox" name="reportHomeSwStatus">
 		<input type="checkbox" name="reportHomeSwStatus">
@@ -179,7 +179,7 @@
 	</div>
 </li>
 <li>
-	<label>report dir</label>
+	<label>Report motor direction</label>
 	<div>
 		<input type="checkbox" name="reportDir">
 		<input type="checkbox" name="reportDir">
@@ -189,7 +189,7 @@
 	</div>
 </li>
 <li>
-	<label>report motor status</label>
+	<label>Report Motor status</label>
 	<div>
 		<input type="checkbox" name="reportMotorStatus">
 		<input type="checkbox" name="reportMotorStatus">
@@ -199,7 +199,7 @@
 	</div>
 </li>
 <li>
-	<label>report sw evn</label>
+	<label>Report HOME switch event</label>
 	<div>
 		<input type="checkbox" name="reportSwEvn">
 		<input type="checkbox" name="reportSwEvn">
@@ -209,7 +209,7 @@
 	</div>
 </li>
 <li>
-	<label>report command error</label>
+	<label>Report command error</label>
 	<div>
 		<input type="checkbox" name="reportCommandError" checked>
 		<input type="checkbox" name="reportCommandError" checked>
@@ -219,7 +219,7 @@
 	</div>
 </li>
 <li>
-	<label>report UVLO</label>
+	<label>Report undervoltage lockout</label>
 	<div>
 		<input type="checkbox" name="reportUVLO" checked>
 		<input type="checkbox" name="reportUVLO" checked>
@@ -229,7 +229,7 @@
 	</div>
 </li>
 <li>
-	<label>report thermal status</label>
+	<label>Report thermal status of driver chip</label>
 	<div>
 		<input type="checkbox" name="reportThermalStatus" checked>
 		<input type="checkbox" name="reportThermalStatus" checked>
@@ -239,7 +239,7 @@
 	</div>
 </li>
 <li>
-	<label>report OCD</label>
+	<label>Report over currend detection</label>
 	<div>
 		<input type="checkbox" name="reportOCD" checked>
 		<input type="checkbox" name="reportOCD" checked>
@@ -249,7 +249,7 @@
 	</div>
 </li>
 <li>
-	<label>report stall</label>
+	<label>Report motor stall detection</label>
 	<div>
 		<input type="checkbox" name="reportStall">
 		<input type="checkbox" name="reportStall">
@@ -259,7 +259,7 @@
 	</div>
 </li>
 <li>
-	<label>report limit sw status</label>
+	<label>Report LIMIT switch status</label>
 	<div>
 		<input type="checkbox" name="reportLimitSwStatus">
 		<input type="checkbox" name="reportLimitSwStatus">
@@ -269,7 +269,7 @@
 	</div>
 </li>
 <li>
-	<label>OC threshold</label>
+	<label>Overcurrent detection threshold</label>
 	<div>
 		<select name="OCThreshold">
 			<option value="0">312.5mA</option>
@@ -367,17 +367,17 @@
 
 <h2>Driver Settings</h2>
 <div>
-	<label>target all</label>
+	<label>Set all motors</label>
 	<div>
 		<input type="checkbox" name="targetAll" class="driverSettings">
 	</div>
 </div>
 <div>
 	<div>
-		<p>parameter name</p>
+		<p>Parameter</p>
 	</div>
 	<div class="rowLabel driverSettings">
-		<p>motor 1~4</p>
+		<p>motor 1-4</p>
 		<p>motor 1</p>
 		<p>motor 2</p>
 		<p>motor 3</p>
@@ -386,7 +386,7 @@
 </div>
 <ul class="input-list">
 <li>
-	<label>stepMode</label>
+	<label>Microstepping mode</label>
 	<div>
 		<select name="stepMode">
 			<option value="0">Full-step</option>
@@ -441,7 +441,7 @@
 	</div>
 </li>
 <li>
-	<label class="-lg">Home Sensors won't cause HardStop</label>
+	<label class="-lg">Home switch won't cause HardStop</label>
 	<div>
 		<input type="checkbox" name="homeSwMode" checked>
 		<input type="checkbox" name="homeSwMode" checked>
@@ -451,7 +451,7 @@
 	</div>
 </li>
 <li>
-	<label class="-lg">Limit Sensors won't cause HardStop</label>
+	<label class="-lg">Limit switch won't cause HardStop</label>
 	<div>
 		<input type="checkbox" name="limitSwMode" checked>
 		<input type="checkbox" name="limitSwMode" checked>
@@ -461,7 +461,7 @@
 	</div>
 </li>
 <li>
-	<label>start with current mode</label>
+	<label>Current mode</label>
 	<div>
 		<input type="checkbox" name="isCurrentMode">
 		<input type="checkbox" name="isCurrentMode">
@@ -471,7 +471,7 @@
 	</div>
 </li>
 <li>
-	<label>slewRate</label>
+	<label>Slew rate</label>
 	<div>
 		<select name="slewRate">
 			<option value="0">114V/us</option>
@@ -516,7 +516,7 @@
 	</div>
 </li>
 <li>
-	<label>electromagnet brake enable</label>
+	<label>Electromagnetic brake enable</label>
 	<div>
 		<input type="checkbox" name="electromagnetBrakeEnable">
 		<input type="checkbox" name="electromagnetBrakeEnable">
@@ -529,17 +529,17 @@
 
 <h2>Speed Profile</h2>
 <div>
-	<label>target all</label>
+	<label>Set all motors</label>
 	<div>
 		<input type="checkbox" name="targetAll" class="speedProfile">
 	</div>
 </div>
 <div>
 	<div>
-		<p>parameter name</p>
+		<p>Parameter</p>
 	</div>
 	<div class="rowLabel speedProfile">
-		<p>motor 1~4</p>
+		<p>motor 1-4</p>
 		<p>motor 1</p>
 		<p>motor 2</p>
 		<p>motor 3</p>
@@ -548,60 +548,64 @@
 </div>
 <ul class="input-list">
 <li>
-	<label>acc</label>
+	<label>Acceleration</label>
 	<div>
 		<input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
 		<input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
 		<input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
 		<input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
 		<input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
+		step/s/s
 	</div>
 </li>
 <li>
-	<label>dec</label>
+	<label>Decceleration</label>
 	<div>
 		<input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
 		<input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
 		<input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
 		<input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
 		<input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
+		step/s/s
 	</div>
 </li>
 <li>
-	<label>maxSpeed</label>
+	<label>Max speed</label>
 	<div>
 		<input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
 		<input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
 		<input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
 		<input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
 		<input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
+		step/s
 	</div>
 </li>
 <li>
-	<label>fullStepSpeed</label>
+	<label>Transit to fullstep threshold speed</label>
 	<div>
 		<input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
 		<input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
 		<input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
 		<input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
 		<input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
+		step/s
 	</div>
 </li>
 </ul>
 
 <h2>Voltage Mode</h2>
 <div>
-	<label>target all</label>
+	<label>Set all motors</label>
 	<div>
 		<input type="checkbox" name="targetAll" class="voltageMode">
 	</div>
 </div>
 <div>
 	<div>
-		<p>parameter name</p>
+		<p>Parameter</p>
 	</div>
 	<div class="rowLabel voltageMode">
-		<p>motor 1~4</p>
+		<p>motor 1-4</p>
 		<p>motor 1</p>
 		<p>motor 2</p>
 		<p>motor 3</p>
@@ -872,22 +876,23 @@
 		<input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
 		<input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
 		<input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
+		step/s
 	</div>
 </li>
 </ul>
 <h2>Current Mode</h2>
 <div>
-	<label>target all</label>
+	<label>Set all motors</label>
 	<div>
 		<input type="checkbox" name="targetAll" class="currentMode">
 	</div>
 </div>
 <div>
 	<div>
-		<p>parameter name</p>
+		<p>Parameter</p>
 	</div>
 	<div class="rowLabel currentMode">
-		<p>motor 1~4</p>
+		<p>motor 1-4</p>
 		<p>motor 1</p>
 		<p>motor 2</p>
 		<p>motor 3</p>
@@ -969,17 +974,17 @@
 
 <h2>Servo Mode</h2>
 <div>
-	<label>target all</label>
+	<label>Set all motors</label>
 	<div>
 		<input type="checkbox" name="targetAll" class="servoMode">
 	</div>
 </div>
 <div>
 	<div>
-		<p>parameter name</p>
+		<p>Parameter</p>
 	</div>
 	<div class="rowLabel servoMode">
-		<p>motor 1~4</p>
+		<p>motor 1-4</p>
 		<p>motor 1</p>
 		<p>motor 2</p>
 		<p>motor 3</p>

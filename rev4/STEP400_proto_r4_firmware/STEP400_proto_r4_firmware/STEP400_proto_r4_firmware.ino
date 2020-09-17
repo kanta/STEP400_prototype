@@ -6,19 +6,27 @@
  Author:    kanta
 */
 
-#include <Arduino.h>
 #include "wiring_private.h" // pinPeripheral() function
 #include <SPI.h>
 #include <OSCMessage.h>
 #include <Ethernet.h>
 #include <Ponoor_PowerSTEP01Library.h>
-
+#include <SD.h>
+#include <ArduinoJson.h>
 
 #define COMPILE_DATE __DATE__
 #define COMPILE_TIME __TIME__
 constexpr auto PROJECT_NAME = "STEP400proto_r4";
 boolean debugMode = false;
 
+// Json configuration file
+const char* filename = "/config.txt";
+char configName[32];
+bool sdInitializeSucceeded = false;
+bool configFileOpenSucceeded = false;
+bool configFileParseSucceeded = false;
+
+// pins
 #define ledPin	13u
 const uint8_t dipSwPin[8] = { A5,SCL,7u,SDA,2u,9u,3u,0u };
 const uint8_t limitSwPin[4] = { 1u,5u,8u,A1 };
@@ -51,21 +59,30 @@ uint8_t kvalHold[NUM_OF_MOTOR], kvalRun[NUM_OF_MOTOR], kvalAcc[NUM_OF_MOTOR], kv
 uint8_t tvalHold[NUM_OF_MOTOR], tvalRun[NUM_OF_MOTOR], tvalAcc[NUM_OF_MOTOR], tvalDec[NUM_OF_MOTOR];
 bool isCurrentMode[NUM_OF_MOTOR];;
 
+// Network
 byte mac[] = { 0x60, 0x95, 0xCE, 0x10, 0x02, 0x00 },
     myId = 0;
-#define IP_OFFSET	100
-IPAddress myIp(10, 0, 0, IP_OFFSET);
-IPAddress destIp(10, 0, 0, 10);
-unsigned int outPort = 50100;
-unsigned int inPort = 50000;
+IPAddress 
+    myIp(10, 0, 0, 100),
+    destIp(10, 0, 0, 10),
+    dns(10, 0, 0, 1),
+    gateway(10, 0, 0, 1),
+    subnet(255, 255, 255, 0);
+unsigned int outPort;
+unsigned int inPort;
 EthernetUDP Udp;
-boolean isDestIpSet = false;
+boolean
+    isDestIpSet,
+    isMyIpAddId,
+    isMacAddId,
+    isOutPortAddId,
+    bootedMsgEnable;
 
 #define W5500_RESET_PIN A3
 
 #define STATUS_POLL_PERIOD   1 // [ms]
 
-// these values will be initialized at setup()
+// these values will be initialized at loadConfig()
 bool busy[NUM_OF_MOTOR];
 bool flag[NUM_OF_MOTOR];
 bool HiZ[NUM_OF_MOTOR];
@@ -93,15 +110,31 @@ bool limitSwState[NUM_OF_MOTOR];
 bool reportLimitSwStatus[NUM_OF_MOTOR];
 bool limitSwMode[NUM_OF_MOTOR];
 
+// Init value storages
+bool homeSwMode[NUM_OF_MOTOR];
+
 uint16_t intersectSpeed[NUM_OF_MOTOR]; // INT_SPEED
 uint8_t 
     startSlope[NUM_OF_MOTOR], // ST_SLP
     accFinalSlope[NUM_OF_MOTOR], // FN_SLP_ACC
-    decFinalSlope[NUM_OF_MOTOR]; // FN_SLP_DEC
+    decFinalSlope[NUM_OF_MOTOR], // FN_SLP_DEC
+    stallThreshold[NUM_OF_MOTOR]; // STALL_TH
 uint8_t
     fastDecaySetting[NUM_OF_MOTOR], // T_FAST
     minOnTime[NUM_OF_MOTOR], // TON_MIN
     minOffTime[NUM_OF_MOTOR]; // TOFF_MIN
+uint8_t
+    overCurrentThreshold[NUM_OF_MOTOR], // OCD
+    microStepMode[NUM_OF_MOTOR]; // STEP_MODE
+uint16_t slewRate[NUM_OF_MOTOR];
+float lowSpeedOptimize[NUM_OF_MOTOR];
+bool electromagnetBrakeEnable[NUM_OF_MOTOR];
+
+float
+    acc[NUM_OF_MOTOR],
+    dec[NUM_OF_MOTOR],
+    maxSpeed[NUM_OF_MOTOR],
+    fullStepSpeed[NUM_OF_MOTOR];
 
 // servo mode
 uint32_t lastServoUpdateTime;
@@ -114,14 +147,6 @@ constexpr auto position_tolerance = 0; // steps
 bool rxLedEnabled = false, txLedEnabled = false;
 uint32_t RXL_blinkStartTime, TXL_blinkStartTime;
 #define RXL_TXL_BLINK_DURATION	30 // ms
-
-void setUSBPriority()
-{
-    const auto irqn = USB_IRQn;
-    NVIC_DisableIRQ(irqn);
-    NVIC_SetPriority(irqn, 2);
-    NVIC_EnableIRQ(irqn);
-}
 
 void setup() {
     //setUSBPriority();
@@ -151,51 +176,10 @@ void setup() {
     pinPeripheral(POWERSTEP_SCK, PIO_SERCOM_ALT);
     pinPeripheral(POWERSTEP_MISO, PIO_SERCOM_ALT);
     powerStepSPI.setDataMode(SPI_MODE3);
-
+    
+    loadConfig();
     for (uint8_t i = 0; i < NUM_OF_MOTOR; i++)
     {
-        busy[i] = false;
-        flag[i] = false;
-        HiZ[i] = false;
-        homeSwState[i] = false;
-        dir[i] = false;
-        uvloStatus[i] = false;
-        motorStatus[i] = 0;
-        thermalStatus[i] = 0;
-
-        reportBUSY[i] = false;
-        reportFLAG[i] = false;
-        reportHiZ[i] = false;
-        reportHomeSwStatus[i] = false;
-        reportDir[i] = false;
-        reportMotorStatus[i] = false;
-        reportSwEvn[i] = false;
-        reportCommandError[i] = true;
-        reportUVLO[i] = true;
-        reportThermalStatus[i] = true;
-        reportOCD[i] = true;
-        reportStall[i] = true;
-
-        limitSwState[i] = false;
-        reportLimitSwStatus[i] = false;
-        limitSwMode[i] = false;
-
-        intersectSpeed[i] = 0x0408; // INT_SPEED
-        startSlope[i] = 0x19;// ST_SLP
-        accFinalSlope[i] = 0x29; // FN_SLP_ACC
-        decFinalSlope[i] = 0x29; // FN_SLP_DEC
-        fastDecaySetting[i] = 0x19; // T_FAST
-        minOnTime[i] = 0x29; // TON_MIN
-        minOffTime[i] = 0x29; // TOFF_MIN
-
-        targetPosition[i] = 0;
-        kP[i] = 0.06f;
-        kI[i] = 0.0f;
-        kD[i] = 0.0f;
-        isServoMode[i] = false;
-
-        isCurrentMode[i] = false;
-        
         stepper[i].SPIPortConnect(&powerStepSPI);
         resetMotorDriver(i + MOTOR_ID_FIRST);
         digitalWrite(ledPin, HIGH);
@@ -209,8 +193,33 @@ void setup() {
     myId = getMyId();
     delay(1);
     resetEthernet();
+
+    if (bootedMsgEnable) sendBootMsg();
+
+    if (digitalRead(SETUP_SW_PIN) == LOW) 
+    {
+        diagnosisSetup();
+        while (1) {
+            diagnosisLoop();
+        }
+    }
 }
 
+void sendBootMsg() {
+    IPAddress broadcastIp;
+    for (uint8_t i = 0; i < 3; i++)
+    {
+        broadcastIp[i] = destIp[i];
+    }
+    broadcastIp[3] = 255;
+    OSCMessage newMes("/booted");
+    newMes.add(myId);
+    Udp.beginPacket(broadcastIp, outPort);
+    newMes.send(Udp);
+    Udp.endPacket();
+    newMes.empty();
+    turnOnTXL();
+}
 uint8_t getMyId() {
     uint8_t _id = 0;
     for (auto i = 0; i < 8; ++i)
@@ -228,9 +237,9 @@ void resetEthernet() {
     digitalWrite(W5500_RESET_PIN, HIGH);
     digitalWrite(ledPin, LOW);
     delay(1);
-    mac[5] = IP_OFFSET + myId;
-    myIp[3] = IP_OFFSET + myId;
-    outPort = 50000 + IP_OFFSET + myId;
+    if ( isMyIpAddId ) myIp[3] += myId;
+    if ( isMacAddId ) mac[5] += myId;
+    if ( isOutPortAddId ) outPort += myId;
     Ethernet.begin(mac, myIp);
     Udp.begin(inPort);
 }
@@ -239,40 +248,40 @@ void resetMotorDriver(uint8_t deviceID) {
     if (MOTOR_ID_FIRST <= deviceID && deviceID <= MOTOR_ID_LAST) {
         deviceID -= MOTOR_ID_FIRST;
         stepper[deviceID].resetDev();
-        stepper[deviceID].configStepMode(STEP_FS_128);
-        stepper[deviceID].setMaxSpeed(650.);
+        stepper[deviceID].configStepMode(microStepMode[deviceID]);
+        stepper[deviceID].setMaxSpeed(maxSpeed[deviceID]);
         stepper[deviceID].setLoSpdOpt(true);
-        stepper[deviceID].setMinSpeed(20.); // Low speed optimazation threshold
-        stepper[deviceID].setFullSpeed(15610.);
+        stepper[deviceID].setMinSpeed(lowSpeedOptimize[deviceID]); // Low speed optimazation threshold
+        stepper[deviceID].setFullSpeed(fullStepSpeed[deviceID]);
         stepper[deviceID].setParam(INT_SPD, intersectSpeed[deviceID]);
         stepper[deviceID].setParam(ST_SLP, startSlope[deviceID]);
         stepper[deviceID].setParam(FN_SLP_ACC, accFinalSlope[deviceID]);
         stepper[deviceID].setParam(FN_SLP_DEC, decFinalSlope[deviceID]);
-        stepper[deviceID].setAcc(2000.);
-        stepper[deviceID].setDec(2000.);
-        stepper[deviceID].setSlewRate(SR_980V_us);
-        stepper[deviceID].setOCThreshold(15); // 5A for 0.1ohm shunt resistor
-        stepper[deviceID].setOCShutdown(OC_SD_ENABLE);
+        stepper[deviceID].setAcc(acc[deviceID]);
+        stepper[deviceID].setDec(dec[deviceID]);
+        stepper[deviceID].setSlewRate(slewRate[deviceID]);
         stepper[deviceID].setPWMFreq(PWM_DIV_1, PWM_MUL_0_75);
+        uint16_t swMode = homeSwMode[deviceID] ? SW_USER : SW_HARD_STOP;
+        stepper[deviceID].setSwitchMode(swMode);//
         stepper[deviceID].setVoltageComp(VS_COMP_DISABLE);
-        stepper[deviceID].setSwitchMode(SW_USER);
+        stepper[deviceID].setOCThreshold(overCurrentThreshold[deviceID]); // 5A for 0.1ohm shunt resistor
+        stepper[deviceID].setOCShutdown(OC_SD_ENABLE);
         stepper[deviceID].setOscMode(EXT_16MHZ_OSCOUT_INVERT);
-        stepper[deviceID].setRunKVAL(16);
-        stepper[deviceID].setAccKVAL(16);
-        stepper[deviceID].setDecKVAL(16);
-        stepper[deviceID].setHoldKVAL(0);
-        stepper[deviceID].setParam(STALL_TH, 0x1F);
+        stepper[deviceID].setRunKVAL(kvalRun[deviceID]);
+        stepper[deviceID].setAccKVAL(kvalAcc[deviceID]);
+        stepper[deviceID].setDecKVAL(kvalDec[deviceID]);
+        stepper[deviceID].setHoldKVAL(kvalHold[deviceID]);
+        stepper[deviceID].setParam(STALL_TH, stallThreshold[deviceID]);
         stepper[deviceID].setParam(ALARM_EN, 0xEF); // Enable alarms except ADC UVLO
-        kvalHold[deviceID] = tvalHold[deviceID] = stepper[deviceID].getHoldKVAL();
-        kvalRun[deviceID] = tvalRun[deviceID] = stepper[deviceID].getRunKVAL();
-        kvalAcc[deviceID] = tvalAcc[deviceID] = stepper[deviceID].getAccKVAL();
-        kvalDec[deviceID] = tvalDec[deviceID] = stepper[deviceID].getDecKVAL();
+        //kvalHold[deviceID] = tvalHold[deviceID] = stepper[deviceID].getHoldKVAL();
+        //kvalRun[deviceID] = tvalRun[deviceID] = stepper[deviceID].getRunKVAL();
+        //kvalAcc[deviceID] = tvalAcc[deviceID] = stepper[deviceID].getAccKVAL();
+        //kvalDec[deviceID] = tvalDec[deviceID] = stepper[deviceID].getDecKVAL();
 
         delay(1);
         stepper[deviceID].getStatus(); // clears error flags
     }
 }
-
 
 void turnOnRXL() {
     digitalWrite(PIN_LED_RXL, LOW); // turn on
@@ -285,7 +294,6 @@ void turnOnTXL() {
     TXL_blinkStartTime = millis();
     txLedEnabled = true;
 }
-
 
 void sendOneInt(char* address, int32_t data) {
     if (!isDestIpSet) { return; }
@@ -412,6 +420,8 @@ void OSCMsgReceive() {
             // config
             msgIN.route("/setDestIp", setDestIp);
             msgIN.route("/getVersion", getVersion);
+            msgIN.route("/getConfigName", getConfigName);
+            msgIN.route("/getConfigRegister", getConfigRegister);
             msgIN.route("/getStatus", getStatus);
             msgIN.route("/getStatusList", getStatusList);
             msgIN.route("/getHomeSw", getHomeSw);
