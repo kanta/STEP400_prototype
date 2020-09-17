@@ -28,8 +28,8 @@ PCB design files for Eagle.
 
 ## Firmware dependency
 - **[OSC Library](https://github.com/CNMAT/OSC)** from CNMAT
-- **[Ponoor_PowerSTEP01_Library](https://github.com/ponoor/Ponoor_PowerSTEP01_Library)**
-- **[ArduinoJSON_Library](https://arduinojson.org/)**
+- **[Ponoor PowerSTEP01 Library](https://github.com/ponoor/Ponoor_PowerSTEP01_Library)**
+- **[ArduinoJSON Library](https://arduinojson.org/)**
 
 ## Examples
 ### Max
