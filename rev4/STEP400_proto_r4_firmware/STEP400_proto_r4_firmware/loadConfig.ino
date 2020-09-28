@@ -15,7 +15,7 @@ void loadConfig() {
     SD.end();
 
     // Information
-    const char* _configName = doc["information"]["configName"] | "Default";
+    configName = doc["information"]["configName"] | "Default";
 
     // Network
     JsonObject network = doc["network"];
@@ -91,8 +91,8 @@ void loadConfig() {
         homeSwMode[i] = driverSettings_homeSwMode[i] | true; // true: SW_USER, false: SW_HARDSTOP
         limitSwMode[i] = driverSettings_limitSwMode[i] | true;
         isCurrentMode[i] = driverSettings_isCurrentMode[i] | false;
-        uint8_t slewRateNum = constrain((driverSettings_slewRate[i] | 5), 0, 5); // default SR_980V_us
-        slewRate[i] = slewRateVal[slewRateNum];
+        slewRateNum[i] = constrain((driverSettings_slewRate[i] | 5), 0, 5); // default SR_980V_us
+        slewRate[i] = slewRateVal[slewRateNum[i]];
         electromagnetBrakeEnable[i] = driverSettings_electromagnetBrakeEnable[i] | false;
     }
 

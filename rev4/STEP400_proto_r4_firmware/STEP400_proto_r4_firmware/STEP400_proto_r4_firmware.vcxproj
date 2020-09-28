@@ -118,6 +118,9 @@
     <None Include="diagnosis.ino">
       <FileType>CppCode</FileType>
     </None>
+    <None Include="loadConfig.ino">
+      <FileType>CppCode</FileType>
+    </None>
     <None Include="osc_listeners.ino">
       <FileType>CppCode</FileType>
     </None>

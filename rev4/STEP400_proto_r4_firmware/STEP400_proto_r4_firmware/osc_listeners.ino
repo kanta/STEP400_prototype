@@ -1,3 +1,133 @@
+void OSCMsgReceive() {
+
+    OSCMessage msgIN;
+    int size;
+    if ((size = Udp.parsePacket()) > 0) {
+        while (size--)
+            msgIN.fill(Udp.read());
+
+        if (!msgIN.hasError()) {
+            // some possible frequent messeages
+            msgIN.route("/setTargetPosition", setTargetPosition);
+            msgIN.route("/setTargetPositionList", setTargetPositionList);
+            msgIN.route("/getPosition", getPosition);
+            msgIN.route("/getSpeed", getSpeed);
+            msgIN.route("/run", run);
+            msgIN.route("/runRaw", runRaw);
+
+            // motion
+            msgIN.route("/move", move);
+            msgIN.route("/goTo", goTo);
+            msgIN.route("/goToDir", goToDir);
+            msgIN.route("/goUntil", goUntil);
+            msgIN.route("/goUntilRaw", goUntilRaw);
+            msgIN.route("/releaseSw", releaseSw);
+            msgIN.route("/goHome", goHome);
+            msgIN.route("/goMark", goMark);
+            msgIN.route("/setMark", setMark);
+            msgIN.route("/getMark", getMark);
+            msgIN.route("/setPosition", setPosition);
+            msgIN.route("/resetPos", resetPos);
+            msgIN.route("/resetDev", resetDev);
+            msgIN.route("/softStop", softStop);
+            msgIN.route("/hardStop", hardStop);
+            msgIN.route("/softHiZ", softHiZ);
+            msgIN.route("/hardHiZ", hardHiZ);
+
+            // servo mode
+            msgIN.route("/enableServoMode", enableServoMode);
+            msgIN.route("/setServoParam", setServoParam);
+            msgIN.route("/getServoParam", getServoParam);
+
+            // speed
+            msgIN.route("/setSpeedProfile", setSpeedProfile);
+            msgIN.route("/setMaxSpeed", setMaxSpeed);
+            msgIN.route("/setFullstepSpeed", setFullstepSpeed);
+            msgIN.route("/getFullstepSpeed", getFullstepSpeed);
+            msgIN.route("/setAcc", setAcc);
+            msgIN.route("/setDec", setDec);
+            msgIN.route("/getSpeedProfile", getSpeedProfile);
+
+            // Kval
+            msgIN.route("/setKval", setKval);
+            msgIN.route("/setAccKval", setAccKval);
+            msgIN.route("/setDecKval", setDecKval);
+            msgIN.route("/setRunKval", setRunKval);
+            msgIN.route("/setHoldKval", setHoldKval);
+            msgIN.route("/getKval", getKval);
+
+            //TVAL
+            msgIN.route("/setTval", setTval);
+            msgIN.route("/setAccTval", setAccTval);
+            msgIN.route("/setDecTval", setDecTval);
+            msgIN.route("/setRunTval", setRunTval);
+            msgIN.route("/setHoldTval", setHoldTval);
+            msgIN.route("/getTval", getTval);
+            msgIN.route("/getTval_mA", getTval_mA);
+
+            // config
+            msgIN.route("/setDestIp", setDestIp);
+            msgIN.route("/getVersion", getVersion);
+            msgIN.route("/getConfigName", getConfigName);
+            msgIN.route("/getConfigRegister", getConfigRegister);
+            msgIN.route("/getStatus", getStatus);
+            msgIN.route("/getStatusList", getStatusList);
+            msgIN.route("/getHomeSw", getHomeSw);
+            msgIN.route("/getBusy", getBusy);
+            msgIN.route("/getUvlo", getUvlo);
+            msgIN.route("/getMotorStatus", getMotorStatus);
+            msgIN.route("/getThermalStatus", getThermalStatus);
+            msgIN.route("/resetMotorDriver", resetMotorDriver);
+            //msgIN.route("/enableFlagReport", enableFlagReport);
+            msgIN.route("/enableBusyReport", enableBusyReport);
+            msgIN.route("/enableHizReport", enableHizReport);
+            msgIN.route("/enableHomeSwReport", enableHomeSwReport);
+            msgIN.route("/enableDirReport", enableDirReport);
+            msgIN.route("/enableMotorStatusReport", enableMotorStatusReport);
+            msgIN.route("/enableSwEventReport", enableSwEventReport);
+            msgIN.route("/enableCommandErrorReport", enableCommandErrorReport);
+            msgIN.route("/enableUvloReport", enableUvloReport);
+            msgIN.route("/enableThermalStatusReport", enableThermalStatusReport);
+            msgIN.route("/enableOverCurrentReport", enableOverCurrentReport);
+            msgIN.route("/enableStallReport", enableStallReport);
+            //msgIN.route("/getDir", getDir);
+            msgIN.route("/getLimitSw", getLimitSw);
+            msgIN.route("/getLimitSwMode", getLimitSwMode);
+            msgIN.route("/setLimitSwMode", setLimitSwMode);
+            msgIN.route("/enableLimitSwReport", enableLimitSwReport);
+
+            msgIN.route("/setMicrostepMode", setMicrostepMode);
+            msgIN.route("/getMicrostepMode", getMicrostepMode);
+            msgIN.route("/getHomeSwMode", getHomeSwMode);
+            msgIN.route("/setHomeSwMode", setHomeSwMode);
+            msgIN.route("/setStallThreshold", setStallThreshold);
+            msgIN.route("/getStallThreshold", getStallThreshold);
+            msgIN.route("/setOverCurrentThreshold", setOverCurrentThreshold);
+            msgIN.route("/getOverCurrentThreshold", getOverCurrentThreshold);
+            msgIN.route("/setLowSpeedOptimizeThreshold", setLowSpeedOptimizeThreshold);
+            msgIN.route("/getLowSpeedOptimizeThreshold", getLowSpeedOptimizeThreshold);
+
+
+            msgIN.route("/setSpeedProfileRaw", setSpeedProfileRaw);
+            msgIN.route("/setMaxSpeedRaw", setMaxSpeedRaw);
+            msgIN.route("/setMinSpeedRaw", setMinSpeedRaw);
+            msgIN.route("/setFullstepSpeedRaw", setFullstepSpeedRaw);
+            msgIN.route("/setAccRaw", setAccRaw);
+            msgIN.route("/setDecRaw", setDecRaw);
+            msgIN.route("/getSpeedProfileRaw", getSpeedProfileRaw);
+
+            msgIN.route("/setVoltageMode", setVoltageMode);
+            msgIN.route("/setCurrentMode", setCurrentMode);
+            msgIN.route("/setBemfParam", setBemfParam);
+            msgIN.route("/getBemfParam", getBemfParam);
+            msgIN.route("/setDecayModeParam", setDecayModeParam);
+            msgIN.route("/getDecayModeParam", getDecayModeParam);
+            msgIN.route("/setDebugMode", setDebugMode);
+            turnOnRXL();
+        }
+    }
+}
+
 #pragma region config_commands_osc_listener
 void setDestIp(OSCMessage& msg, int addrOffset) {
     bool bIpUpdated = false;
@@ -26,7 +156,7 @@ void getVersion(OSCMessage& msg, int addrOffset) {
 void getConfigName(OSCMessage& msg, int addrOffset) {
     if (!isDestIpSet) { return; }
     OSCMessage newMes("/configName");
-    newMes.add(configName).add(sdInitializeSucceeded).add(configFileOpenSucceeded).add(configFileParseSucceeded);
+    newMes.add(configName.c_str()).add(sdInitializeSucceeded).add(configFileOpenSucceeded).add(configFileParseSucceeded);
     Udp.beginPacket(destIp, outPort);
     newMes.send(Udp);
     Udp.endPacket();
