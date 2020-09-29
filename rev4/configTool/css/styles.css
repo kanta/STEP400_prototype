@@ -8,7 +8,12 @@ img { max-width: 100%; height: auto; }
 h1, h2, h3, h4, h5, h6 { font-size: 100%; font-weight: normal; }
 ul, ol { list-style: none; }
 i, em { font-style: normal; }
-html { font-size: 62.5%; }
+@media screen and (max-width:54.99em) {
+  html { font-size: 56.25%; }
+}
+@media screen and (min-width:55em) {
+  html { font-size: 62.5%; }
+}
 body { font-family: BlinkMacSystemFont, -apple-system, "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif; font-size: 1.6rem; line-height: 1; color: #363636; }
 @media (-webkit-min-device-pixel-ratio:2) {
   body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
@@ -19,24 +24,43 @@ body { font-family: BlinkMacSystemFont, -apple-system, "Helvetica Neue", Arial, 
 /* content
 --------------------------------------------------- */
 .container { margin: 8rem auto; width: 92.19%; max-width: 96rem; }
-h1 { margin-bottom: 1em; font-weight: 600; font-size: 4.8rem; }
-h2 { margin-top: 6.4rem; margin-bottom: 2.4rem; font-weight: 600; font-size: 3.2rem; }
-.input-list { border-top: 1px solid rgba(54, 54, 54, 0.1); }
-.input-list > li { display: flex; padding: 1.2rem 0; border-bottom: 1px solid rgba(54, 54, 54, 0.1); line-height: 2.4rem; }
-.input-list > li > label { width: 25%; min-width: 20rem; font-weight: 600; }
-.input-list > li > label.-lg { width: 35%; min-width: 30rem; }
-.input-list > li > div { width: 75%; }
-.file-input > label { color: #808080; font-size: 1.4rem; }
-.file-input > input[type="file"] { cursor: pointer !important; border: 0; color: transparent; width: 12.4rem; outline: 0; }
-.file-input > input[type="file"]::-webkit-file-upload-button { background: #1e90ff; border: 0; padding: 1rem 2rem; cursor: pointer; font-weight: 600; color: #fff; border-radius: 0.2rem; }
-.file-input > input[type="file"]::-webkit-file-upload-button:hover { opacity: 0.8; }
-.file-input > input[type="file"]::-ms-browse { background: #1e90ff; border: 0; padding: 1rem 2rem; cursor: pointer; font-weight: 600; color: #fff; border-radius: 0.2rem; }
-.file-input > input[type="file"]::-ms-browse:hover { opacity: 0.8; }
-input { width: 10%; max-width: 100%; min-width: 6rem; outline: none; padding: 0.5rem 0.2rem 0.5rem 0.8rem; background-color: #fff; border: 1px solid #d3d3d3; border-radius: 0.2rem; font-size: 1.4rem; }
-input:focus { box-shadow: inset 0 0 2px 0 #1e90ff; }
+h1 { margin-bottom: 6.4rem; font-weight: 600; font-size: 4.8rem; }
+.heading-wrap { margin-top: 6.4rem; margin-bottom: 4rem; display: flex; align-items: center; }
+.heading-wrap > h2 { margin-right: 3.2rem; font-weight: 600; font-size: 3.2rem; }
+.file-input input[type="file"] { display: none; }
+.file-input label { display: inline-block; position: relative; cursor: pointer; padding: 1rem 2rem; border-radius: 0.2rem; margin-right: 0.8rem; background-color: #1e90ff; color: #fff; font-weight: 600; font-size: 1.4rem; }
+.file-input label:after { content: "No file selected"; color: #808080; font-size: 1.4rem; height: 2rem; line-height: 2rem; position: absolute; right: -12.4rem; top: calc(50% - 1rem); }
+.file-input label:hover { opacity: 0.8; transition: 0.2s ease-out; }
+.file-input label.changed:after { content: ""; }
+.file-input .filename { font-size: 1.4rem; }
 .file-export { margin-top: 8rem; width: 100%; }
-.file-export input[type="submit"] { width: 30%; min-width: 18rem; height: 100%; border: 0; outline: none; padding: 2rem 0; background-color: #1e90ff; font-weight: 600; font-size: 2rem; color: #fff; text-align: center; cursor: pointer; }
-.file-export input[type="submit"]:hover { opacity: 0.8; }
+.file-export > input[type="submit"] { width: 28rem; height: 100%; border: 0; outline: none; padding: 2rem 0; background-color: #1e90ff; border-radius: 0.2rem; font-weight: 600; font-size: 2rem; color: #fff; text-align: center; cursor: pointer; }
+.file-export > input[type="submit"]:hover { opacity: 0.8; }
+.input-setting { display: flex; align-items: center; padding: 0.8rem 1.2rem; border: 1px solid #eee; border-radius: 0.2rem; }
+.input-setting > .label { font-weight: 600; }
+.input-setting > .label input { margin-left: 0.8rem; }
+.input-list { border-bottom: 1px solid #eee; min-width: 82rem; }
+.input-list > li { display: flex; align-items: center; }
+.input-list > li > .input-label { width: 30rem; }
+.input-list > li > .input-items { width: calc(100% - 30rem); }
+.input-list > li.heading { padding-bottom: 0.8rem; border-bottom: 1px solid #eee; font-weight: 600; font-size: 1.4rem; }
+.input-list > li:not(.heading) { padding: 1.2rem 0; border-top: 1px solid #eee; }
+.input-items { display: flex; align-items: center; }
+.input-items > p, .input-items > select { width: 8rem; margin-right: 0.8rem; }
+.input-items > input[type="text"] { width: 20.6rem; }
+.input-items > input[type="number"] { width: 7rem; }
+.input-items > input[type="text"], .input-items > input[type="number"] { margin-right: 0.8rem; outline: none; padding: 0.5rem 0.2rem 0.5rem 0.6rem; background-color: #fff; border: 0.1rem solid #d3d3d3; border-radius: 0.2rem; font-size: 1.4rem; }
+.input-items > input[type="text"]:focus, .input-items > input[type="number"]:focus { box-shadow: inset 0 0 2px 0 #1e90ff; }
+.input-items > input[type="checkbox"] { width: 1.6rem; margin-right: 7.200000000000001rem; }
+.input-items > input[disabled="disabled"], .input-items > select[disabled="disabled"], .input-items > p[disabled="disabled"] { display: none; }
+.input-list.-lg .input-items > p, .input-list.-lg .input-items > select { width: 12rem; }
+.input-list.-lg .input-items > input[type="number"] { width: 11rem; }
+.input-list.-lg .input-items > input[type="checkbox"] { width: 1.6rem; margin-right: 11.200000000000001rem; }
+.input-label { position: relative; font-weight: 600; }
+.input-label .hint { border-bottom: 1px dotted rgba(54, 54, 54, 0.6); cursor: pointer; position: relative; }
+.input-label .hint:hover + .tooltip { display: block; }
+.input-label .tooltip { display: none; position: absolute; left: 0.8rem; top: 3.2rem; z-index: 9999; max-width: 80%; padding: 1.2rem 1.6rem; color: #fff; background-color: #555; border-radius: 0.2rem; font-size: 1.4rem; line-height: 1.5; }
+.input-label .tooltip::after { width: 100%; content: ""; display: block; position: absolute; left: 0.8rem; top: -8px; border-top: 8px solid transparent; border-left: 8px solid #555; }
 
 /* IE */
 _:-ms-lang(x), .file-input > label { display: none; }

@@ -1,12 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>STEP400 configuration tool</title>
-	<link rel="stylesheet" href="./css/styles.css">
-	<link rel="stylesheet" href="./css/temp.css">
-	<script type="text/javascript" src="./js/styles.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>STEP400 configuration tool</title>
+    <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
 <div class="container">
@@ -15,1012 +13,1176 @@
 <h1>STEP400 configuration tool</h1>
 
 <div class="file-input">
-	<input type='file' name="load" id="file" onchange="pressed()">
-	<label id="fileLabel">No file selected</label>
+    <input type='file' name="load" class="file" id="test">
+    <label for="test">Choose file</label>
 </div>
 
 <form action="">
-<h2>Information</h2>
-<ul class="input-list">
-	<li>
-	<label>configuration name</label>
-	<div>
-		<input type="text" name="configName" maxlength="32">
-	</div>
-	</li>
-</ul>
 
-<h2>Network</h2>
+<div class="heading-wrap">
+    <h2>Information</h2>
+</div>
 <ul class="input-list">
 <li>
-	<label>My IP address</label>
-	<div>
-		<input type="number" name="myIp" size="10" min="0" max="255" value="10">
-		<input type="number" name="myIp" size="10" min="0" max="255" value="0">
-		<input type="number" name="myIp" size="10" min="0" max="255" value="0">
-		<input type="number" name="myIp" size="10" min="0" max="255" value="100">
-	</div>
-</li>
-<li>
-	<label>ID adds to my IP</label>
-	<div>
-		<input type="checkbox" name="isMyIpAddId" checked>
-	</div>
-</li>
-<li>
-	<label>Destination IP</label>
-	<div>
-		<input type="number" name="destIp" size="10" min="0" max="255" value="10">
-		<input type="number" name="destIp" size="10" min="0" max="255" value="0">
-		<input type="number" name="destIp" size="10" min="0" max="255" value="0">
-		<input type="number" name="destIp" size="10" min="0" max="255" value="10">
-	</div>
-</li>
-<li>
-	<label>DNS</label>
-	<div>
-		<input type="number" name="dns" size="10" min="0" max="255" value="10">
-		<input type="number" name="dns" size="10" min="0" max="255" value="0">
-		<input type="number" name="dns" size="10" min="0" max="255" value="0">
-		<input type="number" name="dns" size="10" min="0" max="255" value="1">
-	</div>
-</li>
-<li>
-	<label>Gateway</label>
-	<div>
-		<input type="number" name="gateway" size="10" min="0" max="255" value="10">
-		<input type="number" name="gateway" size="10" min="0" max="255" value="0">
-		<input type="number" name="gateway" size="10" min="0" max="255" value="0">
-		<input type="number" name="gateway" size="10" min="0" max="255" value="1">
-	</div>
-</li>
-<li>
-	<label>Subnet mask</label>
-	<div>
-		<input type="number" name="subnet" size="10" min="0" max="255" value="255">
-		<input type="number" name="subnet" size="10" min="0" max="255" value="255">
-		<input type="number" name="subnet" size="10" min="0" max="255" value="255">
-		<input type="number" name="subnet" size="10" min="0" max="255" value="0">
-	</div>
-</li>
-<li>
-	<label>Incoming port</label>
-	<div><input type="number" name="inPort" size="30" value="50000"></div>
-</li>
-<li>
-	<label>Outgoing port</label>
-	<div><input type="number" name="outPort" size="30" value="50100"></div>
-</li>
-<li>
-	<label>ID adds to Outgoing port</label>
-	<div><input type="checkbox" name="isOutPortAddId" checked></div>
-</li>
-<li>
-	<label>MAC address</label>
-	<div>
-		<input type="number" name="mac" size="10" min="0" max="255" value="96">
-		<input type="number" name="mac" size="10" min="0" max="255" value="149">
-		<input type="number" name="mac" size="10" min="0" max="255" value="206">
-		<input type="number" name="mac" size="10" min="0" max="255" value="16">
-		<input type="number" name="mac" size="10" min="0" max="255" value="2">
-		<input type="number" name="mac" size="10" min="0" max="255" value="0">
-	</div>
-</li>
-<li>
-	<label>ID adds to MAC address</label>
-	<div><input type="checkbox" name="isMacAddId" checked></div>
-</li>
-<li>
-	<label>Booted message enable</label>
-	<div><input type="checkbox" name="bootedMsgEnable" checked></div>
-</li>
-<li>
-	<label>Allow OSC reply before /setDestIp</label>
-	<div><input type="checkbox" name="canSendMsgBeforeDestIp"></div>
+    <div class="input-label">
+        <label class="hint">configuration name</label>
+        <p class="tooltip">The name of this configuration for your reference.</p>
+    </div>
+    <div class="input-items">
+        <input type="text" name="configName" maxlength="32">
+    </div>
 </li>
 </ul>
 
-<h2>Alarm and Report</h2>
-<div>
-	<label>Set all motors</label>
-	<div><input type="checkbox" name="targetAll" class="alarmAndReport"></div>
-</div>
-<div>
-	<div>
-		<p>Parameter</p>
-	</div>
-	<div class="rowLabel alarmAndReport">
-		<p>motor 1-4</p>
-		<p>motor 1</p>
-		<p>motor 2</p>
-		<p>motor 3</p>
-		<p>motor 4</p>
-	</div>
+<div class="heading-wrap">
+    <h2>Network</h2>
 </div>
 <ul class="input-list">
 <li>
-	<label>Report BUSY</label>
-	<div>
-		<input type="checkbox" name="reportBUSY">
-		<input type="checkbox" name="reportBUSY">
-		<input type="checkbox" name="reportBUSY">
-		<input type="checkbox" name="reportBUSY">
-		<input type="checkbox" name="reportBUSY">
-	</div>
+    <div class="input-label">
+        <label class="hint">My IP address</label>
+        <p class="tooltip">IP address of STEP400.</p>
+    </div>
+    <div class="input-items">
+        <input type="number" name="myIp" size="10" min="0" max="255" value="10">
+        <input type="number" name="myIp" size="10" min="0" max="255" value="0">
+        <input type="number" name="myIp" size="10" min="0" max="255" value="0">
+        <input type="number" name="myIp" size="10" min="0" max="255" value="100">
+    </div>
 </li>
 <li>
-	<label>Report FLAG</label>
-	<div>
-		<input type="checkbox" name="reportFLAG">
-		<input type="checkbox" name="reportFLAG">
-		<input type="checkbox" name="reportFLAG">
-		<input type="checkbox" name="reportFLAG">
-		<input type="checkbox" name="reportFLAG">
-	</div>
+    <div class="input-label">
+        <label class="hint">ID adds to my IP</label>
+        <p class="tooltip">If this box is checked, ID is added to the last byte of the IP address. ID is set by the DIP switch.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="isMyIpAddId" checked>
+    </div>
 </li>
 <li>
-	<label>Report HiZ state</label>
-	<div>
-		<input type="checkbox" name="reportHiZ">
-		<input type="checkbox" name="reportHiZ">
-		<input type="checkbox" name="reportHiZ">
-		<input type="checkbox" name="reportHiZ">
-		<input type="checkbox" name="reportHiZ">
-	</div>
+    <div class="input-label">
+        <label class="hint">Destination IP</label>
+        <p class="tooltip">Specify where STEP400 responses have to be sent.</p>
+    </div>
+    <div class="input-items">
+        <input type="number" name="destIp" size="10" min="0" max="255" value="10">
+        <input type="number" name="destIp" size="10" min="0" max="255" value="0">
+        <input type="number" name="destIp" size="10" min="0" max="255" value="0">
+        <input type="number" name="destIp" size="10" min="0" max="255" value="10">
+    </div>
 </li>
 <li>
-	<label>Report HOME switch status</label>
-	<div>
-		<input type="checkbox" name="reportHomeSwStatus">
-		<input type="checkbox" name="reportHomeSwStatus">
-		<input type="checkbox" name="reportHomeSwStatus">
-		<input type="checkbox" name="reportHomeSwStatus">
-		<input type="checkbox" name="reportHomeSwStatus">
-	</div>
+    <div class="input-label">
+        <label class="hint">DNS</label>
+        <p class="tooltip">Usually first 3 bytes are same as myIp, and the last byte is 1.</p>
+    </div>
+    <div class="input-items">
+        <input type="number" name="dns" size="10" min="0" max="255" value="10">
+        <input type="number" name="dns" size="10" min="0" max="255" value="0">
+        <input type="number" name="dns" size="10" min="0" max="255" value="0">
+        <input type="number" name="dns" size="10" min="0" max="255" value="1">
+    </div>
 </li>
 <li>
-	<label>Report motor direction</label>
-	<div>
-		<input type="checkbox" name="reportDir">
-		<input type="checkbox" name="reportDir">
-		<input type="checkbox" name="reportDir">
-		<input type="checkbox" name="reportDir">
-		<input type="checkbox" name="reportDir">
-	</div>
+    <div class="input-label">
+        <label class="hint">Gateway</label>
+        <p class="tooltip">Usually first 3 bytes are same as myIp, and the last byte is 1.</p>
+    </div>
+    <div class="input-items">
+        <input type="number" name="gateway" size="10" min="0" max="255" value="10">
+        <input type="number" name="gateway" size="10" min="0" max="255" value="0">
+        <input type="number" name="gateway" size="10" min="0" max="255" value="0">
+        <input type="number" name="gateway" size="10" min="0" max="255" value="1">
+    </div>
 </li>
 <li>
-	<label>Report Motor status</label>
-	<div>
-		<input type="checkbox" name="reportMotorStatus">
-		<input type="checkbox" name="reportMotorStatus">
-		<input type="checkbox" name="reportMotorStatus">
-		<input type="checkbox" name="reportMotorStatus">
-		<input type="checkbox" name="reportMotorStatus">
-	</div>
+    <div class="input-label">
+        <label class="hint">Subnet mask</label>
+        <p class="tooltip">This defines the scope of the network. If you're not sure, specify 255.255.255.0.</p>
+    </div>
+    <div class="input-items">
+        <input type="number" name="subnet" size="10" min="0" max="255" value="255">
+        <input type="number" name="subnet" size="10" min="0" max="255" value="255">
+        <input type="number" name="subnet" size="10" min="0" max="255" value="255">
+        <input type="number" name="subnet" size="10" min="0" max="255" value="0">
+    </div>
 </li>
 <li>
-	<label>Report HOME switch event</label>
-	<div>
-		<input type="checkbox" name="reportSwEvn">
-		<input type="checkbox" name="reportSwEvn">
-		<input type="checkbox" name="reportSwEvn">
-		<input type="checkbox" name="reportSwEvn">
-		<input type="checkbox" name="reportSwEvn">
-	</div>
+    <div class="input-label">
+        <label class="hint">Incoming port</label>
+        <p class="tooltip">Port number for the communication from PC to STEP400.</p>
+    </div>
+    <div class="input-items"><input type="number" name="inPort" size="30" value="50000"></div>
 </li>
 <li>
-	<label>Report command error</label>
-	<div>
-		<input type="checkbox" name="reportCommandError" checked>
-		<input type="checkbox" name="reportCommandError" checked>
-		<input type="checkbox" name="reportCommandError" checked>
-		<input type="checkbox" name="reportCommandError" checked>
-		<input type="checkbox" name="reportCommandError" checked>
-	</div>
+    <div class="input-label">
+        <label class="hint">Outgoing port</label>
+        <p class="tooltip">Port number for the communication from STEP400 to PC.</p>
+    </div>
+    <div class="input-items"><input type="number" name="outPort" size="30" value="50100"></div>
 </li>
 <li>
-	<label>Report undervoltage lockout</label>
-	<div>
-		<input type="checkbox" name="reportUVLO" checked>
-		<input type="checkbox" name="reportUVLO" checked>
-		<input type="checkbox" name="reportUVLO" checked>
-		<input type="checkbox" name="reportUVLO" checked>
-		<input type="checkbox" name="reportUVLO" checked>
-	</div>
+    <div class="input-label">
+        <label class="hint">ID adds to Outgoing port</label>
+        <p class="tooltip">If this box is checked, ID is added to Outgoing port number. ID is set by the DIP switch.</p>
+    </div>
+    <div class="input-items"><input type="checkbox" name="isOutPortAddId" checked></div>
 </li>
 <li>
-	<label>Report thermal status of driver chip</label>
-	<div>
-		<input type="checkbox" name="reportThermalStatus" checked>
-		<input type="checkbox" name="reportThermalStatus" checked>
-		<input type="checkbox" name="reportThermalStatus" checked>
-		<input type="checkbox" name="reportThermalStatus" checked>
-		<input type="checkbox" name="reportThermalStatus" checked>
-	</div>
+    <div class="input-label">
+        <label class="hint">MAC address</label>
+        <p class="tooltip">MAC address of STEP400.</p>
+    </div>
+    <div class="input-items">
+        <input type="number" name="mac" size="10" min="0" max="255" value="96">
+        <input type="number" name="mac" size="10" min="0" max="255" value="149">
+        <input type="number" name="mac" size="10" min="0" max="255" value="206">
+        <input type="number" name="mac" size="10" min="0" max="255" value="16">
+        <input type="number" name="mac" size="10" min="0" max="255" value="2">
+        <input type="number" name="mac" size="10" min="0" max="255" value="0">
+    </div>
 </li>
 <li>
-	<label>Report over currend detection</label>
-	<div>
-		<input type="checkbox" name="reportOCD" checked>
-		<input type="checkbox" name="reportOCD" checked>
-		<input type="checkbox" name="reportOCD" checked>
-		<input type="checkbox" name="reportOCD" checked>
-		<input type="checkbox" name="reportOCD" checked>
-	</div>
+    <div class="input-label">
+        <label class="hint">ID adds to MAC address</label>
+        <p class="tooltip">If this box is checked, ID is added to the last byte of the MAC address. ID is set by the DIP switch.</p>
+    </div>
+    <div class="input-items"><input type="checkbox" name="isMacAddId" checked></div>
 </li>
 <li>
-	<label>Report motor stall detection</label>
-	<div>
-		<input type="checkbox" name="reportStall">
-		<input type="checkbox" name="reportStall">
-		<input type="checkbox" name="reportStall">
-		<input type="checkbox" name="reportStall">
-		<input type="checkbox" name="reportStall">
-	</div>
+    <div class="input-label">
+        <label class="hint">Booted message enable</label>
+        <p class="tooltip">Send /booted message when STEP400 is booted or restarted.</p>
+    </div>
+    <div class="input-items"><input type="checkbox" name="bootedMsgEnable" checked></div>
 </li>
 <li>
-	<label>Report LIMIT switch status</label>
-	<div>
-		<input type="checkbox" name="reportLimitSwStatus">
-		<input type="checkbox" name="reportLimitSwStatus">
-		<input type="checkbox" name="reportLimitSwStatus">
-		<input type="checkbox" name="reportLimitSwStatus">
-		<input type="checkbox" name="reportLimitSwStatus">
-	</div>
-</li>
-<li>
-	<label>Overcurrent detection threshold</label>
-	<div>
-		<select name="OCThreshold">
-			<option value="0">312.5mA</option>
-			<option value="1">625mA</option>
-			<option value="2">937.5mA</option>
-			<option value="3">1250mA</option>
-			<option value="4">1562.5mA</option>
-			<option value="5">1875mA</option>
-			<option value="6">2187.5mA</option>
-			<option value="7">2500mA</option>
-			<option value="8">2812.5mA</option>
-			<option value="9">3125mA</option>
-			<option value="10">3437.5mA</option>
-			<option value="11">3750mA</option>
-			<option value="12">4062.5mA</option>
-			<option value="13">4375mA</option>
-			<option value="14">4687.5mA</option>
-			<option value="15" selected>5000mA</option>
-		</select>
-		<select name="OCThreshold">
-			<option value="0">312.5mA</option>
-			<option value="1">625mA</option>
-			<option value="2">937.5mA</option>
-			<option value="3">1250mA</option>
-			<option value="4">1562.5mA</option>
-			<option value="5">1875mA</option>
-			<option value="6">2187.5mA</option>
-			<option value="7">2500mA</option>
-			<option value="8">2812.5mA</option>
-			<option value="9">3125mA</option>
-			<option value="10">3437.5mA</option>
-			<option value="11">3750mA</option>
-			<option value="12">4062.5mA</option>
-			<option value="13">4375mA</option>
-			<option value="14">4687.5mA</option>
-			<option value="15" selected>5000mA</option>
-		</select>
-		<select name="OCThreshold">
-			<option value="0">312.5mA</option>
-			<option value="1">625mA</option>
-			<option value="2">937.5mA</option>
-			<option value="3">1250mA</option>
-			<option value="4">1562.5mA</option>
-			<option value="5">1875mA</option>
-			<option value="6">2187.5mA</option>
-			<option value="7">2500mA</option>
-			<option value="8">2812.5mA</option>
-			<option value="9">3125mA</option>
-			<option value="10">3437.5mA</option>
-			<option value="11">3750mA</option>
-			<option value="12">4062.5mA</option>
-			<option value="13">4375mA</option>
-			<option value="14">4687.5mA</option>
-			<option value="15" selected>5000mA</option>
-		</select>
-		<select name="OCThreshold">
-			<option value="0">312.5mA</option>
-			<option value="1">625mA</option>
-			<option value="2">937.5mA</option>
-			<option value="3">1250mA</option>
-			<option value="4">1562.5mA</option>
-			<option value="5">1875mA</option>
-			<option value="6">2187.5mA</option>
-			<option value="7">2500mA</option>
-			<option value="8">2812.5mA</option>
-			<option value="9">3125mA</option>
-			<option value="10">3437.5mA</option>
-			<option value="11">3750mA</option>
-			<option value="12">4062.5mA</option>
-			<option value="13">4375mA</option>
-			<option value="14">4687.5mA</option>
-			<option value="15" selected>5000mA</option>
-		</select>
-		<select name="OCThreshold">
-			<option value="0">312.5mA</option>
-			<option value="1">625mA</option>
-			<option value="2">937.5mA</option>
-			<option value="3">1250mA</option>
-			<option value="4">1562.5mA</option>
-			<option value="5">1875mA</option>
-			<option value="6">2187.5mA</option>
-			<option value="7">2500mA</option>
-			<option value="8">2812.5mA</option>
-			<option value="9">3125mA</option>
-			<option value="10">3437.5mA</option>
-			<option value="11">3750mA</option>
-			<option value="12">4062.5mA</option>
-			<option value="13">4375mA</option>
-			<option value="14">4687.5mA</option>
-			<option value="15" selected>5000mA</option>
-		</select>
-	</div>
+    <div class="input-label">
+        <label class="hint">Allow OSC reply before /setDestIp</label>
+        <p class="tooltip">If this box is checked, STEP400 can send response messages even before receiving the /setDestIp message.</p>
+    </div>
+    <div class="input-items"><input type="checkbox" name="canSendMsgBeforeDestIp"></div>
 </li>
 </ul>
 
-<h2>Driver Settings</h2>
-<div>
-	<label>Set all motors</label>
-	<div>
-		<input type="checkbox" name="targetAll" class="driverSettings">
-	</div>
-</div>
-<div>
-	<div>
-		<p>Parameter</p>
-	</div>
-	<div class="rowLabel driverSettings">
-		<p>motor 1-4</p>
-		<p>motor 1</p>
-		<p>motor 2</p>
-		<p>motor 3</p>
-		<p>motor 4</p>
-	</div>
+<div class="heading-wrap">
+    <h2>Alarm and Report</h2>
+    <div class="input-setting">
+        <label class="label">Set all motors<input type="checkbox" name="targetAll" class="alarmAndReport"></label>
+    </div>
 </div>
 <ul class="input-list">
-<li>
-	<label>Microstepping mode</label>
-	<div>
-		<select name="stepMode">
-			<option value="0">Full-step</option>
-			<option value="1">Half-step</option>
-			<option value="2">1/4 microstep</option>
-			<option value="3">1/8 microstep</option>
-			<option value="4">1/16 microstep</option>
-			<option value="5">1/32 microstep</option>
-			<option value="6">1/64 microstep</option>
-			<option value="7" selected>1/128 microstep</option>
-		</select>
-		<select name="stepMode">
-			<option value="0">Full-step</option>
-			<option value="1">Half-step</option>
-			<option value="2">1/4 microstep</option>
-			<option value="3">1/8 microstep</option>
-			<option value="4">1/16 microstep</option>
-			<option value="5">1/32 microstep</option>
-			<option value="6">1/64 microstep</option>
-			<option value="7" selected>1/128 microstep</option>
-		</select>
-		<select name="stepMode">
-			<option value="0">Full-step</option>
-			<option value="1">Half-step</option>
-			<option value="2">1/4 microstep</option>
-			<option value="3">1/8 microstep</option>
-			<option value="4">1/16 microstep</option>
-			<option value="5">1/32 microstep</option>
-			<option value="6">1/64 microstep</option>
-			<option value="7" selected>1/128 microstep</option>
-		</select>
-		<select name="stepMode">
-			<option value="0">Full-step</option>
-			<option value="1">Half-step</option>
-			<option value="2">1/4 microstep</option>
-			<option value="3">1/8 microstep</option>
-			<option value="4">1/16 microstep</option>
-			<option value="5">1/32 microstep</option>
-			<option value="6">1/64 microstep</option>
-			<option value="7" selected>1/128 microstep</option>
-		</select>
-		<select name="stepMode">
-			<option value="0">Full-step</option>
-			<option value="1">Half-step</option>
-			<option value="2">1/4 microstep</option>
-			<option value="3">1/8 microstep</option>
-			<option value="4">1/16 microstep</option>
-			<option value="5">1/32 microstep</option>
-			<option value="6">1/64 microstep</option>
-			<option value="7" selected>1/128 microstep</option>
-		</select>
-	</div>
+<li class="heading">
+    <div class="input-label">Parameter</div>
+    <div class="rowLabel alarmAndReport input-items">
+        <p>motor 1-4</p>
+        <p>motor 1</p>
+        <p>motor 2</p>
+        <p>motor 3</p>
+        <p>motor 4</p>
+    </div>
 </li>
 <li>
-	<label class="-lg">Home switch won't cause HardStop</label>
-	<div>
-		<input type="checkbox" name="homeSwMode" checked>
-		<input type="checkbox" name="homeSwMode" checked>
-		<input type="checkbox" name="homeSwMode" checked>
-		<input type="checkbox" name="homeSwMode" checked>
-		<input type="checkbox" name="homeSwMode" checked>
-	</div>
+    <div class="input-label">
+        <label class="hint">Report BUSY</label>
+        <p class="tooltip">A notification message will be sent automatically when the BUSY status changes.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportBUSY">
+        <input type="checkbox" name="reportBUSY">
+        <input type="checkbox" name="reportBUSY">
+        <input type="checkbox" name="reportBUSY">
+        <input type="checkbox" name="reportBUSY">
+    </div>
 </li>
 <li>
-	<label class="-lg">Limit switch won't cause HardStop</label>
-	<div>
-		<input type="checkbox" name="limitSwMode" checked>
-		<input type="checkbox" name="limitSwMode" checked>
-		<input type="checkbox" name="limitSwMode" checked>
-		<input type="checkbox" name="limitSwMode" checked>
-		<input type="checkbox" name="limitSwMode" checked>
-	</div>
+    <div class="input-label">
+        <label class="hint">Report FLAG</label>
+        <p class="tooltip">A notification message will be sent automatically when the FLAG status changes.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportFLAG">
+        <input type="checkbox" name="reportFLAG">
+        <input type="checkbox" name="reportFLAG">
+        <input type="checkbox" name="reportFLAG">
+        <input type="checkbox" name="reportFLAG">
+    </div>
 </li>
 <li>
-	<label>Current mode</label>
-	<div>
-		<input type="checkbox" name="isCurrentMode">
-		<input type="checkbox" name="isCurrentMode">
-		<input type="checkbox" name="isCurrentMode">
-		<input type="checkbox" name="isCurrentMode">
-		<input type="checkbox" name="isCurrentMode">
-	</div>
+    <div class="input-label">
+        <label class="hint">Report HiZ state</label>
+        <p class="tooltip">A notification message will be sent automatically when the HiZ status changes.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportHiZ">
+        <input type="checkbox" name="reportHiZ">
+        <input type="checkbox" name="reportHiZ">
+        <input type="checkbox" name="reportHiZ">
+        <input type="checkbox" name="reportHiZ">
+    </div>
 </li>
 <li>
-	<label>Slew rate</label>
-	<div>
-		<select name="slewRate">
-			<option value="0">114V/us</option>
-			<option value="1">220V/us</option>
-			<option value="2">400V/us</option>
-			<option value="3" selected="">520V/us</option>
-			<option value="4">790V/us</option>
-			<option value="5">980V/us</option>
-		</select>
-		<select name="slewRate">
-			<option value="0">114V/us</option>
-			<option value="1">220V/us</option>
-			<option value="2">400V/us</option>
-			<option value="3" selected="">520V/us</option>
-			<option value="4">790V/us</option>
-			<option value="5">980V/us</option>
-		</select>
-		<select name="slewRate">
-			<option value="0">114V/us</option>
-			<option value="1">220V/us</option>
-			<option value="2">400V/us</option>
-			<option value="3" selected="">520V/us</option>
-			<option value="4">790V/us</option>
-			<option value="5">980V/us</option>
-		</select>
-		<select name="slewRate">
-			<option value="0">114V/us</option>
-			<option value="1">220V/us</option>
-			<option value="2">400V/us</option>
-			<option value="3" selected="">520V/us</option>
-			<option value="4">790V/us</option>
-			<option value="5">980V/us</option>
-		</select>
-		<select name="slewRate">
-			<option value="0">114V/us</option>
-			<option value="1">220V/us</option>
-			<option value="2">400V/us</option>
-			<option value="3" selected="">520V/us</option>
-			<option value="4">790V/us</option>
-			<option value="5">980V/us</option>
-		</select>
-	</div>
+    <div class="input-label">
+        <label class="hint">Report HOME switch status</label>
+        <p class="tooltip">A notification message will be sent automatically when the home sensor input changes.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportHomeSwStatus">
+        <input type="checkbox" name="reportHomeSwStatus">
+        <input type="checkbox" name="reportHomeSwStatus">
+        <input type="checkbox" name="reportHomeSwStatus">
+        <input type="checkbox" name="reportHomeSwStatus">
+    </div>
 </li>
 <li>
-	<label>Electromagnetic brake enable</label>
-	<div>
-		<input type="checkbox" name="electromagnetBrakeEnable">
-		<input type="checkbox" name="electromagnetBrakeEnable">
-		<input type="checkbox" name="electromagnetBrakeEnable">
-		<input type="checkbox" name="electromagnetBrakeEnable">
-		<input type="checkbox" name="electromagnetBrakeEnable">
-	</div>
+    <div class="input-label">
+        <label class="hint">Report motor direction</label>
+        <p class="tooltip">A notification message will be sent automatically when the motor direction changes.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportDir">
+        <input type="checkbox" name="reportDir">
+        <input type="checkbox" name="reportDir">
+        <input type="checkbox" name="reportDir">
+        <input type="checkbox" name="reportDir">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">Report Motor status</label>
+        <p class="tooltip">A notification message will be sent automatically when the motor status changes.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportMotorStatus">
+        <input type="checkbox" name="reportMotorStatus">
+        <input type="checkbox" name="reportMotorStatus">
+        <input type="checkbox" name="reportMotorStatus">
+        <input type="checkbox" name="reportMotorStatus">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">Report HOME switch event</label>
+        <p class="tooltip">A notification message will be sent automatically when the home sensor input trigger event (falling edge) happens.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportSwEvn">
+        <input type="checkbox" name="reportSwEvn">
+        <input type="checkbox" name="reportSwEvn">
+        <input type="checkbox" name="reportSwEvn">
+        <input type="checkbox" name="reportSwEvn">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">Report command error</label>
+        <p class="tooltip">A notification message will be sent automatically when the command error happens.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportCommandError" checked>
+        <input type="checkbox" name="reportCommandError" checked>
+        <input type="checkbox" name="reportCommandError" checked>
+        <input type="checkbox" name="reportCommandError" checked>
+        <input type="checkbox" name="reportCommandError" checked>
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">Report undervoltage lockout</label>
+        <p class="tooltip">A notification message will be sent automatically when the under voltage lock out happens.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportUVLO" checked>
+        <input type="checkbox" name="reportUVLO" checked>
+        <input type="checkbox" name="reportUVLO" checked>
+        <input type="checkbox" name="reportUVLO" checked>
+        <input type="checkbox" name="reportUVLO" checked>
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">Report thermal status of driver chip</label>
+        <p class="tooltip">A notification message will be sent automatically when the thermal status of the driver chip changes.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportThermalStatus" checked>
+        <input type="checkbox" name="reportThermalStatus" checked>
+        <input type="checkbox" name="reportThermalStatus" checked>
+        <input type="checkbox" name="reportThermalStatus" checked>
+        <input type="checkbox" name="reportThermalStatus" checked>
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">Report over currend detection</label>
+        <p class="tooltip">A notification message will be sent automatically when the over current shutdown happens.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportOCD" checked>
+        <input type="checkbox" name="reportOCD" checked>
+        <input type="checkbox" name="reportOCD" checked>
+        <input type="checkbox" name="reportOCD" checked>
+        <input type="checkbox" name="reportOCD" checked>
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">Report motor stall detection</label>
+        <p class="tooltip">A notification message will be sent automatically when the motor stalling detected.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportStall">
+        <input type="checkbox" name="reportStall">
+        <input type="checkbox" name="reportStall">
+        <input type="checkbox" name="reportStall">
+        <input type="checkbox" name="reportStall">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">Report LIMIT switch status</label>
+        <p class="tooltip">A notification message will be sent automatically when the limit sensor input changes.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="reportLimitSwStatus">
+        <input type="checkbox" name="reportLimitSwStatus">
+        <input type="checkbox" name="reportLimitSwStatus">
+        <input type="checkbox" name="reportLimitSwStatus">
+        <input type="checkbox" name="reportLimitSwStatus">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">Overcurrent detection threshold</label>
+        <p class="tooltip">Threshold of the over current detection.</p>
+    </div>
+    <div class="input-items">
+        <select name="OCThreshold">
+            <option value="0">312.5mA</option>
+            <option value="1">625mA</option>
+            <option value="2">937.5mA</option>
+            <option value="3">1250mA</option>
+            <option value="4">1562.5mA</option>
+            <option value="5">1875mA</option>
+            <option value="6">2187.5mA</option>
+            <option value="7">2500mA</option>
+            <option value="8">2812.5mA</option>
+            <option value="9">3125mA</option>
+            <option value="10">3437.5mA</option>
+            <option value="11">3750mA</option>
+            <option value="12">4062.5mA</option>
+            <option value="13">4375mA</option>
+            <option value="14">4687.5mA</option>
+            <option value="15" selected>5000mA</option>
+        </select>
+        <select name="OCThreshold">
+            <option value="0">312.5mA</option>
+            <option value="1">625mA</option>
+            <option value="2">937.5mA</option>
+            <option value="3">1250mA</option>
+            <option value="4">1562.5mA</option>
+            <option value="5">1875mA</option>
+            <option value="6">2187.5mA</option>
+            <option value="7">2500mA</option>
+            <option value="8">2812.5mA</option>
+            <option value="9">3125mA</option>
+            <option value="10">3437.5mA</option>
+            <option value="11">3750mA</option>
+            <option value="12">4062.5mA</option>
+            <option value="13">4375mA</option>
+            <option value="14">4687.5mA</option>
+            <option value="15" selected>5000mA</option>
+        </select>
+        <select name="OCThreshold">
+            <option value="0">312.5mA</option>
+            <option value="1">625mA</option>
+            <option value="2">937.5mA</option>
+            <option value="3">1250mA</option>
+            <option value="4">1562.5mA</option>
+            <option value="5">1875mA</option>
+            <option value="6">2187.5mA</option>
+            <option value="7">2500mA</option>
+            <option value="8">2812.5mA</option>
+            <option value="9">3125mA</option>
+            <option value="10">3437.5mA</option>
+            <option value="11">3750mA</option>
+            <option value="12">4062.5mA</option>
+            <option value="13">4375mA</option>
+            <option value="14">4687.5mA</option>
+            <option value="15" selected>5000mA</option>
+        </select>
+        <select name="OCThreshold">
+            <option value="0">312.5mA</option>
+            <option value="1">625mA</option>
+            <option value="2">937.5mA</option>
+            <option value="3">1250mA</option>
+            <option value="4">1562.5mA</option>
+            <option value="5">1875mA</option>
+            <option value="6">2187.5mA</option>
+            <option value="7">2500mA</option>
+            <option value="8">2812.5mA</option>
+            <option value="9">3125mA</option>
+            <option value="10">3437.5mA</option>
+            <option value="11">3750mA</option>
+            <option value="12">4062.5mA</option>
+            <option value="13">4375mA</option>
+            <option value="14">4687.5mA</option>
+            <option value="15" selected>5000mA</option>
+        </select>
+        <select name="OCThreshold">
+            <option value="0">312.5mA</option>
+            <option value="1">625mA</option>
+            <option value="2">937.5mA</option>
+            <option value="3">1250mA</option>
+            <option value="4">1562.5mA</option>
+            <option value="5">1875mA</option>
+            <option value="6">2187.5mA</option>
+            <option value="7">2500mA</option>
+            <option value="8">2812.5mA</option>
+            <option value="9">3125mA</option>
+            <option value="10">3437.5mA</option>
+            <option value="11">3750mA</option>
+            <option value="12">4062.5mA</option>
+            <option value="13">4375mA</option>
+            <option value="14">4687.5mA</option>
+            <option value="15" selected>5000mA</option>
+        </select>
+    </div>
 </li>
 </ul>
 
-<h2>Speed Profile</h2>
-<div>
-	<label>Set all motors</label>
-	<div>
-		<input type="checkbox" name="targetAll" class="speedProfile">
-	</div>
+<div class="heading-wrap">
+    <h2>Driver Settings</h2>
+    <div class="input-setting">
+        <label class="label">Set all motors<input type="checkbox" name="targetAll" class="driverSettings"></label>
+    </div>
 </div>
-<div>
-	<div>
-		<p>Parameter</p>
-	</div>
-	<div class="rowLabel speedProfile">
-		<p>motor 1-4</p>
-		<p>motor 1</p>
-		<p>motor 2</p>
-		<p>motor 3</p>
-		<p>motor 4</p>
-	</div>
-</div>
-<ul class="input-list">
-<li>
-	<label>Acceleration</label>
-	<div>
-		<input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
-		<input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
-		<input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
-		<input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
-		<input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
-		step/s/s
-	</div>
+<ul class="input-list -lg">
+<li class="heading">
+    <div class="input-label">Parameter</div>
+    <div class="rowLabel driverSettings input-items">
+        <p>motor 1-4</p>
+        <p>motor 1</p>
+        <p>motor 2</p>
+        <p>motor 3</p>
+        <p>motor 4</p>
+    </div>
 </li>
 <li>
-	<label>Decceleration</label>
-	<div>
-		<input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
-		<input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
-		<input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
-		<input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
-		<input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
-		step/s/s
-	</div>
+    <div class="input-label">
+        <label class="hint">Microstepping mode</label>
+        <p class="tooltip">Specifies the number of microstep divisions.</p>
+    </div>
+    <div class="input-items">
+        <select name="stepMode">
+            <option value="0">Full-step</option>
+            <option value="1">Half-step</option>
+            <option value="2">1/4 microstep</option>
+            <option value="3">1/8 microstep</option>
+            <option value="4">1/16 microstep</option>
+            <option value="5">1/32 microstep</option>
+            <option value="6">1/64 microstep</option>
+            <option value="7" selected>1/128 microstep</option>
+        </select>
+        <select name="stepMode">
+            <option value="0">Full-step</option>
+            <option value="1">Half-step</option>
+            <option value="2">1/4 microstep</option>
+            <option value="3">1/8 microstep</option>
+            <option value="4">1/16 microstep</option>
+            <option value="5">1/32 microstep</option>
+            <option value="6">1/64 microstep</option>
+            <option value="7" selected>1/128 microstep</option>
+        </select>
+        <select name="stepMode">
+            <option value="0">Full-step</option>
+            <option value="1">Half-step</option>
+            <option value="2">1/4 microstep</option>
+            <option value="3">1/8 microstep</option>
+            <option value="4">1/16 microstep</option>
+            <option value="5">1/32 microstep</option>
+            <option value="6">1/64 microstep</option>
+            <option value="7" selected>1/128 microstep</option>
+        </select>
+        <select name="stepMode">
+            <option value="0">Full-step</option>
+            <option value="1">Half-step</option>
+            <option value="2">1/4 microstep</option>
+            <option value="3">1/8 microstep</option>
+            <option value="4">1/16 microstep</option>
+            <option value="5">1/32 microstep</option>
+            <option value="6">1/64 microstep</option>
+            <option value="7" selected>1/128 microstep</option>
+        </select>
+        <select name="stepMode">
+            <option value="0">Full-step</option>
+            <option value="1">Half-step</option>
+            <option value="2">1/4 microstep</option>
+            <option value="3">1/8 microstep</option>
+            <option value="4">1/16 microstep</option>
+            <option value="5">1/32 microstep</option>
+            <option value="6">1/64 microstep</option>
+            <option value="7" selected>1/128 microstep</option>
+        </select>
+    </div>
 </li>
 <li>
-	<label>Max speed</label>
-	<div>
-		<input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
-		<input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
-		<input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
-		<input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
-		<input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
-		step/s
-	</div>
+    <div class="input-label">
+        <label class="hint">Home switch won't cause HardStop</label>
+        <p class="tooltip">If this box is not checked, the home sensor input causes hard stop of the motor.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="homeSwMode" checked>
+        <input type="checkbox" name="homeSwMode" checked>
+        <input type="checkbox" name="homeSwMode" checked>
+        <input type="checkbox" name="homeSwMode" checked>
+        <input type="checkbox" name="homeSwMode" checked>
+    </div>
 </li>
 <li>
-	<label>Transit to fullstep threshold speed</label>
-	<div>
-		<input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
-		<input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
-		<input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
-		<input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
-		<input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
-		step/s
-	</div>
+    <div class="input-label">
+        <label class="hint">Limit switch won't cause HardStop</label>
+        <p class="tooltip">If this box is not checked, the limit sensor input causes hard stop of the motor.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="limitSwMode" checked>
+        <input type="checkbox" name="limitSwMode" checked>
+        <input type="checkbox" name="limitSwMode" checked>
+        <input type="checkbox" name="limitSwMode" checked>
+        <input type="checkbox" name="limitSwMode" checked>
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">Current mode</label>
+        <p class="tooltip">Sets the drive mode to current mode at startup.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="isCurrentMode">
+        <input type="checkbox" name="isCurrentMode">
+        <input type="checkbox" name="isCurrentMode">
+        <input type="checkbox" name="isCurrentMode">
+        <input type="checkbox" name="isCurrentMode">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">Slew rate</label>
+        <p class="tooltip">Specifies the slew rate of gate drivers.</p>
+    </div>
+    <div class="input-items">
+        <select name="slewRate">
+            <option value="0">114V/us</option>
+            <option value="1">220V/us</option>
+            <option value="2">400V/us</option>
+            <option value="3">520V/us</option>
+            <option value="4">790V/us</option>
+            <option value="5" selected="">980V/us</option>
+        </select>
+        <select name="slewRate">
+            <option value="0">114V/us</option>
+            <option value="1">220V/us</option>
+            <option value="2">400V/us</option>
+            <option value="3">520V/us</option>
+            <option value="4">790V/us</option>
+            <option value="5" selected="">980V/us</option>
+        </select>
+        <select name="slewRate">
+            <option value="0">114V/us</option>
+            <option value="1">220V/us</option>
+            <option value="2">400V/us</option>
+            <option value="3">520V/us</option>
+            <option value="4">790V/us</option>
+            <option value="5" selected="">980V/us</option>
+        </select>
+        <select name="slewRate">
+            <option value="0">114V/us</option>
+            <option value="1">220V/us</option>
+            <option value="2">400V/us</option>
+            <option value="3">520V/us</option>
+            <option value="4">790V/us</option>
+            <option value="5" selected="">980V/us</option>
+        </select>
+        <select name="slewRate">
+            <option value="0">114V/us</option>
+            <option value="1">220V/us</option>
+            <option value="2">400V/us</option>
+            <option value="3">520V/us</option>
+            <option value="4">790V/us</option>
+            <option value="5" selected="">980V/us</option>
+        </select>
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">Electromagnetic brake enable</label>
+        <p class="tooltip">Check this box if you are using a optional electromagnetic brake board.</p>
+    </div>
+    <div class="input-items">
+        <input type="checkbox" name="electromagnetBrakeEnable">
+        <input type="checkbox" name="electromagnetBrakeEnable">
+        <input type="checkbox" name="electromagnetBrakeEnable">
+        <input type="checkbox" name="electromagnetBrakeEnable">
+        <input type="checkbox" name="electromagnetBrakeEnable">
+    </div>
 </li>
 </ul>
 
-<h2>Voltage Mode</h2>
-<div>
-	<label>Set all motors</label>
-	<div>
-		<input type="checkbox" name="targetAll" class="voltageMode">
-	</div>
-</div>
-<div>
-	<div>
-		<p>Parameter</p>
-	</div>
-	<div class="rowLabel voltageMode">
-		<p>motor 1-4</p>
-		<p>motor 1</p>
-		<p>motor 2</p>
-		<p>motor 3</p>
-		<p>motor 4</p>
-	</div>
+<div class="heading-wrap">
+    <h2>Speed Profile</h2>
+    <div class="input-setting">
+        <label class="label">Set all motors<input type="checkbox" name="targetAll" class="speedProfile"></label>
+    </div>
 </div>
 <ul class="input-list">
-<li>
-	<label>KVAL_HOLD</label>
-	<div>
-		<input type=number name="KVAL_HOLD" min="0" max="255" value="0">
-		<input type=number name="KVAL_HOLD" min="0" max="255" value="0">
-		<input type=number name="KVAL_HOLD" min="0" max="255" value="0">
-		<input type=number name="KVAL_HOLD" min="0" max="255" value="0">
-		<input type=number name="KVAL_HOLD" min="0" max="255" value="0">
-	</div>
+<li class="heading">
+    <div class="input-label">Parameter</div>
+    <div class="rowLabel speedProfile input-items">
+        <p>motor 1-4</p>
+        <p>motor 1</p>
+        <p>motor 2</p>
+        <p>motor 3</p>
+        <p>motor 4</p>
+    </div>
 </li>
 <li>
-	<label>KVAL_RUN</label>
-	<div>
-		<input type=number name="KVAL_RUN" min="0" max="255" value="16">
-		<input type=number name="KVAL_RUN" min="0" max="255" value="16">
-		<input type=number name="KVAL_RUN" min="0" max="255" value="16">
-		<input type=number name="KVAL_RUN" min="0" max="255" value="16">
-		<input type=number name="KVAL_RUN" min="0" max="255" value="16">
-	</div>
+    <div class="input-label">
+        <label class="hint">Acceleration</label>
+        <p class="tooltip">Acceleration of the motor</p>
+    </div>
+    <div class="input-items">
+        <input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
+        <input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
+        <input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
+        <input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
+        <input type="number" name="acc" min="14.55" max="59590" value="2000" step="0.01">
+        step/s/s
+    </div>
 </li>
 <li>
-	<label>KVAL_ACC</label>
-	<div>
-		<input type=number name="KVAL_ACC" min="0" max="255" value="16">
-		<input type=number name="KVAL_ACC" min="0" max="255" value="16">
-		<input type=number name="KVAL_ACC" min="0" max="255" value="16">
-		<input type=number name="KVAL_ACC" min="0" max="255" value="16">
-		<input type=number name="KVAL_ACC" min="0" max="255" value="16">
-	</div>
+    <div class="input-label">
+        <label class="hint">Decceleration</label>
+        <p class="tooltip">Deceleration of the motor</p>
+    </div>
+    <div class="input-items">
+        <input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
+        <input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
+        <input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
+        <input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
+        <input type="number" name="dec" min="14.55" max="59590" value="2000" step="0.01">
+        step/s/s
+    </div>
 </li>
 <li>
-	<label>KVAL_DEC</label>
-	<div>
-		<input type=number name="KVAL_DEC" min="0" max="255" value="16">
-		<input type=number name="KVAL_DEC" min="0" max="255" value="16">
-		<input type=number name="KVAL_DEC" min="0" max="255" value="16">
-		<input type=number name="KVAL_DEC" min="0" max="255" value="16">
-		<input type=number name="KVAL_DEC" min="0" max="255" value="16">
-	</div>
+    <div class="input-label">
+        <label class="hint">Max speed</label>
+        <p class="tooltip">Max speed of the motor</p>
+    </div>
+    <div class="input-items">
+        <input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
+        <input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
+        <input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
+        <input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
+        <input type="number" name="maxSpeed" min="15.25" max="15610" value="620" step="0.01">
+        step/s
+    </div>
 </li>
 <li>
-	<label>INT_SPEED</label>
-	<div>
-		<input type=number name="INT_SPEED" min="0" max="16383" value="1032">
-		<input type=number name="INT_SPEED" min="0" max="16383" value="1032">
-		<input type=number name="INT_SPEED" min="0" max="16383" value="1032">
-		<input type=number name="INT_SPEED" min="0" max="16383" value="1032">
-		<input type=number name="INT_SPEED" min="0" max="16383" value="1032">
-	</div>
-</li>
-<li>
-	<label>ST_SLP</label>
-	<div>
-		<input type=number name="ST_SLP" min="0" max="255" value="25">
-		<input type=number name="ST_SLP" min="0" max="255" value="25">
-		<input type=number name="ST_SLP" min="0" max="255" value="25">
-		<input type=number name="ST_SLP" min="0" max="255" value="25">
-		<input type=number name="ST_SLP" min="0" max="255" value="25">
-	</div>
-</li>
-<li>
-	<label>FN_SLP_ACC</label>
-	<div>
-		<input type=number name="FN_SLP_ACC" min="0" max="255" value="41">
-		<input type=number name="FN_SLP_ACC" min="0" max="255" value="41">
-		<input type=number name="FN_SLP_ACC" min="0" max="255" value="41">
-		<input type=number name="FN_SLP_ACC" min="0" max="255" value="41">
-		<input type=number name="FN_SLP_ACC" min="0" max="255" value="41">
-	</div>
-</li>
-<li>
-	<label>FN_SLP_DEC</label>
-	<div>
-		<input type=number name="FN_SLP_DEC" min="0" max="255" value="41">
-		<input type=number name="FN_SLP_DEC" min="0" max="255" value="41">
-		<input type=number name="FN_SLP_DEC" min="0" max="255" value="41">
-		<input type=number name="FN_SLP_DEC" min="0" max="255" value="41">
-		<input type=number name="FN_SLP_DEC" min="0" max="255" value="41">
-	</div>
-</li>
-<li>
-	<label>STALL_TH</label>
-	<div>
-		<select name="STALL_TH">
-			<option value="0">312.5mA</option>
-			<option value="1">625mA</option>
-			<option value="2">937.5mA</option>
-			<option value="3">1250mA</option>
-			<option value="4">1562.5mA</option>
-			<option value="5">1875mA</option>
-			<option value="6">2187.5mA</option>
-			<option value="7">2500mA</option>
-			<option value="8">2812.5mA</option>
-			<option value="9">3125mA</option>
-			<option value="10">3437.5mA</option>
-			<option value="11">3750mA</option>
-			<option value="12">4062.5mA</option>
-			<option value="13">4375mA</option>
-			<option value="14">4687.5mA</option>
-			<option value="15">5000mA</option>
-			<option value="16">5312.5mA</option>
-			<option value="17">5625mA</option>
-			<option value="18">5937.5mA</option>
-			<option value="19">6250mA</option>
-			<option value="20">6562.5mA</option>
-			<option value="21">6875mA</option>
-			<option value="22">7187.5mA</option>
-			<option value="23">7500mA</option>
-			<option value="24">7812.5mA</option>
-			<option value="25">8125mA</option>
-			<option value="26">8437.5mA</option>
-			<option value="27">8750mA</option>
-			<option value="28">9062.5mA</option>
-			<option value="29">9375mA</option>
-			<option value="30">9687.5mA</option>
-			<option value="31" selected="">10000mA</option>
-		</select>
-		<select name="STALL_TH">
-			<option value="0">312.5mA</option>
-			<option value="1">625mA</option>
-			<option value="2">937.5mA</option>
-			<option value="3">1250mA</option>
-			<option value="4">1562.5mA</option>
-			<option value="5">1875mA</option>
-			<option value="6">2187.5mA</option>
-			<option value="7">2500mA</option>
-			<option value="8">2812.5mA</option>
-			<option value="9">3125mA</option>
-			<option value="10">3437.5mA</option>
-			<option value="11">3750mA</option>
-			<option value="12">4062.5mA</option>
-			<option value="13">4375mA</option>
-			<option value="14">4687.5mA</option>
-			<option value="15">5000mA</option>
-			<option value="16">5312.5mA</option>
-			<option value="17">5625mA</option>
-			<option value="18">5937.5mA</option>
-			<option value="19">6250mA</option>
-			<option value="20">6562.5mA</option>
-			<option value="21">6875mA</option>
-			<option value="22">7187.5mA</option>
-			<option value="23">7500mA</option>
-			<option value="24">7812.5mA</option>
-			<option value="25">8125mA</option>
-			<option value="26">8437.5mA</option>
-			<option value="27">8750mA</option>
-			<option value="28">9062.5mA</option>
-			<option value="29">9375mA</option>
-			<option value="30">9687.5mA</option>
-			<option value="31" selected="">10000mA</option>
-		</select>
-		<select name="STALL_TH">
-			<option value="0">312.5mA</option>
-			<option value="1">625mA</option>
-			<option value="2">937.5mA</option>
-			<option value="3">1250mA</option>
-			<option value="4">1562.5mA</option>
-			<option value="5">1875mA</option>
-			<option value="6">2187.5mA</option>
-			<option value="7">2500mA</option>
-			<option value="8">2812.5mA</option>
-			<option value="9">3125mA</option>
-			<option value="10">3437.5mA</option>
-			<option value="11">3750mA</option>
-			<option value="12">4062.5mA</option>
-			<option value="13">4375mA</option>
-			<option value="14">4687.5mA</option>
-			<option value="15">5000mA</option>
-			<option value="16">5312.5mA</option>
-			<option value="17">5625mA</option>
-			<option value="18">5937.5mA</option>
-			<option value="19">6250mA</option>
-			<option value="20">6562.5mA</option>
-			<option value="21">6875mA</option>
-			<option value="22">7187.5mA</option>
-			<option value="23">7500mA</option>
-			<option value="24">7812.5mA</option>
-			<option value="25">8125mA</option>
-			<option value="26">8437.5mA</option>
-			<option value="27">8750mA</option>
-			<option value="28">9062.5mA</option>
-			<option value="29">9375mA</option>
-			<option value="30">9687.5mA</option>
-			<option value="31" selected="">10000mA</option>
-		</select>
-		<select name="STALL_TH">
-			<option value="0">312.5mA</option>
-			<option value="1">625mA</option>
-			<option value="2">937.5mA</option>
-			<option value="3">1250mA</option>
-			<option value="4">1562.5mA</option>
-			<option value="5">1875mA</option>
-			<option value="6">2187.5mA</option>
-			<option value="7">2500mA</option>
-			<option value="8">2812.5mA</option>
-			<option value="9">3125mA</option>
-			<option value="10">3437.5mA</option>
-			<option value="11">3750mA</option>
-			<option value="12">4062.5mA</option>
-			<option value="13">4375mA</option>
-			<option value="14">4687.5mA</option>
-			<option value="15">5000mA</option>
-			<option value="16">5312.5mA</option>
-			<option value="17">5625mA</option>
-			<option value="18">5937.5mA</option>
-			<option value="19">6250mA</option>
-			<option value="20">6562.5mA</option>
-			<option value="21">6875mA</option>
-			<option value="22">7187.5mA</option>
-			<option value="23">7500mA</option>
-			<option value="24">7812.5mA</option>
-			<option value="25">8125mA</option>
-			<option value="26">8437.5mA</option>
-			<option value="27">8750mA</option>
-			<option value="28">9062.5mA</option>
-			<option value="29">9375mA</option>
-			<option value="30">9687.5mA</option>
-			<option value="31" selected="">10000mA</option>
-		</select>
-		<select name="STALL_TH">
-			<option value="0">312.5mA</option>
-			<option value="1">625mA</option>
-			<option value="2">937.5mA</option>
-			<option value="3">1250mA</option>
-			<option value="4">1562.5mA</option>
-			<option value="5">1875mA</option>
-			<option value="6">2187.5mA</option>
-			<option value="7">2500mA</option>
-			<option value="8">2812.5mA</option>
-			<option value="9">3125mA</option>
-			<option value="10">3437.5mA</option>
-			<option value="11">3750mA</option>
-			<option value="12">4062.5mA</option>
-			<option value="13">4375mA</option>
-			<option value="14">4687.5mA</option>
-			<option value="15">5000mA</option>
-			<option value="16">5312.5mA</option>
-			<option value="17">5625mA</option>
-			<option value="18">5937.5mA</option>
-			<option value="19">6250mA</option>
-			<option value="20">6562.5mA</option>
-			<option value="21">6875mA</option>
-			<option value="22">7187.5mA</option>
-			<option value="23">7500mA</option>
-			<option value="24">7812.5mA</option>
-			<option value="25">8125mA</option>
-			<option value="26">8437.5mA</option>
-			<option value="27">8750mA</option>
-			<option value="28">9062.5mA</option>
-			<option value="29">9375mA</option>
-			<option value="30">9687.5mA</option>
-			<option value="31" selected="">10000mA</option>
-		</select>
-	</div>
-</li>
-<li>
-	<label>lowSpeedOptimize</label>
-	<div>
-		<input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
-		<input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
-		<input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
-		<input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
-		<input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
-		step/s
-	</div>
-</li>
-</ul>
-<h2>Current Mode</h2>
-<div>
-	<label>Set all motors</label>
-	<div>
-		<input type="checkbox" name="targetAll" class="currentMode">
-	</div>
-</div>
-<div>
-	<div>
-		<p>Parameter</p>
-	</div>
-	<div class="rowLabel currentMode">
-		<p>motor 1-4</p>
-		<p>motor 1</p>
-		<p>motor 2</p>
-		<p>motor 3</p>
-		<p>motor 4</p>
-	</div>
-</div>
-<ul class="input-list">
-<li>
-	<label>TVAL_HOLD</label>
-	<div>
-		<input type=number name="TVAL_HOLD" min="0" max="64" value="0">
-		<input type=number name="TVAL_HOLD" min="0" max="64" value="0">
-		<input type=number name="TVAL_HOLD" min="0" max="64" value="0">
-		<input type=number name="TVAL_HOLD" min="0" max="64" value="0">
-		<input type=number name="TVAL_HOLD" min="0" max="64" value="0">
-	</div>
-</li>
-<li>
-	<label>TVAL_RUN</label>
-	<div>
-		<input type=number name="TVAL_RUN" min="0" max="64" value="16">
-		<input type=number name="TVAL_RUN" min="0" max="64" value="16">
-		<input type=number name="TVAL_RUN" min="0" max="64" value="16">
-		<input type=number name="TVAL_RUN" min="0" max="64" value="16">
-		<input type=number name="TVAL_RUN" min="0" max="64" value="16">
-	</div>
-</li>
-<li>
-	<label>TVAL_ACC</label>
-	<div>
-		<input type=number name="TVAL_ACC" min="0" max="64" value="16">
-		<input type=number name="TVAL_ACC" min="0" max="64" value="16">
-		<input type=number name="TVAL_ACC" min="0" max="64" value="16">
-		<input type=number name="TVAL_ACC" min="0" max="64" value="16">
-		<input type=number name="TVAL_ACC" min="0" max="64" value="16">
-	</div>
-</li>
-<li>
-	<label>TVAL_DEC</label>
-	<div>
-		<input type=number name="TVAL_DEC" min="0" max="64" value="16">
-		<input type=number name="TVAL_DEC" min="0" max="64" value="16">
-		<input type=number name="TVAL_DEC" min="0" max="64" value="16">
-		<input type=number name="TVAL_DEC" min="0" max="64" value="16">
-		<input type=number name="TVAL_DEC" min="0" max="64" value="16">
-	</div>
-</li>
-<li>
-	<label>T_FAST</label>
-	<div>
-		<input type=number name="T_FAST" min="0" max="255" value="25">
-		<input type=number name="T_FAST" min="0" max="255" value="25">
-		<input type=number name="T_FAST" min="0" max="255" value="25">
-		<input type=number name="T_FAST" min="0" max="255" value="25">
-		<input type=number name="T_FAST" min="0" max="255" value="25">
-	</div>
-</li>
-<li>
-	<label>TON_MIN</label>
-	<div>
-		<input type=number name="TON_MIN" min="0" max="255" value="41">
-		<input type=number name="TON_MIN" min="0" max="255" value="41">
-		<input type=number name="TON_MIN" min="0" max="255" value="41">
-		<input type=number name="TON_MIN" min="0" max="255" value="41">
-		<input type=number name="TON_MIN" min="0" max="255" value="41">
-	</div>
-</li>
-<li>
-	<label>TOFF_MIN</label>
-	<div>
-		<input type=number name="TOFF_MIN"  min="0" max="255" value="41">
-		<input type=number name="TOFF_MIN"  min="0" max="255" value="41">
-		<input type=number name="TOFF_MIN"  min="0" max="255" value="41">
-		<input type=number name="TOFF_MIN"  min="0" max="255" value="41">
-		<input type=number name="TOFF_MIN"  min="0" max="255" value="41">
-	</div>
+    <div class="input-label">
+        <label class="hint">Transit to fullstep threshold speed</label>
+        <p class="tooltip">Threshold speed to transit from microstep to fullstep.</p>
+    </div>
+    <div class="input-items">
+        <input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
+        <input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
+        <input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
+        <input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
+        <input type="number" name="fullStepSpeed" min="7.63" max="15625" value="15625" step="0.01">
+        step/s
+    </div>
 </li>
 </ul>
 
-<h2>Servo Mode</h2>
-<div>
-	<label>Set all motors</label>
-	<div>
-		<input type="checkbox" name="targetAll" class="servoMode">
-	</div>
-</div>
-<div>
-	<div>
-		<p>Parameter</p>
-	</div>
-	<div class="rowLabel servoMode">
-		<p>motor 1-4</p>
-		<p>motor 1</p>
-		<p>motor 2</p>
-		<p>motor 3</p>
-		<p>motor 4</p>
-	</div>
+<div class="heading-wrap">
+    <h2>Voltage Mode</h2>
+    <div class="input-setting">
+        <label class="label">Set all motors<input type="checkbox" name="targetAll" class="voltageMode"></label>
+    </div>
 </div>
 <ul class="input-list">
-<li>
-	<label>kP</label>
-	<div>
-		<input type=number name="kP" min="0" value="0.06" step="0.001">
-		<input type=number name="kP" min="0" value="0.06" step="0.001">
-		<input type=number name="kP" min="0" value="0.06" step="0.001">
-		<input type=number name="kP" min="0" value="0.06" step="0.001">
-		<input type=number name="kP" min="0" value="0.06" step="0.001">
-	</div>
+<li class="heading">
+    <div class="input-label">Parameter</div>
+    <div class="rowLabel voltageMode input-items">
+        <p>motor 1-4</p>
+        <p>motor 1</p>
+        <p>motor 2</p>
+        <p>motor 3</p>
+        <p>motor 4</p>
+    </div>
 </li>
 <li>
-	<label>kI</label>
-	<div>
-		<input type=number name="kI" min="0" value="0">
-		<input type=number name="kI" min="0" value="0">
-		<input type=number name="kI" min="0" value="0">
-		<input type=number name="kI" min="0" value="0">
-		<input type=number name="kI" min="0" value="0">
-	</div>
+    <div class="input-label">
+        <label class="hint">KVAL_HOLD</label>
+        <p class="tooltip">KVAL_HOLD register contains the KVAL value that is assigned to the PWM modulators when the motor is stopped.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="KVAL_HOLD" min="0" max="255" value="0">
+        <input type=number name="KVAL_HOLD" min="0" max="255" value="0">
+        <input type=number name="KVAL_HOLD" min="0" max="255" value="0">
+        <input type=number name="KVAL_HOLD" min="0" max="255" value="0">
+        <input type=number name="KVAL_HOLD" min="0" max="255" value="0">
+    </div>
 </li>
 <li>
-	<label>kD</label>
-	<div>
-		<input type=number name="kD" min="0" value="0">
-		<input type=number name="kD" min="0" value="0">
-		<input type=number name="kD" min="0" value="0">
-		<input type=number name="kD" min="0" value="0">
-		<input type=number name="kD" min="0" value="0">
-	</div>
+    <div class="input-label">
+        <label class="hint">KVAL_RUN</label>
+        <p class="tooltip">KVAL_RUN register contains the KVAL value that is assigned to the PWM modulators when the motor is running at constant speed.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="KVAL_RUN" min="0" max="255" value="16">
+        <input type=number name="KVAL_RUN" min="0" max="255" value="16">
+        <input type=number name="KVAL_RUN" min="0" max="255" value="16">
+        <input type=number name="KVAL_RUN" min="0" max="255" value="16">
+        <input type=number name="KVAL_RUN" min="0" max="255" value="16">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">KVAL_ACC</label>
+        <p class="tooltip">KVAL_ACC register contains the starting KVAL value that can be assigned to the PWM modulators during acceleration.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="KVAL_ACC" min="0" max="255" value="16">
+        <input type=number name="KVAL_ACC" min="0" max="255" value="16">
+        <input type=number name="KVAL_ACC" min="0" max="255" value="16">
+        <input type=number name="KVAL_ACC" min="0" max="255" value="16">
+        <input type=number name="KVAL_ACC" min="0" max="255" value="16">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">KVAL_DEC</label>
+        <p class="tooltip">KVAL_DEC register contains the starting KVAL value that can be assigned to the PWM modulators during deceleration.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="KVAL_DEC" min="0" max="255" value="16">
+        <input type=number name="KVAL_DEC" min="0" max="255" value="16">
+        <input type=number name="KVAL_DEC" min="0" max="255" value="16">
+        <input type=number name="KVAL_DEC" min="0" max="255" value="16">
+        <input type=number name="KVAL_DEC" min="0" max="255" value="16">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">INT_SPEED</label>
+        <p class="tooltip">INT_SPEED register contains the speed value at which the BEMF compensation curve changes slope.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="INT_SPEED" min="0" max="16383" value="1032">
+        <input type=number name="INT_SPEED" min="0" max="16383" value="1032">
+        <input type=number name="INT_SPEED" min="0" max="16383" value="1032">
+        <input type=number name="INT_SPEED" min="0" max="16383" value="1032">
+        <input type=number name="INT_SPEED" min="0" max="16383" value="1032">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">ST_SLP</label>
+        <p class="tooltip">ST_SLP register contains the BEMF compensation curve slope that is used when the speed is lower than the intersect speed.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="ST_SLP" min="0" max="255" value="25">
+        <input type=number name="ST_SLP" min="0" max="255" value="25">
+        <input type=number name="ST_SLP" min="0" max="255" value="25">
+        <input type=number name="ST_SLP" min="0" max="255" value="25">
+        <input type=number name="ST_SLP" min="0" max="255" value="25">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">FN_SLP_ACC</label>
+        <p class="tooltip">FN_SLP_ACC register contains the BEMF compensation curve slope that is used when the speed is greater than the intersect speed during acceleration.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="FN_SLP_ACC" min="0" max="255" value="41">
+        <input type=number name="FN_SLP_ACC" min="0" max="255" value="41">
+        <input type=number name="FN_SLP_ACC" min="0" max="255" value="41">
+        <input type=number name="FN_SLP_ACC" min="0" max="255" value="41">
+        <input type=number name="FN_SLP_ACC" min="0" max="255" value="41">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">FN_SLP_DEC</label>
+        <p class="tooltip">FN_SLP_DEC register contains the BEMF compensation curve slope that is used when the speed is greater than the intersect speed during deceleration.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="FN_SLP_DEC" min="0" max="255" value="41">
+        <input type=number name="FN_SLP_DEC" min="0" max="255" value="41">
+        <input type=number name="FN_SLP_DEC" min="0" max="255" value="41">
+        <input type=number name="FN_SLP_DEC" min="0" max="255" value="41">
+        <input type=number name="FN_SLP_DEC" min="0" max="255" value="41">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">STALL_TH</label>
+        <p class="tooltip">Threshold current for the stall detection.</p>
+    </div>
+    <div class="input-items">
+        <select name="STALL_TH">
+            <option value="0">312.5mA</option>
+            <option value="1">625mA</option>
+            <option value="2">937.5mA</option>
+            <option value="3">1250mA</option>
+            <option value="4">1562.5mA</option>
+            <option value="5">1875mA</option>
+            <option value="6">2187.5mA</option>
+            <option value="7">2500mA</option>
+            <option value="8">2812.5mA</option>
+            <option value="9">3125mA</option>
+            <option value="10">3437.5mA</option>
+            <option value="11">3750mA</option>
+            <option value="12">4062.5mA</option>
+            <option value="13">4375mA</option>
+            <option value="14">4687.5mA</option>
+            <option value="15">5000mA</option>
+            <option value="16">5312.5mA</option>
+            <option value="17">5625mA</option>
+            <option value="18">5937.5mA</option>
+            <option value="19">6250mA</option>
+            <option value="20">6562.5mA</option>
+            <option value="21">6875mA</option>
+            <option value="22">7187.5mA</option>
+            <option value="23">7500mA</option>
+            <option value="24">7812.5mA</option>
+            <option value="25">8125mA</option>
+            <option value="26">8437.5mA</option>
+            <option value="27">8750mA</option>
+            <option value="28">9062.5mA</option>
+            <option value="29">9375mA</option>
+            <option value="30">9687.5mA</option>
+            <option value="31" selected="">10000mA</option>
+        </select>
+        <select name="STALL_TH">
+            <option value="0">312.5mA</option>
+            <option value="1">625mA</option>
+            <option value="2">937.5mA</option>
+            <option value="3">1250mA</option>
+            <option value="4">1562.5mA</option>
+            <option value="5">1875mA</option>
+            <option value="6">2187.5mA</option>
+            <option value="7">2500mA</option>
+            <option value="8">2812.5mA</option>
+            <option value="9">3125mA</option>
+            <option value="10">3437.5mA</option>
+            <option value="11">3750mA</option>
+            <option value="12">4062.5mA</option>
+            <option value="13">4375mA</option>
+            <option value="14">4687.5mA</option>
+            <option value="15">5000mA</option>
+            <option value="16">5312.5mA</option>
+            <option value="17">5625mA</option>
+            <option value="18">5937.5mA</option>
+            <option value="19">6250mA</option>
+            <option value="20">6562.5mA</option>
+            <option value="21">6875mA</option>
+            <option value="22">7187.5mA</option>
+            <option value="23">7500mA</option>
+            <option value="24">7812.5mA</option>
+            <option value="25">8125mA</option>
+            <option value="26">8437.5mA</option>
+            <option value="27">8750mA</option>
+            <option value="28">9062.5mA</option>
+            <option value="29">9375mA</option>
+            <option value="30">9687.5mA</option>
+            <option value="31" selected="">10000mA</option>
+        </select>
+        <select name="STALL_TH">
+            <option value="0">312.5mA</option>
+            <option value="1">625mA</option>
+            <option value="2">937.5mA</option>
+            <option value="3">1250mA</option>
+            <option value="4">1562.5mA</option>
+            <option value="5">1875mA</option>
+            <option value="6">2187.5mA</option>
+            <option value="7">2500mA</option>
+            <option value="8">2812.5mA</option>
+            <option value="9">3125mA</option>
+            <option value="10">3437.5mA</option>
+            <option value="11">3750mA</option>
+            <option value="12">4062.5mA</option>
+            <option value="13">4375mA</option>
+            <option value="14">4687.5mA</option>
+            <option value="15">5000mA</option>
+            <option value="16">5312.5mA</option>
+            <option value="17">5625mA</option>
+            <option value="18">5937.5mA</option>
+            <option value="19">6250mA</option>
+            <option value="20">6562.5mA</option>
+            <option value="21">6875mA</option>
+            <option value="22">7187.5mA</option>
+            <option value="23">7500mA</option>
+            <option value="24">7812.5mA</option>
+            <option value="25">8125mA</option>
+            <option value="26">8437.5mA</option>
+            <option value="27">8750mA</option>
+            <option value="28">9062.5mA</option>
+            <option value="29">9375mA</option>
+            <option value="30">9687.5mA</option>
+            <option value="31" selected="">10000mA</option>
+        </select>
+        <select name="STALL_TH">
+            <option value="0">312.5mA</option>
+            <option value="1">625mA</option>
+            <option value="2">937.5mA</option>
+            <option value="3">1250mA</option>
+            <option value="4">1562.5mA</option>
+            <option value="5">1875mA</option>
+            <option value="6">2187.5mA</option>
+            <option value="7">2500mA</option>
+            <option value="8">2812.5mA</option>
+            <option value="9">3125mA</option>
+            <option value="10">3437.5mA</option>
+            <option value="11">3750mA</option>
+            <option value="12">4062.5mA</option>
+            <option value="13">4375mA</option>
+            <option value="14">4687.5mA</option>
+            <option value="15">5000mA</option>
+            <option value="16">5312.5mA</option>
+            <option value="17">5625mA</option>
+            <option value="18">5937.5mA</option>
+            <option value="19">6250mA</option>
+            <option value="20">6562.5mA</option>
+            <option value="21">6875mA</option>
+            <option value="22">7187.5mA</option>
+            <option value="23">7500mA</option>
+            <option value="24">7812.5mA</option>
+            <option value="25">8125mA</option>
+            <option value="26">8437.5mA</option>
+            <option value="27">8750mA</option>
+            <option value="28">9062.5mA</option>
+            <option value="29">9375mA</option>
+            <option value="30">9687.5mA</option>
+            <option value="31" selected="">10000mA</option>
+        </select>
+        <select name="STALL_TH">
+            <option value="0">312.5mA</option>
+            <option value="1">625mA</option>
+            <option value="2">937.5mA</option>
+            <option value="3">1250mA</option>
+            <option value="4">1562.5mA</option>
+            <option value="5">1875mA</option>
+            <option value="6">2187.5mA</option>
+            <option value="7">2500mA</option>
+            <option value="8">2812.5mA</option>
+            <option value="9">3125mA</option>
+            <option value="10">3437.5mA</option>
+            <option value="11">3750mA</option>
+            <option value="12">4062.5mA</option>
+            <option value="13">4375mA</option>
+            <option value="14">4687.5mA</option>
+            <option value="15">5000mA</option>
+            <option value="16">5312.5mA</option>
+            <option value="17">5625mA</option>
+            <option value="18">5937.5mA</option>
+            <option value="19">6250mA</option>
+            <option value="20">6562.5mA</option>
+            <option value="21">6875mA</option>
+            <option value="22">7187.5mA</option>
+            <option value="23">7500mA</option>
+            <option value="24">7812.5mA</option>
+            <option value="25">8125mA</option>
+            <option value="26">8437.5mA</option>
+            <option value="27">8750mA</option>
+            <option value="28">9062.5mA</option>
+            <option value="29">9375mA</option>
+            <option value="30">9687.5mA</option>
+            <option value="31" selected="">10000mA</option>
+        </select>
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">lowSpeedOptimize</label>
+        <p class="tooltip">The speed threshold below which the low speed compensation works.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
+        <input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
+        <input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
+        <input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
+        <input type=number name="lowSpeedOptimize" min="0" max="976.3" value="20">
+        step/s
+    </div>
+</li>
+</ul>
+
+<div class="heading-wrap">
+    <h2>Current Mode</h2>
+    <div class="input-setting">
+        <label class="label">Set all motors<input type="checkbox" name="targetAll" class="currentMode"></label>
+    </div>
+</div>
+<ul class="input-list">
+<li class="heading">
+    <div class="input-label">Parameter</div>
+    <div class="rowLabel currentMode input-items">
+        <p>motor 1-4</p>
+        <p>motor 1</p>
+        <p>motor 2</p>
+        <p>motor 3</p>
+        <p>motor 4</p>
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">TVAL_HOLD</label>
+        <p class="tooltip">The TVAL_HOLD register contains the reference voltage that is assigned to the torque regulation DAC when the motor is stopped.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="TVAL_HOLD" min="0" max="64" value="0">
+        <input type=number name="TVAL_HOLD" min="0" max="64" value="0">
+        <input type=number name="TVAL_HOLD" min="0" max="64" value="0">
+        <input type=number name="TVAL_HOLD" min="0" max="64" value="0">
+        <input type=number name="TVAL_HOLD" min="0" max="64" value="0">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">TVAL_RUN</label>
+        <p class="tooltip">The TVAL_RUN register contains the reference voltage that is assigned to the torque regulation DAC when the motor is running at constant speed.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="TVAL_RUN" min="0" max="64" value="16">
+        <input type=number name="TVAL_RUN" min="0" max="64" value="16">
+        <input type=number name="TVAL_RUN" min="0" max="64" value="16">
+        <input type=number name="TVAL_RUN" min="0" max="64" value="16">
+        <input type=number name="TVAL_RUN" min="0" max="64" value="16">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">TVAL_ACC</label>
+        <p class="tooltip">The TVAL_ACC register contains the reference voltage that is assigned to the torque regulation DAC during acceleration.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="TVAL_ACC" min="0" max="64" value="16">
+        <input type=number name="TVAL_ACC" min="0" max="64" value="16">
+        <input type=number name="TVAL_ACC" min="0" max="64" value="16">
+        <input type=number name="TVAL_ACC" min="0" max="64" value="16">
+        <input type=number name="TVAL_ACC" min="0" max="64" value="16">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">TVAL_DEC</label>
+        <p class="tooltip">The TVAL_DEC register contains the reference voltage that is assigned to the torque regulation DAC during deceleration.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="TVAL_DEC" min="0" max="64" value="16">
+        <input type=number name="TVAL_DEC" min="0" max="64" value="16">
+        <input type=number name="TVAL_DEC" min="0" max="64" value="16">
+        <input type=number name="TVAL_DEC" min="0" max="64" value="16">
+        <input type=number name="TVAL_DEC" min="0" max="64" value="16">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">T_FAST</label>
+        <p class="tooltip">The T_FAST register contains the maximum fast decay time (TOFF_FAST) and the maximum fall step time (FALL_STEP) used by the current control system.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="T_FAST" min="0" max="255" value="25">
+        <input type=number name="T_FAST" min="0" max="255" value="25">
+        <input type=number name="T_FAST" min="0" max="255" value="25">
+        <input type=number name="T_FAST" min="0" max="255" value="25">
+        <input type=number name="T_FAST" min="0" max="255" value="25">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">TON_MIN</label>
+        <p class="tooltip">The TON_MIN register contains the minimum on-time value used by the current control system.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="TON_MIN" min="0" max="255" value="41">
+        <input type=number name="TON_MIN" min="0" max="255" value="41">
+        <input type=number name="TON_MIN" min="0" max="255" value="41">
+        <input type=number name="TON_MIN" min="0" max="255" value="41">
+        <input type=number name="TON_MIN" min="0" max="255" value="41">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">TOFF_MIN</label>
+        <p class="tooltip">The TOFF_MIN register contains the minimum off-time value used by the current control system.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="TOFF_MIN"  min="0" max="255" value="41">
+        <input type=number name="TOFF_MIN"  min="0" max="255" value="41">
+        <input type=number name="TOFF_MIN"  min="0" max="255" value="41">
+        <input type=number name="TOFF_MIN"  min="0" max="255" value="41">
+        <input type=number name="TOFF_MIN"  min="0" max="255" value="41">
+    </div>
+</li>
+</ul>
+
+<div class="heading-wrap">
+    <h2>Servo Mode</h2>
+    <div class="input-setting">
+        <label class="label">Set all motors<input type="checkbox" name="targetAll" class="servoMode"></label>
+    </div>
+</div>
+<ul class="input-list">
+<li class="heading">
+    <div class="input-label">Parameter</div>
+    <div class="rowLabel servoMode input-items">
+        <p>motor 1-4</p>
+        <p>motor 1</p>
+        <p>motor 2</p>
+        <p>motor 3</p>
+        <p>motor 4</p>
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">kP</label>
+        <p class="tooltip">The coefficients for the proportional term of the PID controller of the servo mode.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="kP" min="0" value="0.06" step="0.001">
+        <input type=number name="kP" min="0" value="0.06" step="0.001">
+        <input type=number name="kP" min="0" value="0.06" step="0.001">
+        <input type=number name="kP" min="0" value="0.06" step="0.001">
+        <input type=number name="kP" min="0" value="0.06" step="0.001">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <label class="hint">kI</label>
+        <p class="tooltip">The coefficients for the integral term of the PID controller of the servo mode.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="kI" min="0" value="0">
+        <input type=number name="kI" min="0" value="0">
+        <input type=number name="kI" min="0" value="0">
+        <input type=number name="kI" min="0" value="0">
+        <input type=number name="kI" min="0" value="0">
+    </div>
+</li>
+<li>
+    <div class="input-label">
+        <span class="hint">kD</span>
+        <p class="tooltip">The coefficients for the derivative term of the PID controller of the servo mode.</p>
+    </div>
+    <div class="input-items">
+        <input type=number name="kD" min="0" value="0">
+        <input type=number name="kD" min="0" value="0">
+        <input type=number name="kD" min="0" value="0">
+        <input type=number name="kD" min="0" value="0">
+        <input type=number name="kD" min="0" value="0">
+    </div>
 </li>
 </ul>
 
@@ -1033,5 +1195,6 @@
 
 </div>
 <script type="text/javascript" src="./js/main.js"></script>
+<script type="text/javascript" src="./js/styles.js"></script>
 </body>
 </html>
