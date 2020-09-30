@@ -1,129 +1,137 @@
 void OSCMsgReceive() {
-
+    bool bMsgHasError = false, bMsgRouted = false;
     OSCMessage msgIN;
     int size;
     if ((size = Udp.parsePacket()) > 0) {
         while (size--)
             msgIN.fill(Udp.read());
 
-        if (!msgIN.hasError()) {
+        bMsgHasError = msgIN.hasError();
+        if (!bMsgHasError) {
             // some possible frequent messeages
-            msgIN.route("/setTargetPosition", setTargetPosition);
-            msgIN.route("/setTargetPositionList", setTargetPositionList);
-            msgIN.route("/getPosition", getPosition);
-            msgIN.route("/getSpeed", getSpeed);
-            msgIN.route("/run", run);
-            msgIN.route("/runRaw", runRaw);
+            bMsgRouted |= msgIN.route("/setTargetPosition", setTargetPosition);
+            bMsgRouted |= msgIN.route("/setTargetPositionList", setTargetPositionList);
+            bMsgRouted |= msgIN.route("/getPosition", getPosition);
+            bMsgRouted |= msgIN.route("/getSpeed", getSpeed);
+            bMsgRouted |= msgIN.route("/run", run);
+            bMsgRouted |= msgIN.route("/runRaw", runRaw);
 
             // motion
-            msgIN.route("/move", move);
-            msgIN.route("/goTo", goTo);
-            msgIN.route("/goToDir", goToDir);
-            msgIN.route("/goUntil", goUntil);
-            msgIN.route("/goUntilRaw", goUntilRaw);
-            msgIN.route("/releaseSw", releaseSw);
-            msgIN.route("/goHome", goHome);
-            msgIN.route("/goMark", goMark);
-            msgIN.route("/setMark", setMark);
-            msgIN.route("/getMark", getMark);
-            msgIN.route("/setPosition", setPosition);
-            msgIN.route("/resetPos", resetPos);
-            msgIN.route("/resetDev", resetDev);
-            msgIN.route("/softStop", softStop);
-            msgIN.route("/hardStop", hardStop);
-            msgIN.route("/softHiZ", softHiZ);
-            msgIN.route("/hardHiZ", hardHiZ);
+            bMsgRouted |= msgIN.route("/move", move);
+            bMsgRouted |= msgIN.route("/goTo", goTo);
+            bMsgRouted |= msgIN.route("/goToDir", goToDir);
+            bMsgRouted |= msgIN.route("/goUntil", goUntil);
+            bMsgRouted |= msgIN.route("/goUntilRaw", goUntilRaw);
+            bMsgRouted |= msgIN.route("/releaseSw", releaseSw);
+            bMsgRouted |= msgIN.route("/goHome", goHome);
+            bMsgRouted |= msgIN.route("/goMark", goMark);
+            bMsgRouted |= msgIN.route("/setMark", setMark);
+            bMsgRouted |= msgIN.route("/getMark", getMark);
+            bMsgRouted |= msgIN.route("/setPosition", setPosition);
+            bMsgRouted |= msgIN.route("/resetPos", resetPos);
+            bMsgRouted |= msgIN.route("/resetDev", resetDev);
+            bMsgRouted |= msgIN.route("/softStop", softStop);
+            bMsgRouted |= msgIN.route("/hardStop", hardStop);
+            bMsgRouted |= msgIN.route("/softHiZ", softHiZ);
+            bMsgRouted |= msgIN.route("/hardHiZ", hardHiZ);
 
             // servo mode
-            msgIN.route("/enableServoMode", enableServoMode);
-            msgIN.route("/setServoParam", setServoParam);
-            msgIN.route("/getServoParam", getServoParam);
+            bMsgRouted |= msgIN.route("/enableServoMode", enableServoMode);
+            bMsgRouted |= msgIN.route("/setServoParam", setServoParam);
+            bMsgRouted |= msgIN.route("/getServoParam", getServoParam);
 
             // speed
-            msgIN.route("/setSpeedProfile", setSpeedProfile);
-            msgIN.route("/setMaxSpeed", setMaxSpeed);
-            msgIN.route("/setFullstepSpeed", setFullstepSpeed);
-            msgIN.route("/getFullstepSpeed", getFullstepSpeed);
-            msgIN.route("/setAcc", setAcc);
-            msgIN.route("/setDec", setDec);
-            msgIN.route("/getSpeedProfile", getSpeedProfile);
+            bMsgRouted |= msgIN.route("/setSpeedProfile", setSpeedProfile);
+            bMsgRouted |= msgIN.route("/setMaxSpeed", setMaxSpeed);
+            bMsgRouted |= msgIN.route("/setFullstepSpeed", setFullstepSpeed);
+            bMsgRouted |= msgIN.route("/getFullstepSpeed", getFullstepSpeed);
+            bMsgRouted |= msgIN.route("/setAcc", setAcc);
+            bMsgRouted |= msgIN.route("/setDec", setDec);
+            bMsgRouted |= msgIN.route("/getSpeedProfile", getSpeedProfile);
 
             // Kval
-            msgIN.route("/setKval", setKval);
-            msgIN.route("/setAccKval", setAccKval);
-            msgIN.route("/setDecKval", setDecKval);
-            msgIN.route("/setRunKval", setRunKval);
-            msgIN.route("/setHoldKval", setHoldKval);
-            msgIN.route("/getKval", getKval);
+            bMsgRouted |= msgIN.route("/setKval", setKval);
+            bMsgRouted |= msgIN.route("/setAccKval", setAccKval);
+            bMsgRouted |= msgIN.route("/setDecKval", setDecKval);
+            bMsgRouted |= msgIN.route("/setRunKval", setRunKval);
+            bMsgRouted |= msgIN.route("/setHoldKval", setHoldKval);
+            bMsgRouted |= msgIN.route("/getKval", getKval);
 
             //TVAL
-            msgIN.route("/setTval", setTval);
-            msgIN.route("/setAccTval", setAccTval);
-            msgIN.route("/setDecTval", setDecTval);
-            msgIN.route("/setRunTval", setRunTval);
-            msgIN.route("/setHoldTval", setHoldTval);
-            msgIN.route("/getTval", getTval);
-            msgIN.route("/getTval_mA", getTval_mA);
+            bMsgRouted |= msgIN.route("/setTval", setTval);
+            bMsgRouted |= msgIN.route("/setAccTval", setAccTval);
+            bMsgRouted |= msgIN.route("/setDecTval", setDecTval);
+            bMsgRouted |= msgIN.route("/setRunTval", setRunTval);
+            bMsgRouted |= msgIN.route("/setHoldTval", setHoldTval);
+            bMsgRouted |= msgIN.route("/getTval", getTval);
+            bMsgRouted |= msgIN.route("/getTval_mA", getTval_mA);
 
             // config
-            msgIN.route("/setDestIp", setDestIp);
-            msgIN.route("/getVersion", getVersion);
-            msgIN.route("/getConfigName", getConfigName);
-            msgIN.route("/getConfigRegister", getConfigRegister);
-            msgIN.route("/getStatus", getStatus);
-            msgIN.route("/getStatusList", getStatusList);
-            msgIN.route("/getHomeSw", getHomeSw);
-            msgIN.route("/getBusy", getBusy);
-            msgIN.route("/getUvlo", getUvlo);
-            msgIN.route("/getMotorStatus", getMotorStatus);
-            msgIN.route("/getThermalStatus", getThermalStatus);
-            msgIN.route("/resetMotorDriver", resetMotorDriver);
-            //msgIN.route("/enableFlagReport", enableFlagReport);
-            msgIN.route("/enableBusyReport", enableBusyReport);
-            msgIN.route("/enableHizReport", enableHizReport);
-            msgIN.route("/enableHomeSwReport", enableHomeSwReport);
-            msgIN.route("/enableDirReport", enableDirReport);
-            msgIN.route("/enableMotorStatusReport", enableMotorStatusReport);
-            msgIN.route("/enableSwEventReport", enableSwEventReport);
-            msgIN.route("/enableCommandErrorReport", enableCommandErrorReport);
-            msgIN.route("/enableUvloReport", enableUvloReport);
-            msgIN.route("/enableThermalStatusReport", enableThermalStatusReport);
-            msgIN.route("/enableOverCurrentReport", enableOverCurrentReport);
-            msgIN.route("/enableStallReport", enableStallReport);
-            //msgIN.route("/getDir", getDir);
-            msgIN.route("/getLimitSw", getLimitSw);
-            msgIN.route("/getLimitSwMode", getLimitSwMode);
-            msgIN.route("/setLimitSwMode", setLimitSwMode);
-            msgIN.route("/enableLimitSwReport", enableLimitSwReport);
+            bMsgRouted |= msgIN.route("/setDestIp", setDestIp);
+            bMsgRouted |= msgIN.route("/getVersion", getVersion);
+            bMsgRouted |= msgIN.route("/getConfigName", getConfigName);
+            bMsgRouted |= msgIN.route("/getConfigRegister", getConfigRegister);
+            bMsgRouted |= msgIN.route("/getStatus", getStatus);
+            bMsgRouted |= msgIN.route("/getStatusList", getStatusList);
+            bMsgRouted |= msgIN.route("/getHomeSw", getHomeSw);
+            bMsgRouted |= msgIN.route("/getBusy", getBusy);
+            bMsgRouted |= msgIN.route("/getUvlo", getUvlo);
+            bMsgRouted |= msgIN.route("/getMotorStatus", getMotorStatus);
+            bMsgRouted |= msgIN.route("/getThermalStatus", getThermalStatus);
+            bMsgRouted |= msgIN.route("/resetMotorDriver", resetMotorDriver);
+            //bMsgRouted |= msgIN.route("/enableFlagReport", enableFlagReport);
+            bMsgRouted |= msgIN.route("/enableBusyReport", enableBusyReport);
+            bMsgRouted |= msgIN.route("/enableHizReport", enableHizReport);
+            bMsgRouted |= msgIN.route("/enableHomeSwReport", enableHomeSwReport);
+            bMsgRouted |= msgIN.route("/enableDirReport", enableDirReport);
+            bMsgRouted |= msgIN.route("/enableMotorStatusReport", enableMotorStatusReport);
+            bMsgRouted |= msgIN.route("/enableSwEventReport", enableSwEventReport);
+            bMsgRouted |= msgIN.route("/enableCommandErrorReport", enableCommandErrorReport);
+            bMsgRouted |= msgIN.route("/enableUvloReport", enableUvloReport);
+            bMsgRouted |= msgIN.route("/enableThermalStatusReport", enableThermalStatusReport);
+            bMsgRouted |= msgIN.route("/enableOverCurrentReport", enableOverCurrentReport);
+            bMsgRouted |= msgIN.route("/enableStallReport", enableStallReport);
+            //bMsgRouted |= msgIN.route("/getDir", getDir);
+            bMsgRouted |= msgIN.route("/getLimitSw", getLimitSw);
+            bMsgRouted |= msgIN.route("/getLimitSwMode", getLimitSwMode);
+            bMsgRouted |= msgIN.route("/setLimitSwMode", setLimitSwMode);
+            bMsgRouted |= msgIN.route("/enableLimitSwReport", enableLimitSwReport);
 
-            msgIN.route("/setMicrostepMode", setMicrostepMode);
-            msgIN.route("/getMicrostepMode", getMicrostepMode);
-            msgIN.route("/getHomeSwMode", getHomeSwMode);
-            msgIN.route("/setHomeSwMode", setHomeSwMode);
-            msgIN.route("/setStallThreshold", setStallThreshold);
-            msgIN.route("/getStallThreshold", getStallThreshold);
-            msgIN.route("/setOverCurrentThreshold", setOverCurrentThreshold);
-            msgIN.route("/getOverCurrentThreshold", getOverCurrentThreshold);
-            msgIN.route("/setLowSpeedOptimizeThreshold", setLowSpeedOptimizeThreshold);
-            msgIN.route("/getLowSpeedOptimizeThreshold", getLowSpeedOptimizeThreshold);
+            bMsgRouted |= msgIN.route("/setMicrostepMode", setMicrostepMode);
+            bMsgRouted |= msgIN.route("/getMicrostepMode", getMicrostepMode);
+            bMsgRouted |= msgIN.route("/getHomeSwMode", getHomeSwMode);
+            bMsgRouted |= msgIN.route("/setHomeSwMode", setHomeSwMode);
+            bMsgRouted |= msgIN.route("/setStallThreshold", setStallThreshold);
+            bMsgRouted |= msgIN.route("/getStallThreshold", getStallThreshold);
+            bMsgRouted |= msgIN.route("/setOverCurrentThreshold", setOverCurrentThreshold);
+            bMsgRouted |= msgIN.route("/getOverCurrentThreshold", getOverCurrentThreshold);
+            bMsgRouted |= msgIN.route("/setLowSpeedOptimizeThreshold", setLowSpeedOptimizeThreshold);
+            bMsgRouted |= msgIN.route("/getLowSpeedOptimizeThreshold", getLowSpeedOptimizeThreshold);
 
 
-            msgIN.route("/setSpeedProfileRaw", setSpeedProfileRaw);
-            msgIN.route("/setMaxSpeedRaw", setMaxSpeedRaw);
-            msgIN.route("/setMinSpeedRaw", setMinSpeedRaw);
-            msgIN.route("/setFullstepSpeedRaw", setFullstepSpeedRaw);
-            msgIN.route("/setAccRaw", setAccRaw);
-            msgIN.route("/setDecRaw", setDecRaw);
-            msgIN.route("/getSpeedProfileRaw", getSpeedProfileRaw);
+            bMsgRouted |= msgIN.route("/setSpeedProfileRaw", setSpeedProfileRaw);
+            bMsgRouted |= msgIN.route("/setMaxSpeedRaw", setMaxSpeedRaw);
+            bMsgRouted |= msgIN.route("/setMinSpeedRaw", setMinSpeedRaw);
+            bMsgRouted |= msgIN.route("/setFullstepSpeedRaw", setFullstepSpeedRaw);
+            bMsgRouted |= msgIN.route("/setAccRaw", setAccRaw);
+            bMsgRouted |= msgIN.route("/setDecRaw", setDecRaw);
+            bMsgRouted |= msgIN.route("/getSpeedProfileRaw", getSpeedProfileRaw);
 
-            msgIN.route("/setVoltageMode", setVoltageMode);
-            msgIN.route("/setCurrentMode", setCurrentMode);
-            msgIN.route("/setBemfParam", setBemfParam);
-            msgIN.route("/getBemfParam", getBemfParam);
-            msgIN.route("/setDecayModeParam", setDecayModeParam);
-            msgIN.route("/getDecayModeParam", getDecayModeParam);
-            msgIN.route("/setDebugMode", setDebugMode);
+            bMsgRouted |= msgIN.route("/setVoltageMode", setVoltageMode);
+            bMsgRouted |= msgIN.route("/setCurrentMode", setCurrentMode);
+            bMsgRouted |= msgIN.route("/setBemfParam", setBemfParam);
+            bMsgRouted |= msgIN.route("/getBemfParam", getBemfParam);
+            bMsgRouted |= msgIN.route("/setDecayModeParam", setDecayModeParam);
+            bMsgRouted |= msgIN.route("/getDecayModeParam", getDecayModeParam);
+            bMsgRouted |= msgIN.route("/setDebugMode", setDebugMode);
             turnOnRXL();
+            //digitalWrite(ledPin, bMsgRouted);
+            if (!bMsgRouted) {
+                sendOneString("/error/osc", "messageNotMatch");
+            }
+        }
+        else {
+          sendOneString("/error/osc", "oscSyntaxError");
         }
     }
 }
