@@ -1,38 +1,25 @@
-void diagnosisSetup() {
-	digitalWrite(ledPin, HIGH);
-	SerialUSB.begin(9600);
-	//while (!SerialUSB) continue;
-	SerialUSB.println("Diagnosis mode.");
-	digitalWrite(ledPin, LOW);
-	// DIP switch test
-	// SD
-	// Ethernet
-	// PowerSTEP01
-}
-
-void diagnosisLoop() {
-	uint8_t inByte;
-	if (SerialUSB.available() > 0)
+void diagnosis(uint8_t inByte) {
+	switch (inByte)
 	{
-		inByte = SerialUSB.read();
-		switch (inByte)
-		{
-		case 'c':
-			printLoadedConfig();
-			break;
-		case 's':
-			printCurrentState();
-			break;
-		case 'b':
-			sendBootMsg();
-			break;
-		default:
-			break;
-		}
+	case 'c':
+		printLoadedConfig();
+		break;
+	case 's':
+		printCurrentState();
+		break;
+	case 'b':
+		//sendBootMsg();
+		break;
+	default:
+		break;
 	}
 }
 
 void printCurrentState() {
+	SerialUSB.print("Firmware name:");
+	String version = COMPILE_DATE;
+	version += String(" ") + String(COMPILE_TIME) + String(" ") + String(FIRMWARE_NAME);
+	SerialUSB.println(version);
 	showHeader("DIP Switch");
 	SerialUSB.println(getMyId(), BIN); // have to fix
 	showHeader("Ethernet");
@@ -57,10 +44,6 @@ void printCurrentState() {
 
 #pragma region print_config
 void printLoadedConfig() {
-	SerialUSB.print("Project name:");
-	String version = COMPILE_DATE;
-	version += String(" ") + String(COMPILE_TIME) + String(" ") + String(PROJECT_NAME);
-	SerialUSB.println(version);
 	SerialUSB.print("configName:");
 	SerialUSB.println(configName.c_str());
 	showBoolResult(F("SD library initialize succeeded"), sdInitializeSucceeded);

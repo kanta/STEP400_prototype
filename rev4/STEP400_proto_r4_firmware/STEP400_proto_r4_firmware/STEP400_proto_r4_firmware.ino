@@ -13,10 +13,11 @@
 #include <Ponoor_PowerSTEP01Library.h>
 #include <SD.h>
 #include <ArduinoJson.h>
+#include <Adafruit_SleepyDog.h>
 
 #define COMPILE_DATE __DATE__
 #define COMPILE_TIME __TIME__
-constexpr auto PROJECT_NAME = "STEP400proto_r4";
+constexpr auto FIRMWARE_NAME = "STEP400proto_r4";
 boolean debugMode = false;
 
 // Json configuration file
@@ -78,6 +79,8 @@ boolean
     isMacAddId,
     isOutPortAddId,
     bootedMsgEnable;
+boolean isWaitingSendBootMsg = false;
+#define BOOT_MSG_WAIT_TIME  1000    //[ms], The waiting duration for sending a boot message after Ethernet has been linked
 
 #define W5500_RESET_PIN A3
 
@@ -195,19 +198,21 @@ void setup() {
     myId = getMyId();
     delay(1);
     resetEthernet();
+    isWaitingSendBootMsg = bootedMsgEnable;
 
-    if (bootedMsgEnable) sendBootMsg();
-
-    if (digitalRead(SETUP_SW_PIN) == LOW) 
-    {
-        diagnosisSetup();
-        while (1) {
-            diagnosisLoop();
-        }
-    }
+    SerialUSB.begin(9600);
+    Watchdog.enable(100);
 }
 
-void sendBootMsg() {
+void sendBootMsg(uint32_t _currentTime) {
+    static uint32_t linkedTime;
+    if ( Ethernet.linkStatus() == LinkOFF ) {
+        linkedTime = _currentTime;
+        return; 
+    }
+    else {
+        if ((uint32_t)(_currentTime - linkedTime) < BOOT_MSG_WAIT_TIME) return;
+    }
     IPAddress broadcastIp;
     for (uint8_t i = 0; i < 3; i++)
     {
@@ -221,7 +226,9 @@ void sendBootMsg() {
     Udp.endPacket();
     newMes.empty();
     turnOnTXL();
+    isWaitingSendBootMsg = false;
 }
+
 uint8_t getMyId() {
     uint8_t _id = 0;
     for (auto i = 0; i < 8; ++i)
@@ -518,7 +525,8 @@ void updateServo(uint32_t currentTimeMicros) {
 }
 
 void loop() {
-    uint32_t currentTimeMillis = millis(),
+    uint32_t 
+        currentTimeMillis = millis(),
         currentTimeMicros = micros();
     static uint32_t lastPollTime = 0;
 
@@ -533,9 +541,14 @@ void loop() {
             myId = t;
             resetEthernet();
         }
+        Watchdog.reset();
         lastPollTime = currentTimeMillis;
     }
+    if (SerialUSB.available() > 0)
+    {
+        diagnosis(SerialUSB.read());
+    }
+    if (isWaitingSendBootMsg) { sendBootMsg(currentTimeMillis); }
     OSCMsgReceive();
-
     updateServo(currentTimeMicros);
 }

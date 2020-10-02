@@ -15,16 +15,20 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SD", "..\..\..\..\..\..\One
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Ponoor_PowerSTEP01_Library-0.1.0", "..\..\..\..\..\..\Documents\Arduino\libraries\Ponoor_PowerSTEP01_Library\Ponoor_PowerSTEP01_Library-0.1.0.vcxitems", "{CEFAA970-7902-4D2C-B784-9F25CD5420F2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OSC", "..\..\..\..\..\..\OneDrive\Documents\Arduino\libraries\OSC\OSC.vcxitems", "{E2FA167D-AFD4-4187-83F0-3B2C938D3007}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\..\..\..\..\..\OneDrive\Documents\Arduino\libraries\ArduinoJson\ArduinoJson.vcxitems*{28d4b149-4e03-45aa-8130-6043d2c066a6}*SharedItemsImports = 9
 		..\..\..\..\..\..\OneDrive\Documents\Arduino\libraries\Ponoor_PowerSTEP01_Library\Ponoor_PowerSTEP01_Library.vcxitems*{4c813ac0-07dd-442b-b05a-fe40e225b811}*SharedItemsImports = 9
 		..\..\..\..\..\..\OneDrive\Documents\Arduino\libraries\Ponoor_PowerSTEP01Library\Ponoor_PowerSTEP01Library.vcxitems*{97d09b4a-1716-4715-a687-e211d04a2de2}*SharedItemsImports = 9
 		..\..\..\..\..\..\OneDrive\Documents\Arduino\libraries\ArduinoJson\ArduinoJson.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		..\..\..\..\..\..\OneDrive\Documents\Arduino\libraries\OSC\OSC.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		..\..\..\..\..\..\OneDrive\Documents\Arduino\libraries\Ponoor_PowerSTEP01_Library\Ponoor_PowerSTEP01_Library.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		..\..\..\..\..\..\OneDrive\Documents\Arduino\libraries\SD\SD.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		..\..\..\..\..\..\OneDrive\Documents\Arduino\libraries\SD\SD.vcxitems*{c6b9358c-efdc-4fd0-ab0c-3813532c251a}*SharedItemsImports = 9
 		..\..\..\..\..\..\Documents\Arduino\libraries\Ponoor_PowerSTEP01_Library\Ponoor_PowerSTEP01_Library-0.1.0.vcxitems*{cefaa970-7902-4d2c-b784-9f25cd5420f2}*SharedItemsImports = 9
+		..\..\..\..\..\..\OneDrive\Documents\Arduino\libraries\OSC\OSC.vcxitems*{e2fa167d-afd4-4187-83f0-3b2c938d3007}*SharedItemsImports = 9
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86

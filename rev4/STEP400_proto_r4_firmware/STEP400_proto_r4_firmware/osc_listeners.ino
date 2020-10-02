@@ -157,7 +157,7 @@ void setDestIp(OSCMessage& msg, int addrOffset) {
 
 void getVersion(OSCMessage& msg, int addrOffset) {
     String version = COMPILE_DATE;
-    version += String(" ") + String(COMPILE_TIME) + String(" ") + String(PROJECT_NAME);
+    version += String(" ") + String(COMPILE_TIME) + String(" ") + String(FIRMWARE_NAME);
     sendOneString("/version", version.c_str());
 }
 
