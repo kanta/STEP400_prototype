@@ -30,6 +30,7 @@ PCB design files for Eagle.
 - **[OSC Library](https://github.com/CNMAT/OSC)** from CNMAT
 - **[Ponoor PowerSTEP01 Library](https://github.com/ponoor/Ponoor_PowerSTEP01_Library)**
 - **[ArduinoJSON Library](https://arduinojson.org/)**
+- **[Adafruit SleepyDog Arduino Library](https://github.com/adafruit/Adafruit_SleepyDog)**
 
 ## Examples
 ### Max
