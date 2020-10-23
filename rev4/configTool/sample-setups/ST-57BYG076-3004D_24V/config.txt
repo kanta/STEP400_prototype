@@ -1,0 +1,328 @@
+{
+	"information": {
+		"configName": "ST-57BYG076-3004D_24V"
+	},
+	"network": {
+		"myIp": [
+			10,
+			0,
+			0,
+			100
+		],
+		"isMyIpAddId": true,
+		"destIp": [
+			10,
+			0,
+			0,
+			10
+		],
+		"dns": [
+			10,
+			0,
+			0,
+			1
+		],
+		"gateway": [
+			10,
+			0,
+			0,
+			1
+		],
+		"subnet": [
+			255,
+			255,
+			255,
+			0
+		],
+		"inPort": 50000,
+		"outPort": 50100,
+		"isOutPortAddId": true,
+		"mac": [
+			96,
+			149,
+			206,
+			16,
+			2,
+			0
+		],
+		"isMacAddId": true,
+		"bootedMsgEnable": true,
+		"canSendMsgBeforeDestIp": false
+	},
+	"alarmAndReport": {
+		"reportBUSY": [
+			false,
+			false,
+			false,
+			false
+		],
+		"reportFLAG": [
+			false,
+			false,
+			false,
+			false
+		],
+		"reportHiZ": [
+			false,
+			false,
+			false,
+			false
+		],
+		"reportHomeSwStatus": [
+			false,
+			false,
+			false,
+			false
+		],
+		"reportDir": [
+			false,
+			false,
+			false,
+			false
+		],
+		"reportMotorStatus": [
+			false,
+			false,
+			false,
+			false
+		],
+		"reportSwEvn": [
+			false,
+			false,
+			false,
+			false
+		],
+		"reportCommandError": [
+			true,
+			true,
+			true,
+			true
+		],
+		"reportUVLO": [
+			true,
+			true,
+			true,
+			true
+		],
+		"reportThermalStatus": [
+			true,
+			true,
+			true,
+			true
+		],
+		"reportOCD": [
+			true,
+			true,
+			true,
+			true
+		],
+		"reportStall": [
+			false,
+			false,
+			false,
+			false
+		],
+		"reportLimitSwStatus": [
+			false,
+			false,
+			false,
+			false
+		],
+		"OCThreshold": [
+			15,
+			15,
+			15,
+			15
+		]
+	},
+	"driverSettings": {
+		"stepMode": [
+			7,
+			7,
+			7,
+			7
+		],
+		"homeSwMode": [
+			true,
+			true,
+			true,
+			true
+		],
+		"limitSwMode": [
+			true,
+			true,
+			true,
+			true
+		],
+		"isCurrentMode": [
+			false,
+			false,
+			false,
+			false
+		],
+		"slewRate": [
+			5,
+			5,
+			5,
+			5
+		],
+		"electromagnetBrakeEnable": [
+			false,
+			false,
+			false,
+			false
+		]
+	},
+	"speedProfile": {
+		"acc": [
+			2000,
+			2000,
+			2000,
+			2000
+		],
+		"dec": [
+			2000,
+			2000,
+			2000,
+			2000
+		],
+		"maxSpeed": [
+			620,
+			620,
+			620,
+			620
+		],
+		"fullStepSpeed": [
+			15625,
+			15625,
+			15625,
+			15625
+		]
+	},
+	"voltageMode": {
+		"KVAL_HOLD": [
+			2,
+			2,
+			2,
+			2
+		],
+		"KVAL_RUN": [
+			91,
+			91,
+			91,
+			91
+		],
+		"KVAL_ACC": [
+			91,
+			91,
+			91,
+			91
+		],
+		"KVAL_DEC": [
+			91,
+			91,
+			91,
+			91
+		],
+		"INT_SPEED": [
+			5340,
+			5340,
+			5340,
+			5340
+		],
+		"ST_SLP": [
+			55,
+			55,
+			55,
+			55
+		],
+		"FN_SLP_ACC": [
+			127,
+			127,
+			127,
+			127
+		],
+		"FN_SLP_DEC": [
+			127,
+			127,
+			127,
+			127
+		],
+		"STALL_TH": [
+			31,
+			31,
+			31,
+			31
+		],
+		"lowSpeedOptimize": [
+			20,
+			20,
+			20,
+			20
+		]
+	},
+	"currentMode": {
+		"TVAL_HOLD": [
+			2,
+			2,
+			2,
+			2
+		],
+		"TVAL_RUN": [
+			39,
+			39,
+			39,
+			39
+		],
+		"TVAL_ACC": [
+			39,
+			39,
+			39,
+			39
+		],
+		"TVAL_DEC": [
+			39,
+			39,
+			39,
+			39
+		],
+		"T_FAST": [
+			25,
+			25,
+			25,
+			25
+		],
+		"TON_MIN": [
+			41,
+			41,
+			41,
+			41
+		],
+		"TOFF_MIN": [
+			41,
+			41,
+			41,
+			41
+		]
+	},
+	"servoMode": {
+		"kP": [
+			0.06,
+			0.06,
+			0.06,
+			0.06
+		],
+		"kI": [
+			0,
+			0,
+			0,
+			0
+		],
+		"kD": [
+			0,
+			0,
+			0,
+			0
+		]
+	}
+}
